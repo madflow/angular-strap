@@ -7,7 +7,8 @@ beforeEach(function() {
         compare: function(actual, expected) {
           var result = {};
           result.pass = angular.equals(actual, expected);
-          result.message = 'Expected "' + angular.mock.dump(actual) + '" to equal "' + angular.mock.dump(expected) + '".';
+          result.message =
+            'Expected "' + angular.mock.dump(actual) + '" to equal "' + angular.mock.dump(expected) + '".';
           return result;
         }
       };
@@ -50,7 +51,9 @@ function countScopes(s, count) {
 function d() {
   var args = Array.prototype.slice.call(arguments);
   var time = new Date().toISOString();
-  console.log(time + ' - ' + 'break' + ': ' + console.log.call(console, args.length === 1 ? args[0] : args, false, 10, true));
+  console.log(
+    time + ' - ' + 'break' + ': ' + console.log.call(console, args.length === 1 ? args[0] : args, false, 10, true)
+  );
 }
 function dd() {
   d.apply(null, arguments);

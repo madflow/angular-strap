@@ -8,9 +8,6 @@ describe('popover', function () {
   beforeEach(module('ngAnimateMock'));
   beforeEach(module('ngSanitize'));
   beforeEach(module('mgcrea.ngStrap.popover'));
-  jQuery.fn.triggerHandler = function(evt) {
-    return angular.element(this[0]).triggerHandler(evt);
-  };
 
   beforeEach(inject(function ($injector, _$rootScope_, _$compile_, _$templateCache_, _$window_, _$timeout_, _$popover_, _$animate_) {
     scope = _$rootScope_;

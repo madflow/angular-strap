@@ -1,7 +1,8 @@
-<div class="bs-docs-section" ng-controller="AlertDemoCtrl">
+<div class="bs-docs-section">
 
   <div class="page-header">
-    <h1 id="alerts">Alerts <a class="small" href="//github.com/mgcrea/angular-strap/blob/master/src/alert/alert.js" target="_blank">alert.js</a>
+    <h1 id="alerts">Alerts
+      <a class="small" href="//github.com/mgcrea/angular-strap/blob/master/src/alert/alert.js" target="_blank">alert.js</a>
     </h1>
     <code>mgcrea.ngStrap.alert</code>
   </div>
@@ -12,10 +13,14 @@
 
   <div class="callout callout-danger">
     <h4>Plugin dependency</h4>
-    <p>Alerts require the <a href="#modals">modal plugin</a> to be included.</p>
+    <p>Alerts require the
+      <a href="#modals">modal plugin</a> to be included.</p>
   </div>
 
-  <h3>Live demo <a class="small edit-plunkr" data-module-name="mgcrea.ngStrapDocs" data-content-html-url="alert/docs/alert.demo.html" data-content-js-url="alert/docs/alert.demo.js" ng-plunkr data-title="edit in plunker" data-placement="right" bs-tooltip>clog.info</a></h3>
+  <h3>Live demo
+    <a class="small edit-plunkr" data-module-name="mgcrea.ngStrapDocs" data-content-html-url="alert/docs/alert.demo.html"
+      data-content-js-url="alert/docs/alert.demo.js" ng-plunkr data-title="edit in plunker" data-placement="right" bs-tooltip>clog.info</a>
+  </h3>
   <pre class="bs-example-scope">$scope.alert = {{alert | json}};</pre>
   <div class="bs-example" style="padding-bottom: 24px;" append-source>
 
@@ -26,13 +31,15 @@
     </button>
 
     <!-- You can also use data-attrs to assign scope variables -->
-    <button class="btn btn-lg btn-primary" title="{{alert.title}}" data-content="{{alert.content}}" data-type="success" data-container="#alerts-container" bs-alert>Click to toggle alert
+    <button class="btn btn-lg btn-primary" title="{{alert.title}}" data-content="{{alert.content}}" data-type="success" data-container="#alerts-container"
+      bs-alert>Click to toggle alert
       <br />
       <small>(using data-attrs)</small>
     </button>
 
     <!-- You can use a custom html template with the `data-template` attr -->
-    <button class="btn btn-lg btn-danger" data-template="alert/docs/alert.demo.tpl.html" data-placement="top" data-duration="3" data-animation="am-fade-and-slide-top" data-container="body" data-keyboard="true" bs-alert="alert">Custom alert
+    <button class="btn btn-lg btn-danger" data-template="alert/docs/alert.demo.tpl.html" data-placement="top" data-duration="3"
+      data-animation="am-fade-and-slide-top" data-container="body" data-keyboard="true" bs-alert="alert">Custom alert
       <br />
       <small>(using data-template)</small>
     </button>
@@ -45,9 +52,11 @@
 
 
   <h2 id="alerts-usage">Usage</h2>
-  <p>Append a <code>bs-alert</code>attribute to any element to enable the plugin.</p>
+  <p>Append a
+    <code>bs-alert</code>attribute to any element to enable the plugin.</p>
   <div class="callout callout-info">
-    <h4>The module also exposes an <code>$alert</code>service</h4>
+    <h4>The module also exposes an
+      <code>$alert</code>service</h4>
     <p>Available for programmatic use (inside a controller/directive).</p>
     <div class="highlight">
       <pre>
@@ -62,8 +71,14 @@
   </div>
 
   <h3>Options</h3>
-  <p>Options can be passed via data-attributes on the directive or as an object hash to configure the service. For data attributes, append the option name to <code>data-</code>, as in <code>data-animation=""</code>.</p>
-  <p>For directives, you can naturally inherit the contextual <code>$scope</code> or leverage a custom one with an <a href="http://docs.angularjs.org/guide/expression">AngularJS expression</a> to evaluate as an object directly on the <code>bs-aside</code> attribute</p>
+  <p>Options can be passed via data-attributes on the directive or as an object hash to configure the service. For data attributes,
+    append the option name to
+    <code>data-</code>, as in
+    <code>data-animation=""</code>.</p>
+  <p>For directives, you can naturally inherit the contextual
+    <code>$scope</code> or leverage a custom one with an
+    <a href="http://docs.angularjs.org/guide/expression">AngularJS expression</a> to evaluate as an object directly on the
+    <code>bs-aside</code> attribute</p>
   <div class="table-responsive">
     <table class="table table-bordered table-striped">
       <thead>
@@ -85,27 +100,31 @@
           <td>placement</td>
           <td>string</td>
           <td>''</td>
-          <td>how to position the alert - top | top-left | top-right <small>(requires custom CSS)</small>.</td>
+          <td>how to position the alert - top | top-left | top-right
+            <small>(requires custom CSS)</small>.</td>
         </tr>
         <tr>
           <td>title</td>
           <td>string</td>
           <td>''</td>
-          <td>default title value if <code>title</code>attribute isn't present</td>
+          <td>default title value if
+            <code>title</code>attribute isn't present</td>
         </tr>
         <tr>
           <td>content</td>
           <td>string</td>
           <td>''</td>
-          <td>default content value if <code>data-content</code>attribute isn't present</td>
+          <td>default content value if
+            <code>data-content</code>attribute isn't present</td>
         </tr>
         <tr>
           <td>type</td>
           <td>string</td>
           <td>'info'</td>
-          <td>default content value if <code>data-type</code>attribute isn't present</td>
+          <td>default content value if
+            <code>data-type</code>attribute isn't present</td>
         </tr>
-<!--
+        <!--
 Removing keyboard from the docs. Our template doesn't have tabindex for focus stealing issues, keyboard won't work
 so remove the option then. Just looks bad to have an option that doesn't work
         <tr>
@@ -126,7 +145,10 @@ so remove the option then. Just looks bad to have an option that doesn't work
           <td>string | false</td>
           <td>false</td>
           <td>
-            <p>Appends the alert to a specific element. Example: <code>container: 'body'</code>. This option is particularly useful in that it allows you to position the alert in the flow of the document near the triggering element -&nbsp;which will prevent the alert from floating away from the triggering element during a window resize.</p>
+            <p>Appends the alert to a specific element. Example:
+              <code>container: 'body'</code>. This option is particularly useful in that it allows you to position the alert in
+              the flow of the document near the triggering element -&nbsp;which will prevent the alert from floating away
+              from the triggering element during a window resize.</p>
           </td>
         </tr>
         <tr>
@@ -134,7 +156,8 @@ so remove the option then. Just looks bad to have an option that doesn't work
           <td>string|function</td>
           <td>false</td>
           <td>
-            <p>Controller fn that should be associated with newly created scope or the name of a registered controller if passed as a string.</p>
+            <p>Controller fn that should be associated with newly created scope or the name of a registered controller if passed
+              as a string.</p>
           </td>
         </tr>
         <tr>
@@ -159,7 +182,10 @@ so remove the option then. Just looks bad to have an option that doesn't work
           <td>'alert/alert.tpl.html'</td>
           <td>
             <p>If provided, overrides the default template, can be either a remote URL or a cached template id.</p>
-            <p>It should be a <code>div.alert</code> element following Bootstrap styles conventions (<a href="//github.com/mgcrea/angular-strap/blob/master/src/alert/alert.tpl.html" target="_blank">like this</a>).</p>
+            <p>It should be a
+              <code>div.alert</code> element following Bootstrap styles conventions (
+              <a href="//github.com/mgcrea/angular-strap/blob/master/src/alert/alert.tpl.html"
+                target="_blank">like this</a>).</p>
           </td>
         </tr>
         <tr>
@@ -167,7 +193,8 @@ so remove the option then. Just looks bad to have an option that doesn't work
           <td>number | false</td>
           <td>false</td>
           <td>
-            <p>If provided, the number of seconds the alert should be displayed for before it is automatically closed. Default keeps alert open until explicity closed.</p>
+            <p>If provided, the number of seconds the alert should be displayed for before it is automatically closed. Default
+              keeps alert open until explicity closed.</p>
           </td>
         </tr>
         <tr>
@@ -215,7 +242,9 @@ so remove the option then. Just looks bad to have an option that doesn't work
   </div>
   <div class="callout callout-info">
     <h4>Default options</h4>
-    <p>You can override global defaults for the plugin with <code>$alertProvider.defaults</code></p>
+    <p>You can override global defaults for the plugin with
+      <code>$alertProvider.defaults</code>
+    </p>
     <div class="highlight">
       <pre class="bs-exemple-code">
         <code class="javascript" highlight-block>

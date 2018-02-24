@@ -1,16 +1,5 @@
-'use strict';
-
-angular.module('mgcrea.ngStrapDocs')
-
-.config(function($tooltipProvider) {
-  angular.extend($tooltipProvider.defaults, {
-    html: true
-  });
-})
-
-.controller('TooltipDemoCtrl', function($scope, $q, $sce, $tooltip) {
-
-  $scope.tooltip = {title: 'Hello Tooltip<br />This is a multiline message!', checked: false};
+export default function($scope, $tooltip) {
+  $scope.tooltip = { title: 'Hello Tooltip<br />This is a multiline message!', checked: false };
 
   // Controller usage example
   /*
@@ -22,5 +11,4 @@ angular.module('mgcrea.ngStrapDocs')
     myTooltip.$promise.then(myTooltip.hide);
   };
   */
-
-});
+}

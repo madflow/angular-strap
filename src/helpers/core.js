@@ -1,9 +1,13 @@
 'use strict';
 
+const MODULE_NAME = 'mgcrea.ngStrap.core';
+
+import angular from 'angular';
+
 // NOTICE: This file was forked from the angular-material project (github.com/angular/material)
 // MIT Licensed - Copyright (c) 2014-2015 Google, Inc. http://angularjs.org
 
-angular.module('mgcrea.ngStrap.core', [])
+angular.module(MODULE_NAME, [])
   .service('$bsCompiler', bsCompilerService);
 
 function bsCompilerService ($q, $http, $injector, $compile, $controller, $templateCache) {
@@ -187,3 +191,5 @@ function bsCompilerService ($q, $http, $injector, $compile, $controller, $templa
   }
 
 }
+
+export default MODULE_NAME;

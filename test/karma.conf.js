@@ -12,15 +12,15 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'node_modules/jquery/dist/jquery.js',
-      'node_modules/angular/angular.js',
-      'node_modules/angular-animate/angular-animate.js',
-      'node_modules/angular-sanitize/angular-sanitize.js',
-      'node_modules/angular-mocks/angular-mocks.js',
-      'dist/angular-strap.min.js',
-      'dist/angular-strap.tpl.min.js',
+      '../node_modules/jquery/dist/jquery.js',
+      '../node_modules/angular/angular.js',
+      '../node_modules/angular-animate/angular-animate.js',
+      '../node_modules/angular-sanitize/angular-sanitize.js',
+      '../node_modules/angular-mocks/angular-mocks.js',
+      '../release/angular-strap.js',
       './helpers.js',
-      'src/{,*/}/test/*.spec.js'
+      //'../src/{,*/}/test/*.spec.js',
+      '../src/modal/test/*.spec.js'
     ],
 
     // list of files / patterns to exclude

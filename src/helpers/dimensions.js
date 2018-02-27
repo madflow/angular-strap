@@ -1,9 +1,13 @@
 'use strict';
 
-angular.module('mgcrea.ngStrap.helpers.dimensions', [])
+import angular from 'angular';
 
-  .factory('dimensions', function () {
+const MODULE_NAME = 'mgcrea.ngStrap.helpers.dimensions';
 
+angular
+  .module(MODULE_NAME, [])
+
+  .factory('dimensions', function() {
     var fn = {};
 
     /**
@@ -11,9 +15,9 @@ angular.module('mgcrea.ngStrap.helpers.dimensions', [])
      * @param element
      * @param name
      */
-    var nodeName = fn.nodeName = function (element, name) {
+    var nodeName = (fn.nodeName = function(element, name) {
       return element.nodeName && element.nodeName.toLowerCase() === name.toLowerCase();
-    };
+    });
 
     /**
      * Returns the element computed style
@@ -21,9 +25,10 @@ angular.module('mgcrea.ngStrap.helpers.dimensions', [])
      * @param prop
      * @param extra
      */
-    fn.css = function (element, prop, extra) {
+    fn.css = function(element, prop, extra) {
       var value;
-      if (element.currentStyle) { // IE
+      if (element.currentStyle) {
+        // IE
         value = element.currentStyle[prop];
       } else if (window.getComputedStyle) {
         value = window.getComputedStyle(element)[prop];
@@ -39,14 +44,20 @@ angular.module('mgcrea.ngStrap.helpers.dimensions', [])
      * @url http://api.jquery.com/offset/
      * @param element
      */
-    fn.offset = function (element) {
+    fn.offset = function(element) {
       var boxRect = element.getBoundingClientRect();
       var docElement = element.ownerDocument;
       return {
         width: boxRect.width || element.offsetWidth,
         height: boxRect.height || element.offsetHeight,
-        top: boxRect.top + (window.pageYOffset || docElement.documentElement.scrollTop) - (docElement.documentElement.clientTop || 0),
-        left: boxRect.left + (window.pageXOffset || docElement.documentElement.scrollLeft) - (docElement.documentElement.clientLeft || 0)
+        top:
+          boxRect.top +
+          (window.pageYOffset || docElement.documentElement.scrollTop) -
+          (docElement.documentElement.clientTop || 0),
+        left:
+          boxRect.left +
+          (window.pageXOffset || docElement.documentElement.scrollLeft) -
+          (docElement.documentElement.clientLeft || 0)
       };
     };
 
@@ -58,7 +69,7 @@ angular.module('mgcrea.ngStrap.helpers.dimensions', [])
      * @param options
      * @param i
      */
-    fn.setOffset = function (element, options, i) {
+    fn.setOffset = function(element, options, i) {
       var curPosition;
       var curLeft;
       var curCSSTop;
@@ -78,8 +89,8 @@ angular.module('mgcrea.ngStrap.helpers.dimensions', [])
       curOffset = fn.offset(element);
       curCSSTop = fn.css(element, 'top');
       curCSSLeft = fn.css(element, 'left');
-      calculatePosition = (position === 'absolute' || position === 'fixed') &&
-                          (curCSSTop + curCSSLeft).indexOf('auto') > -1;
+      calculatePosition =
+        (position === 'absolute' || position === 'fixed') && (curCSSTop + curCSSLeft).indexOf('auto') > -1;
 
       // Need to be able to calculate position if either
       // top or left is auto and position is either absolute or fixed
@@ -97,10 +108,10 @@ angular.module('mgcrea.ngStrap.helpers.dimensions', [])
       }
 
       if (options.top !== null) {
-        props.top = (options.top - curOffset.top) + curTop;
+        props.top = options.top - curOffset.top + curTop;
       }
       if (options.left !== null) {
-        props.left = (options.left - curOffset.left) + curLeft;
+        props.left = options.left - curOffset.left + curLeft;
       }
 
       if ('using' in options) {
@@ -119,20 +130,16 @@ angular.module('mgcrea.ngStrap.helpers.dimensions', [])
      * @url http://api.jquery.com/offset/
      * @param element
      */
-    fn.position = function (element) {
-
-      var offsetParentRect = {top: 0, left: 0};
+    fn.position = function(element) {
+      var offsetParentRect = { top: 0, left: 0 };
       var offsetParentEl;
       var offset;
 
       // Fixed elements are offset from window (parentOffset = {top:0, left: 0}, because it is it's only offset parent
       if (fn.css(element, 'position') === 'fixed') {
-
         // We assume that getBoundingClientRect is available when computed position is fixed
         offset = element.getBoundingClientRect();
-
       } else {
-
         // Get *real* offsetParentEl
         offsetParentEl = offsetParentElement(element);
 
@@ -154,7 +161,6 @@ angular.module('mgcrea.ngStrap.helpers.dimensions', [])
         top: offset.top - offsetParentRect.top - fn.css(element, 'marginTop', true),
         left: offset.left - offsetParentRect.left - fn.css(element, 'marginLeft', true)
       };
-
     };
 
     /**
@@ -162,7 +168,7 @@ angular.module('mgcrea.ngStrap.helpers.dimensions', [])
      * @required-by fn.position
      * @param element
      */
-    function offsetParentElement (element) {
+    function offsetParentElement(element) {
       var docElement = element.ownerDocument;
       var offsetParent = element.offsetParent || docElement;
       if (nodeName(offsetParent, '#document')) return docElement.documentElement;
@@ -179,12 +185,16 @@ angular.module('mgcrea.ngStrap.helpers.dimensions', [])
      * @param element
      * @param outer
      */
-    fn.height = function (element, outer) {
+    fn.height = function(element, outer) {
       var value = element.offsetHeight;
       if (outer) {
         value += fn.css(element, 'marginTop', true) + fn.css(element, 'marginBottom', true);
       } else {
-        value -= fn.css(element, 'paddingTop', true) + fn.css(element, 'paddingBottom', true) + fn.css(element, 'borderTopWidth', true) + fn.css(element, 'borderBottomWidth', true);
+        value -=
+          fn.css(element, 'paddingTop', true) +
+          fn.css(element, 'paddingBottom', true) +
+          fn.css(element, 'borderTopWidth', true) +
+          fn.css(element, 'borderBottomWidth', true);
       }
       return value;
     };
@@ -196,16 +206,21 @@ angular.module('mgcrea.ngStrap.helpers.dimensions', [])
      * @param element
      * @param outer
      */
-    fn.width = function (element, outer) {
+    fn.width = function(element, outer) {
       var value = element.offsetWidth;
       if (outer) {
         value += fn.css(element, 'marginLeft', true) + fn.css(element, 'marginRight', true);
       } else {
-        value -= fn.css(element, 'paddingLeft', true) + fn.css(element, 'paddingRight', true) + fn.css(element, 'borderLeftWidth', true) + fn.css(element, 'borderRightWidth', true);
+        value -=
+          fn.css(element, 'paddingLeft', true) +
+          fn.css(element, 'paddingRight', true) +
+          fn.css(element, 'borderLeftWidth', true) +
+          fn.css(element, 'borderRightWidth', true);
       }
       return value;
     };
 
     return fn;
-
   });
+
+export default MODULE_NAME;

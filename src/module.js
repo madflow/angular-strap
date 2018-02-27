@@ -1,3 +1,4 @@
+import angular from 'angular';
 
 angular.module('mgcrea.ngStrap', [
   'mgcrea.ngStrap.modal',

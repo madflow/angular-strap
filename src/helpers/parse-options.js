@@ -1,17 +1,19 @@
 'use strict';
 
-angular.module('mgcrea.ngStrap.helpers.parseOptions', [])
+const MODULE_NAME = 'mgcrea.ngStrap.helpers.parseOptions';
 
-  .provider('$parseOptions', function () {
+import angular from 'angular';
 
-    var defaults = this.defaults = {
+angular
+  .module(MODULE_NAME, [])
+
+  .provider('$parseOptions', function() {
+    var defaults = (this.defaults = {
       regexp: /^\s*(.*?)(?:\s+as\s+(.*?))?(?:\s+group\s+by\s+(.*))?\s+for\s+(?:([\$\w][\$\w]*)|(?:\(\s*([\$\w][\$\w]*)\s*,\s*([\$\w][\$\w]*)\s*\)))\s+in\s+(.*?)(?:\s+track\s+by\s+(.*?))?$/
-    };
+    });
 
-    this.$get = function ($parse, $q) {
-
-      function ParseOptionsFactory (attr, config) {
-
+    this.$get = function($parse, $q) {
+      function ParseOptionsFactory(attr, config) {
         var $parseOptions = {};
 
         // Common vars
@@ -29,7 +31,7 @@ angular.module('mgcrea.ngStrap.helpers.parseOptions', [])
         var valueFn;
         var valuesFn;
 
-        $parseOptions.init = function () {
+        $parseOptions.init = function() {
           $parseOptions.$match = match = attr.match(options.regexp);
           displayFn = $parse(match[2] || match[1]);
           valueName = match[4] || match[6];
@@ -39,9 +41,8 @@ angular.module('mgcrea.ngStrap.helpers.parseOptions', [])
           valuesFn = $parse(match[7]);
         };
 
-        $parseOptions.valuesFn = function (scope, controller) {
-          return $q.when(valuesFn(scope, controller))
-          .then(function (values) {
+        $parseOptions.valuesFn = function(scope, controller) {
+          return $q.when(valuesFn(scope, controller)).then(function(values) {
             if (!angular.isArray(values)) {
               values = [];
             }
@@ -50,7 +51,7 @@ angular.module('mgcrea.ngStrap.helpers.parseOptions', [])
           });
         };
 
-        $parseOptions.displayValue = function (modelValue) {
+        $parseOptions.displayValue = function(modelValue) {
           var scope = {};
           scope[valueName] = modelValue;
           return displayFn(scope);
@@ -58,25 +59,24 @@ angular.module('mgcrea.ngStrap.helpers.parseOptions', [])
 
         // Private functions
 
-        function parseValues (values, scope) {
-          return values.map(function (match, index) {
+        function parseValues(values, scope) {
+          return values.map(function(match, index) {
             var locals = {};
             var label;
             var value;
             locals[valueName] = match;
             label = displayFn(scope, locals);
             value = valueFn(scope, locals);
-            return {label: label, value: value, index: index};
+            return { label: label, value: value, index: index };
           });
         }
 
         $parseOptions.init();
         return $parseOptions;
-
       }
 
       return ParseOptionsFactory;
-
     };
-
   });
+
+  export default MODULE_NAME;

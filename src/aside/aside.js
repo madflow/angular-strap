@@ -1,10 +1,16 @@
 'use strict';
 
-angular.module('mgcrea.ngStrap.aside', ['mgcrea.ngStrap.modal'])
+const MODULE_NAME = 'mgcrea.ngStrap.aside';
 
-  .provider('$aside', function () {
+import angular from 'angular';
+import modal from '../modal/modal';
+import template from './aside.tpl.html';
 
-    var defaults = this.defaults = {
+angular
+  .module(MODULE_NAME, [modal])
+
+  .provider('$aside', function() {
+    var defaults = (this.defaults = {
       animation: 'am-fade-and-slide-right',
       prefixClass: 'aside',
       prefixEvent: 'aside',
@@ -17,12 +23,10 @@ angular.module('mgcrea.ngStrap.aside', ['mgcrea.ngStrap.modal'])
       keyboard: true,
       html: false,
       show: true
-    };
+    });
 
-    this.$get = function ($modal) {
-
-      function AsideFactory (config) {
-
+    this.$get = function($modal) {
+      function AsideFactory(config) {
         var $aside = {};
 
         // Common vars
@@ -31,35 +35,46 @@ angular.module('mgcrea.ngStrap.aside', ['mgcrea.ngStrap.modal'])
         $aside = $modal(options);
 
         return $aside;
-
       }
 
       return AsideFactory;
-
     };
-
   })
 
-  .directive('bsAside', function ($window, $sce, $aside) {
-
+  .directive('bsAside', function($window, $sce, $aside) {
     return {
       restrict: 'EAC',
       scope: true,
-      link: function postLink (scope, element, attr, transclusion) {
+      link: function postLink(scope, element, attr, transclusion) {
         // Directive options
-        var options = {scope: scope, element: element, show: false};
-        angular.forEach(['template', 'templateUrl', 'controller', 'controllerAs', 'contentTemplate', 'placement', 'backdrop', 'keyboard', 'html', 'container', 'animation'], function (key) {
-          if (angular.isDefined(attr[key])) options[key] = attr[key];
-        });
+        var options = { scope: scope, element: element, show: false };
+        angular.forEach(
+          [
+            'template',
+            'templateUrl',
+            'controller',
+            'controllerAs',
+            'contentTemplate',
+            'placement',
+            'backdrop',
+            'keyboard',
+            'html',
+            'container',
+            'animation'
+          ],
+          function(key) {
+            if (angular.isDefined(attr[key])) options[key] = attr[key];
+          }
+        );
 
         // use string regex match boolean attr falsy values, leave truthy values be
         var falseValueRegExp = /^(false|0|)$/i;
-        angular.forEach(['backdrop', 'keyboard', 'html', 'container'], function (key) {
+        angular.forEach(['backdrop', 'keyboard', 'html', 'container'], function(key) {
           if (angular.isDefined(attr[key]) && falseValueRegExp.test(attr[key])) options[key] = false;
         });
 
         // bind functions from the attrs to the show and hide events
-        angular.forEach(['onBeforeShow', 'onShow', 'onBeforeHide', 'onHide'], function (key) {
+        angular.forEach(['onBeforeShow', 'onShow', 'onBeforeHide', 'onHide'], function(key) {
           var bsKey = 'bs' + key.charAt(0).toUpperCase() + key.slice(1);
           if (angular.isDefined(attr[bsKey])) {
             options[key] = scope.$eval(attr[bsKey]);
@@ -67,9 +82,9 @@ angular.module('mgcrea.ngStrap.aside', ['mgcrea.ngStrap.modal'])
         });
 
         // Support scope as data-attrs
-        angular.forEach(['title', 'content'], function (key) {
+        angular.forEach(['title', 'content'], function(key) {
           if (attr[key]) {
-            attr.$observe(key, function (newValue, oldValue) {
+            attr.$observe(key, function(newValue, oldValue) {
               scope[key] = $sce.trustAsHtml(newValue);
             });
           }
@@ -77,13 +92,17 @@ angular.module('mgcrea.ngStrap.aside', ['mgcrea.ngStrap.modal'])
 
         // Support scope as an object
         if (attr.bsAside) {
-          scope.$watch(attr.bsAside, function (newValue, oldValue) {
-            if (angular.isObject(newValue)) {
-              angular.extend(scope, newValue);
-            } else {
-              scope.content = newValue;
-            }
-          }, true);
+          scope.$watch(
+            attr.bsAside,
+            function(newValue, oldValue) {
+              if (angular.isObject(newValue)) {
+                angular.extend(scope, newValue);
+              } else {
+                scope.content = newValue;
+              }
+            },
+            true
+          );
         }
 
         // Initialize aside
@@ -93,13 +112,13 @@ angular.module('mgcrea.ngStrap.aside', ['mgcrea.ngStrap.modal'])
         element.on(attr.trigger || 'click', aside.toggle);
 
         // Garbage collection
-        scope.$on('$destroy', function () {
+        scope.$on('$destroy', function() {
           if (aside) aside.destroy();
           options = null;
           aside = null;
         });
-
       }
     };
-
   });
+
+  export default MODULE_NAME;

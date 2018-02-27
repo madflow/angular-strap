@@ -1,10 +1,19 @@
 'use strict';
 
-angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser', 'mgcrea.ngStrap.helpers.dateFormatter', 'mgcrea.ngStrap.tooltip'])
+import angular from 'angular';
+import dateParser from '../helpers/date-parser';
+import dateFormatter from '../helpers/date-formatter';
+import tooltip from '../tooltip/tooltip';
 
-  .provider('$timepicker', function () {
+import template from './timepicker.tpl.html';
 
-    var defaults = this.defaults = {
+const MODULE_NAME = 'mgcrea.ngStrap.timepicker';
+
+angular
+  .module(MODULE_NAME, [dateParser, dateFormatter, tooltip])
+
+  .provider('$timepicker', function() {
+    var defaults = (this.defaults = {
       animation: 'am-fade',
       defaultDate: 'auto',
       // uncommenting the following line will break backwards compatability
@@ -34,29 +43,27 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
       iconUp: 'glyphicon glyphicon-chevron-up',
       iconDown: 'glyphicon glyphicon-chevron-down',
       arrowBehavior: 'pager'
-    };
+    });
 
-    this.$get = function ($window, $document, $rootScope, $sce, $dateFormatter, $tooltip, $timeout) {
-
-      var isNative = /(ip[ao]d|iphone|android)/ig.test($window.navigator.userAgent);
-      var isTouch = ('createTouch' in $window.document) && isNative;
+    this.$get = function($window, $document, $rootScope, $sce, $dateFormatter, $tooltip, $timeout) {
+      var isNative = /(ip[ao]d|iphone|android)/gi.test($window.navigator.userAgent);
+      var isTouch = 'createTouch' in $window.document && isNative;
       if (!defaults.lang) {
         defaults.lang = $dateFormatter.getDefaultLocale();
       }
 
-      function timepickerFactory (element, controller, config) {
-
+      function timepickerFactory(element, controller, config) {
         var $timepicker = $tooltip(element, angular.extend({}, defaults, config));
         var parentScope = config.scope;
         var options = $timepicker.$options;
         var scope = $timepicker.$scope;
 
         var lang = options.lang;
-        var formatDate = function (date, format, timezone) {
+        var formatDate = function(date, format, timezone) {
           return $dateFormatter.formatDate(date, format, lang, timezone);
         };
 
-        function floorMinutes (time) {
+        function floorMinutes(time) {
           // coeff used to floor current time to nearest minuteStep interval
           var coeff = 1000 * 60 * options.minuteStep;
           return new Date(Math.floor(time.getTime() / coeff) * coeff);
@@ -89,19 +96,19 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
 
         // Scope methods
 
-        scope.$select = function (date, index) {
+        scope.$select = function(date, index) {
           $timepicker.select(date, index);
         };
-        scope.$moveIndex = function (value, index) {
+        scope.$moveIndex = function(value, index) {
           $timepicker.$moveIndex(value, index);
         };
-        scope.$switchMeridian = function (date) {
+        scope.$switchMeridian = function(date) {
           $timepicker.switchMeridian(date);
         };
 
         // Public methods
 
-        $timepicker.update = function (date) {
+        $timepicker.update = function(date) {
           // console.warn('$timepicker.update() newValue=%o', date);
           if (angular.isDate(date) && !isNaN(date.getTime())) {
             $timepicker.$date = date;
@@ -117,7 +124,7 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
           }
         };
 
-        $timepicker.select = function (date, index, keep) {
+        $timepicker.select = function(date, index, keep) {
           // console.warn('$timepicker.select', date, scope.$mode);
           if (!controller.$dateValue || isNaN(controller.$dateValue.getTime())) {
             controller.$dateValue = options.defaultDate === 'today' ? new Date() : new Date(1970, 0, 1);
@@ -130,13 +137,13 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
           controller.$setViewValue(angular.copy(controller.$dateValue));
           controller.$render();
           if (options.autoclose && !keep) {
-            $timeout(function () {
+            $timeout(function() {
               $timepicker.hide(true);
             });
           }
         };
 
-        $timepicker.switchMeridian = function (date) {
+        $timepicker.switchMeridian = function(date) {
           if (!controller.$dateValue || isNaN(controller.$dateValue.getTime())) {
             return;
           }
@@ -148,10 +155,10 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
 
         // Protected methods
 
-        $timepicker.$build = function () {
+        $timepicker.$build = function() {
           // console.warn('$timepicker.$build() viewDate=%o', viewDate);
           var i;
-          var midIndex = scope.midIndex = parseInt(options.length / 2, 10);
+          var midIndex = (scope.midIndex = parseInt(options.length / 2, 10));
           var hours = [];
           var hour;
           for (i = 0; i < options.length; i++) {
@@ -202,7 +209,7 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
           $timepicker.$isBuilt = true;
         };
 
-        $timepicker.$isSelected = function (date, index) {
+        $timepicker.$isSelected = function(date, index) {
           if (!$timepicker.$date) return false;
           else if (index === 0) {
             return date.getHours() === $timepicker.$date.getHours();
@@ -213,7 +220,7 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
           }
         };
 
-        $timepicker.$isDisabled = function (date, index) {
+        $timepicker.$isDisabled = function(date, index) {
           var selectedTime;
           if (index === 0) {
             selectedTime = date.getTime() + viewDate.minute * 6e4 + viewDate.second * 1e3;
@@ -225,7 +232,7 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
           return selectedTime < options.minTime * 1 || selectedTime > options.maxTime * 1;
         };
 
-        scope.$arrowAction = function (value, index) {
+        scope.$arrowAction = function(value, index) {
           if (options.arrowBehavior === 'picker') {
             $timepicker.$setTimeByStep(value, index);
           } else {
@@ -233,35 +240,49 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
           }
         };
 
-        $timepicker.$setTimeByStep = function (value, index) {
+        $timepicker.$setTimeByStep = function(value, index) {
           var newDate = new Date($timepicker.$date || startDate);
           var hours = newDate.getHours();
           var minutes = newDate.getMinutes();
           var seconds = newDate.getSeconds();
           if (index === 0) {
-            newDate.setHours(hours - (parseInt(options.hourStep, 10) * value));
+            newDate.setHours(hours - parseInt(options.hourStep, 10) * value);
           } else if (index === 1) {
-            newDate.setMinutes(minutes - (parseInt(options.minuteStep, 10) * value));
+            newDate.setMinutes(minutes - parseInt(options.minuteStep, 10) * value);
           } else if (index === 2) {
-            newDate.setSeconds(seconds - (parseInt(options.secondStep, 10) * value));
+            newDate.setSeconds(seconds - parseInt(options.secondStep, 10) * value);
           }
           $timepicker.select(newDate, index, true);
         };
 
-        $timepicker.$moveIndex = function (value, index) {
+        $timepicker.$moveIndex = function(value, index) {
           var targetDate;
           if (index === 0) {
-            targetDate = new Date(1970, 0, 1, viewDate.hour + (value * options.length), viewDate.minute, viewDate.second);
+            targetDate = new Date(1970, 0, 1, viewDate.hour + value * options.length, viewDate.minute, viewDate.second);
             angular.extend(viewDate, {
               hour: targetDate.getHours()
             });
           } else if (index === 1) {
-            targetDate = new Date(1970, 0, 1, viewDate.hour, viewDate.minute + (value * options.length * options.minuteStep), viewDate.second);
+            targetDate = new Date(
+              1970,
+              0,
+              1,
+              viewDate.hour,
+              viewDate.minute + value * options.length * options.minuteStep,
+              viewDate.second
+            );
             angular.extend(viewDate, {
               minute: targetDate.getMinutes()
             });
           } else if (index === 2) {
-            targetDate = new Date(1970, 0, 1, viewDate.hour, viewDate.minute, viewDate.second + (value * options.length * options.secondStep));
+            targetDate = new Date(
+              1970,
+              0,
+              1,
+              viewDate.hour,
+              viewDate.minute,
+              viewDate.second + value * options.length * options.secondStep
+            );
             angular.extend(viewDate, {
               second: targetDate.getSeconds()
             });
@@ -269,7 +290,7 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
           $timepicker.$build();
         };
 
-        $timepicker.$onMouseDown = function (evt) {
+        $timepicker.$onMouseDown = function(evt) {
           // Prevent blur on mousedown on .dropdown-menu
           if (evt.target.nodeName.toLowerCase() !== 'input') evt.preventDefault();
           evt.stopPropagation();
@@ -283,7 +304,7 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
           }
         };
 
-        $timepicker.$onKeyDown = function (evt) {
+        $timepicker.$onKeyDown = function(evt) {
           if (!/(38|37|39|40|13)/.test(evt.keyCode) || evt.shiftKey || evt.altKey) return;
           evt.preventDefault();
           evt.stopPropagation();
@@ -318,7 +339,7 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
           if (evt.keyCode === 38) incr = -1;
           if (evt.keyCode === 40) incr = +1;
           var isSeconds = selectedIndex === 2 && showSeconds;
-          var isMeridian = selectedIndex === 2 && !showSeconds || selectedIndex === 3 && showSeconds;
+          var isMeridian = (selectedIndex === 2 && !showSeconds) || (selectedIndex === 3 && showSeconds);
           if (selectedIndex === 0) {
             newDate.setHours(hours + incr * parseInt(options.hourStep, 10));
             // re-calculate hours length because we have changed hours value
@@ -336,7 +357,10 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
             selectRange = [hoursLength + sepLength + minutesLength + sepLength, secondsLength];
           } else if (isMeridian) {
             if (!lateralMove) $timepicker.switchMeridian();
-            selectRange = [hoursLength + sepLength + minutesLength + sepLength + (secondsLength + sepLength) * showSeconds, 2];
+            selectRange = [
+              hoursLength + sepLength + minutesLength + sepLength + (secondsLength + sepLength) * showSeconds,
+              2
+            ];
           }
           $timepicker.select(newDate, selectedIndex, true);
           createSelection(selectRange[0], selectRange[1]);
@@ -345,7 +369,7 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
 
         // Private
 
-        function createSelection (start, length) {
+        function createSelection(start, length) {
           var end = start + length;
           if (element[0].createTextRange) {
             var selRange = element[0].createTextRange();
@@ -361,14 +385,14 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
           }
         }
 
-        function focusElement () {
+        function focusElement() {
           element[0].focus();
         }
 
         // Overrides
 
         var _init = $timepicker.init;
-        $timepicker.init = function () {
+        $timepicker.init = function() {
           if (isNative && options.useNative) {
             element.prop('type', 'time');
             element.css('-webkit-appearance', 'textfield');
@@ -382,7 +406,7 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
         };
 
         var _destroy = $timepicker.destroy;
-        $timepicker.destroy = function () {
+        $timepicker.destroy = function() {
           if (isNative && options.useNative) {
             element.off('click', focusElement);
           }
@@ -390,23 +414,29 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
         };
 
         var _show = $timepicker.show;
-        $timepicker.show = function () {
+        $timepicker.show = function() {
           if ((!isTouch && element.attr('readonly')) || element.attr('disabled')) return;
           _show();
           // use timeout to hookup the events to prevent
           // event bubbling from being processed imediately.
-          $timeout(function () {
-            if ($timepicker.$element) $timepicker.$element.on(isTouch ? 'touchstart' : 'mousedown', $timepicker.$onMouseDown);
-            if (options.keyboard) {
-              if (element) element.on('keydown', $timepicker.$onKeyDown);
-            }
-          }, 0, false);
+          $timeout(
+            function() {
+              if ($timepicker.$element)
+                $timepicker.$element.on(isTouch ? 'touchstart' : 'mousedown', $timepicker.$onMouseDown);
+              if (options.keyboard) {
+                if (element) element.on('keydown', $timepicker.$onKeyDown);
+              }
+            },
+            0,
+            false
+          );
         };
 
         var _hide = $timepicker.hide;
-        $timepicker.hide = function (blur) {
+        $timepicker.hide = function(blur) {
           if (!$timepicker.$isShown) return;
-          if ($timepicker.$element) $timepicker.$element.off(isTouch ? 'touchstart' : 'mousedown', $timepicker.$onMouseDown);
+          if ($timepicker.$element)
+            $timepicker.$element.off(isTouch ? 'touchstart' : 'mousedown', $timepicker.$onMouseDown);
           if (options.keyboard) {
             if (element) element.off('keydown', $timepicker.$onKeyDown);
           }
@@ -414,45 +444,72 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
         };
 
         return $timepicker;
-
       }
 
       timepickerFactory.defaults = defaults;
       return timepickerFactory;
-
     };
-
   })
 
-
-  .directive('bsTimepicker', function ($window, $parse, $q, $dateFormatter, $dateParser, $timepicker) {
-
+  .directive('bsTimepicker', function($window, $parse, $q, $dateFormatter, $dateParser, $timepicker) {
     var defaults = $timepicker.defaults;
-    var isNative = /(ip[ao]d|iphone|android)/ig.test($window.navigator.userAgent);
+    var isNative = /(ip[ao]d|iphone|android)/gi.test($window.navigator.userAgent);
 
     return {
       restrict: 'EAC',
       require: 'ngModel',
-      link: function postLink (scope, element, attr, controller) {
-
+      link: function postLink(scope, element, attr, controller) {
         // Directive options
         var options = {
           scope: scope
         };
-        angular.forEach(['template', 'templateUrl', 'controller', 'controllerAs', 'placement', 'container', 'delay', 'trigger', 'keyboard', 'html', 'animation', 'autoclose', 'timeType', 'timeFormat', 'timezone', 'modelTimeFormat', 'useNative', 'hourStep', 'minuteStep', 'secondStep', 'length', 'arrowBehavior', 'iconUp', 'iconDown', 'roundDisplay', 'id', 'prefixClass', 'prefixEvent', 'defaultDate'], function (key) {
-          if (angular.isDefined(attr[key])) options[key] = attr[key];
-        });
+        angular.forEach(
+          [
+            'template',
+            'templateUrl',
+            'controller',
+            'controllerAs',
+            'placement',
+            'container',
+            'delay',
+            'trigger',
+            'keyboard',
+            'html',
+            'animation',
+            'autoclose',
+            'timeType',
+            'timeFormat',
+            'timezone',
+            'modelTimeFormat',
+            'useNative',
+            'hourStep',
+            'minuteStep',
+            'secondStep',
+            'length',
+            'arrowBehavior',
+            'iconUp',
+            'iconDown',
+            'roundDisplay',
+            'id',
+            'prefixClass',
+            'prefixEvent',
+            'defaultDate'
+          ],
+          function(key) {
+            if (angular.isDefined(attr[key])) options[key] = attr[key];
+          }
+        );
 
         // use string regex match boolean attr falsy values, leave truthy values be
         var falseValueRegExp = /^(false|0|)$/i;
-        angular.forEach(['html', 'container', 'autoclose', 'useNative', 'roundDisplay'], function (key) {
+        angular.forEach(['html', 'container', 'autoclose', 'useNative', 'roundDisplay'], function(key) {
           if (angular.isDefined(attr[key]) && falseValueRegExp.test(attr[key])) {
             options[key] = false;
           }
         });
 
         // bind functions from the attrs to the show and hide events
-        angular.forEach(['onBeforeShow', 'onShow', 'onBeforeHide', 'onHide'], function (key) {
+        angular.forEach(['onBeforeShow', 'onShow', 'onBeforeHide', 'onHide'], function(key) {
           var bsKey = 'bs' + key.charAt(0).toUpperCase() + key.slice(1);
           if (angular.isDefined(attr[bsKey])) {
             options[key] = scope.$eval(attr[bsKey]);
@@ -465,13 +522,13 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
         options = timepicker.$options;
 
         var lang = options.lang;
-        var formatDate = function (date, format, timezone) {
+        var formatDate = function(date, format, timezone) {
           return $dateFormatter.formatDate(date, format, lang, timezone);
         };
 
         // Visibility binding support
         if (attr.bsShow) {
-          scope.$watch(attr.bsShow, function (newValue, oldValue) {
+          scope.$watch(attr.bsShow, function(newValue, oldValue) {
             if (!timepicker || !angular.isDefined(newValue)) return;
             if (angular.isString(newValue)) newValue = !!newValue.match(/true|,?(timepicker),?/i);
             if (newValue === true) {
@@ -489,10 +546,10 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
         });
 
         // Observe attributes for changes
-        angular.forEach(['minTime', 'maxTime'], function (key) {
+        angular.forEach(['minTime', 'maxTime'], function(key) {
           // console.warn('attr.$observe(%s)', key, attr[key]);
           if (angular.isDefined(attr[key])) {
-            attr.$observe(key, function (newValue) {
+            attr.$observe(key, function(newValue) {
               timepicker.$options[key] = dateParser.getTimeForAttribute(key, newValue);
               if (!isNaN(timepicker.$options[key])) timepicker.$build();
               validateAgainstMinMaxTime(controller.$dateValue);
@@ -501,15 +558,21 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
         });
 
         // Watch model for changes
-        scope.$watch(attr.ngModel, function (newValue, oldValue) {
-          // console.warn('scope.$watch(%s)', attr.ngModel, newValue, oldValue, controller.$dateValue);
-          timepicker.update(controller.$dateValue);
-        }, true);
+        scope.$watch(
+          attr.ngModel,
+          function(newValue, oldValue) {
+            // console.warn('scope.$watch(%s)', attr.ngModel, newValue, oldValue, controller.$dateValue);
+            timepicker.update(controller.$dateValue);
+          },
+          true
+        );
 
-        function validateAgainstMinMaxTime (parsedTime) {
+        function validateAgainstMinMaxTime(parsedTime) {
           if (!angular.isDate(parsedTime)) return;
-          var isMinValid = isNaN(options.minTime) || new Date(parsedTime.getTime()).setFullYear(1970, 0, 1) >= options.minTime;
-          var isMaxValid = isNaN(options.maxTime) || new Date(parsedTime.getTime()).setFullYear(1970, 0, 1) <= options.maxTime;
+          var isMinValid =
+            isNaN(options.minTime) || new Date(parsedTime.getTime()).setFullYear(1970, 0, 1) >= options.minTime;
+          var isMaxValid =
+            isNaN(options.maxTime) || new Date(parsedTime.getTime()).setFullYear(1970, 0, 1) <= options.maxTime;
           var isValid = isMinValid && isMaxValid;
           controller.$setValidity('date', isValid);
           controller.$setValidity('min', isMinValid);
@@ -522,7 +585,7 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
         }
 
         // viewValue -> $parsers -> modelValue
-        controller.$parsers.unshift(function (viewValue) {
+        controller.$parsers.unshift(function(viewValue) {
           // console.warn('$parser("%s"): viewValue=%o', element.attr('ng-model'), viewValue);
           var date;
           // Null values should correctly reset the model value & validity
@@ -558,7 +621,7 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
         });
 
         // modelValue -> $formatters -> viewValue
-        controller.$formatters.push(function (modelValue) {
+        controller.$formatters.push(function(modelValue) {
           // console.warn('$formatter("%s"): modelValue=%o (%o)', element.attr('ng-model'), modelValue, typeof modelValue);
           var date;
           if (angular.isUndefined(modelValue) || modelValue === null) {
@@ -579,23 +642,25 @@ angular.module('mgcrea.ngStrap.timepicker', ['mgcrea.ngStrap.helpers.dateParser'
         });
 
         // viewValue -> element
-        controller.$render = function () {
+        controller.$render = function() {
           // console.warn('$render("%s"): viewValue=%o', element.attr('ng-model'), controller.$viewValue);
           element.val(getTimeFormattedString());
         };
 
-        function getTimeFormattedString () {
-          return !controller.$dateValue || isNaN(controller.$dateValue.getTime()) ? '' : formatDate(controller.$dateValue, options.timeFormat);
+        function getTimeFormattedString() {
+          return !controller.$dateValue || isNaN(controller.$dateValue.getTime())
+            ? ''
+            : formatDate(controller.$dateValue, options.timeFormat);
         }
 
         // Garbage collection
-        scope.$on('$destroy', function () {
+        scope.$on('$destroy', function() {
           if (timepicker) timepicker.destroy();
           options = null;
           timepicker = null;
         });
-
       }
     };
-
   });
+
+export default MODULE_NAME;

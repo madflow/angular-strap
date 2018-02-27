@@ -44,9 +44,12 @@
     "angular-sanitize": "^1.6.9",
     "autoprefixer": "^8.0.0",
     "babel-loader": "8.0.0-beta.0",
+    "babel-plugin-angularjs-annotate": "^0.8.2",
     "bootstrap": "^4.0.0",
     "clean-webpack-plugin": "^0.1.18",
     "css-loader": "^0.28.10",
+    "eslint": "^4.18.1",
+    "eslint-loader": "^2.0.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.9",
     "highlight.js": "^9.12.0",
@@ -60,6 +63,7 @@
     "karma-jasmine": "^1.1.1",
     "karma-phantomjs-launcher": "^1.0.4",
     "markdown-loader": "^2.0.2",
+    "ngtemplate-loader": "^2.0.1",
     "node-sass": "^4.7.2",
     "popper.js": "^1.12.9",
     "postcss-loader": "^2.1.0",
@@ -71,11 +75,9 @@
     "webpack-dev-server": "^3.0.0"
   },
   "scripts": {
-    "docs": "webpack --env.production",
+    "docs": "webpack --env.production --config webpack.docs.js",
     "start": "webpack-dev-server --open",
-    "compile": "gulp build",
-    "test": "karma start test/karma.conf.js",
-    "test:watch": "npm run test -- -w",
-    "lint": "eslint src/*/*.js"
+    "build": "webpack --env.production --config webpack.build.js",
+    "test": "karma start test/karma.conf.js"
   }
 }

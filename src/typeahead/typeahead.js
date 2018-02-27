@@ -1,10 +1,18 @@
 'use strict';
 
-angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStrap.helpers.parseOptions'])
+import angular from 'angular';
+import tooltip from '../tooltip/tooltip';
+import parseOptions from '../helpers/parse-options';
 
-  .provider('$typeahead', function () {
+import template from './typeahead.tpl.html';
 
-    var defaults = this.defaults = {
+const MODULE_NAME = 'mgcrea.ngStrap.typeahead';
+
+angular
+  .module(MODULE_NAME, [tooltip, parseOptions])
+
+  .provider('$typeahead', function() {
+    var defaults = (this.defaults = {
       animation: 'am-fade',
       prefixClass: 'typeahead',
       prefixEvent: '$typeahead',
@@ -21,12 +29,10 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
       autoSelect: false,
       comparator: '',
       trimValue: true
-    };
+    });
 
-    this.$get = function ($window, $rootScope, $tooltip, $$rAF, $timeout) {
-
-      function TypeaheadFactory (element, controller, config) {
-
+    this.$get = function($window, $rootScope, $tooltip, $$rAF, $timeout) {
+      function TypeaheadFactory(element, controller, config) {
         var $typeahead = {};
 
         // Common vars
@@ -36,31 +42,31 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
         var parentScope = config.scope;
         var scope = $typeahead.$scope;
 
-        scope.$resetMatches = function () {
+        scope.$resetMatches = function() {
           scope.$matches = [];
           scope.$activeIndex = options.autoSelect ? 0 : -1; // If set to 0, the first match will be highlighted
         };
         scope.$resetMatches();
 
-        scope.$activate = function (index) {
-          scope.$$postDigest(function () {
+        scope.$activate = function(index) {
+          scope.$$postDigest(function() {
             $typeahead.activate(index);
           });
         };
 
-        scope.$select = function (index, evt) {
-          scope.$$postDigest(function () {
+        scope.$select = function(index, evt) {
+          scope.$$postDigest(function() {
             $typeahead.select(index);
           });
         };
 
-        scope.$isVisible = function () {
+        scope.$isVisible = function() {
           return $typeahead.$isVisible();
         };
 
         // Public methods
 
-        $typeahead.update = function (matches) {
+        $typeahead.update = function(matches) {
           scope.$matches = matches;
           if (scope.$activeIndex >= matches.length) {
             scope.$activeIndex = options.autoSelect ? 0 : -1;
@@ -72,11 +78,11 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
           $$rAF($typeahead.$applyPlacement);
         };
 
-        $typeahead.activate = function (index) {
+        $typeahead.activate = function(index) {
           scope.$activeIndex = index;
         };
 
-        $typeahead.select = function (index) {
+        $typeahead.select = function(index) {
           if (index === -1) return;
           var value = scope.$matches[index].value;
           // console.log('$setViewValue', value);
@@ -93,29 +99,33 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
 
         // Protected methods
 
-        $typeahead.$isVisible = function () {
+        $typeahead.$isVisible = function() {
           if (!options.minLength || !controller) {
             return !!scope.$matches.length;
           }
           // minLength support
-          return scope.$matches.length && angular.isString(controller.$viewValue) && controller.$viewValue.length >= options.minLength;
+          return (
+            scope.$matches.length &&
+            angular.isString(controller.$viewValue) &&
+            controller.$viewValue.length >= options.minLength
+          );
         };
 
-        $typeahead.$getIndex = function (value) {
+        $typeahead.$getIndex = function(value) {
           var index;
-          for (index = scope.$matches.length; index--;) {
+          for (index = scope.$matches.length; index--; ) {
             if (angular.equals(scope.$matches[index].value, value)) break;
           }
           return index;
         };
 
-        $typeahead.$onMouseDown = function (evt) {
+        $typeahead.$onMouseDown = function(evt) {
           // Prevent blur on mousedown
           evt.preventDefault();
           evt.stopPropagation();
         };
 
-        $typeahead.$$updateScrollTop = function (container, index) {
+        $typeahead.$$updateScrollTop = function(container, index) {
           if (index > -1 && index < container.children.length) {
             var active = container.children[index];
             var clientTop = active.offsetTop;
@@ -133,7 +143,7 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
           }
         };
 
-        $typeahead.$onKeyDown = function (evt) {
+        $typeahead.$onKeyDown = function(evt) {
           if (!/(38|40|13)/.test(evt.keyCode)) return;
 
           // Let ngSubmit pass if the typeahead tip is hidden or no option is selected
@@ -145,7 +155,7 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
           // Select with enter
           if (evt.keyCode === 13 && scope.$matches.length) {
             $typeahead.select(scope.$activeIndex);
-          // Navigate with keyboard
+            // Navigate with keyboard
           } else if (evt.keyCode === 38 && scope.$activeIndex > 0) {
             scope.$activeIndex--;
           } else if (evt.keyCode === 40 && scope.$activeIndex < scope.$matches.length - 1) {
@@ -162,22 +172,26 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
         // Overrides
 
         var show = $typeahead.show;
-        $typeahead.show = function () {
+        $typeahead.show = function() {
           show();
           // use timeout to hookup the events to prevent
           // event bubbling from being processed immediately.
-          $timeout(function () {
-            if ($typeahead.$element) {
-              $typeahead.$element.on('mousedown', $typeahead.$onMouseDown);
-              if (options.keyboard) {
-                if (element) element.on('keydown', $typeahead.$onKeyDown);
+          $timeout(
+            function() {
+              if ($typeahead.$element) {
+                $typeahead.$element.on('mousedown', $typeahead.$onMouseDown);
+                if (options.keyboard) {
+                  if (element) element.on('keydown', $typeahead.$onKeyDown);
+                }
               }
-            }
-          }, 0, false);
+            },
+            0,
+            false
+          );
         };
 
         var hide = $typeahead.hide;
-        $typeahead.hide = function () {
+        $typeahead.hide = function() {
           if ($typeahead.$element) $typeahead.$element.off('mousedown', $typeahead.$onMouseDown);
           if (options.keyboard) {
             if (element) element.off('keydown', $typeahead.$onKeyDown);
@@ -189,12 +203,11 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
         };
 
         return $typeahead;
-
       }
 
       // Helper functions
 
-      function safeDigest (scope) {
+      function safeDigest(scope) {
         /* eslint-disable no-unused-expressions */
         scope.$$phase || (scope.$root && scope.$root.$$phase) || scope.$digest();
         /* eslint-enable no-unused-expressions */
@@ -202,15 +215,13 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
 
       TypeaheadFactory.defaults = defaults;
       return TypeaheadFactory;
-
     };
-
   })
 
-  .filter('bsAsyncFilter', function ($filter) {
-    return function (array, expression, comparator) {
+  .filter('bsAsyncFilter', function($filter) {
+    return function(array, expression, comparator) {
       if (array && angular.isFunction(array.then)) {
-        return array.then(function (results) {
+        return array.then(function(results) {
           return $filter('filter')(results, expression, comparator);
         });
       }
@@ -218,15 +229,13 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
     };
   })
 
-  .directive('bsTypeahead', function ($window, $parse, $q, $typeahead, $parseOptions) {
-
+  .directive('bsTypeahead', function($window, $parse, $q, $typeahead, $parseOptions) {
     var defaults = $typeahead.defaults;
 
     return {
       restrict: 'EAC',
       require: 'ngModel',
-      link: function postLink (scope, element, attr, controller) {
-
+      link: function postLink(scope, element, attr, controller) {
         // Fixes firefox bug when using objects in model with typeahead
         // Yes this breaks any other directive using a 'change' event on this input,
         // but if it is using the 'change' event why is it used with typeahead?
@@ -236,18 +245,43 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
         var options = {
           scope: scope
         };
-        angular.forEach(['template', 'templateUrl', 'controller', 'controllerAs', 'placement', 'container', 'delay', 'trigger', 'keyboard', 'html', 'animation', 'filter', 'limit', 'minLength', 'watchOptions', 'selectMode', 'autoSelect', 'comparator', 'id', 'prefixEvent', 'prefixClass'], function (key) {
-          if (angular.isDefined(attr[key])) options[key] = attr[key];
-        });
+        angular.forEach(
+          [
+            'template',
+            'templateUrl',
+            'controller',
+            'controllerAs',
+            'placement',
+            'container',
+            'delay',
+            'trigger',
+            'keyboard',
+            'html',
+            'animation',
+            'filter',
+            'limit',
+            'minLength',
+            'watchOptions',
+            'selectMode',
+            'autoSelect',
+            'comparator',
+            'id',
+            'prefixEvent',
+            'prefixClass'
+          ],
+          function(key) {
+            if (angular.isDefined(attr[key])) options[key] = attr[key];
+          }
+        );
 
         // use string regex match boolean attr falsy values, leave truthy values be
         var falseValueRegExp = /^(false|0|)$/i;
-        angular.forEach(['html', 'container', 'trimValue', 'filter'], function (key) {
+        angular.forEach(['html', 'container', 'trimValue', 'filter'], function(key) {
           if (angular.isDefined(attr[key]) && falseValueRegExp.test(attr[key])) options[key] = false;
         });
 
         // bind functions from the attrs to the show, hide and select events
-        angular.forEach(['onBeforeShow', 'onShow', 'onBeforeHide', 'onHide', 'onSelect'], function (key) {
+        angular.forEach(['onBeforeShow', 'onShow', 'onBeforeHide', 'onHide', 'onSelect'], function(key) {
           var bsKey = 'bs' + key.charAt(0).toUpperCase() + key.slice(1);
           if (angular.isDefined(attr[bsKey])) {
             options[key] = scope.$eval(attr[bsKey]);
@@ -276,10 +310,13 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
         // Watch options on demand
         if (options.watchOptions) {
           // Watch bsOptions values before filtering for changes, drop function calls
-          var watchedOptions = parsedOptions.$match[7].replace(/\|.+/, '').replace(/\(.*\)/g, '').trim();
-          scope.$watchCollection(watchedOptions, function (newValue, oldValue) {
+          var watchedOptions = parsedOptions.$match[7]
+            .replace(/\|.+/, '')
+            .replace(/\(.*\)/g, '')
+            .trim();
+          scope.$watchCollection(watchedOptions, function(newValue, oldValue) {
             // console.warn('scope.$watch(%s)', watchedOptions, newValue, oldValue);
-            parsedOptions.valuesFn(scope, controller).then(function (values) {
+            parsedOptions.valuesFn(scope, controller).then(function(values) {
               typeahead.update(values);
               controller.$render();
             });
@@ -287,26 +324,25 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
         }
 
         // Watch model for changes
-        scope.$watch(attr.ngModel, function (newValue, oldValue) {
+        scope.$watch(attr.ngModel, function(newValue, oldValue) {
           // console.warn('$watch', element.attr('ng-model'), newValue);
           scope.$modelValue = newValue; // Publish modelValue on scope for custom templates
-          parsedOptions.valuesFn(scope, controller)
-            .then(function (values) {
-              // Prevent input with no future prospect if selectMode is truthy
-              // @TODO test selectMode
-              if (options.selectMode && !values.length && newValue.length > 0) {
-                controller.$setViewValue(controller.$viewValue.substring(0, controller.$viewValue.length - 1));
-                return;
-              }
-              if (values.length > limit) values = values.slice(0, limit);
-              typeahead.update(values);
-              // Queue a new rendering that will leverage collection loading
-              controller.$render();
-            });
+          parsedOptions.valuesFn(scope, controller).then(function(values) {
+            // Prevent input with no future prospect if selectMode is truthy
+            // @TODO test selectMode
+            if (options.selectMode && !values.length && newValue.length > 0) {
+              controller.$setViewValue(controller.$viewValue.substring(0, controller.$viewValue.length - 1));
+              return;
+            }
+            if (values.length > limit) values = values.slice(0, limit);
+            typeahead.update(values);
+            // Queue a new rendering that will leverage collection loading
+            controller.$render();
+          });
         });
 
         // modelValue -> $formatters -> viewValue
-        controller.$formatters.push(function (modelValue) {
+        controller.$formatters.push(function(modelValue) {
           // console.warn('$formatter("%s"): modelValue=%o (%o)', element.attr('ng-model'), modelValue, typeof modelValue);
           var displayValue = parsedOptions.displayValue(modelValue);
 
@@ -324,7 +360,7 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
         });
 
         // Model rendering in view
-        controller.$render = function () {
+        controller.$render = function() {
           // console.warn('$render', element.attr('ng-model'), 'controller.$modelValue', typeof controller.$modelValue, controller.$modelValue, 'controller.$viewValue', typeof controller.$viewValue, controller.$viewValue);
           if (controller.$isEmpty(controller.$viewValue)) {
             return element.val('');
@@ -340,13 +376,13 @@ angular.module('mgcrea.ngStrap.typeahead', ['mgcrea.ngStrap.tooltip', 'mgcrea.ng
         };
 
         // Garbage collection
-        scope.$on('$destroy', function () {
+        scope.$on('$destroy', function() {
           if (typeahead) typeahead.destroy();
           options = null;
           typeahead = null;
         });
-
       }
     };
-
   });
+
+export default MODULE_NAME;

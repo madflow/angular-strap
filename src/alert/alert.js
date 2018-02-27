@@ -1,12 +1,15 @@
 'use strict';
 
-// @BUG: following snippet won't compile correctly
+const MODULE_NAME = 'mgcrea.ngStrap.alert';
 
-angular.module('mgcrea.ngStrap.alert', ['mgcrea.ngStrap.modal'])
+import angular from 'angular';
+import modal from '../modal/modal';
 
-  .provider('$alert', function () {
+angular
+  .module(MODULE_NAME, [modal])
 
-    var defaults = this.defaults = {
+  .provider('$alert', function() {
+    var defaults = (this.defaults = {
       animation: 'am-fade',
       prefixClass: 'alert',
       prefixEvent: 'alert',
@@ -21,12 +24,10 @@ angular.module('mgcrea.ngStrap.alert', ['mgcrea.ngStrap.modal'])
       duration: false,
       type: false,
       dismissable: true
-    };
+    });
 
-    this.$get = function ($modal, $timeout) {
-
-      function AlertFactory (config) {
-
+    this.$get = function($modal, $timeout) {
+      function AlertFactory(config) {
         var $alert = {};
 
         // Common vars
@@ -43,45 +44,55 @@ angular.module('mgcrea.ngStrap.alert', ['mgcrea.ngStrap.modal'])
         // Support auto-close duration
         var show = $alert.show;
         if (options.duration) {
-          $alert.show = function () {
+          $alert.show = function() {
             show();
-            $timeout(function () {
+            $timeout(function() {
               $alert.hide();
             }, options.duration * 1000);
           };
         }
 
         return $alert;
-
       }
 
       return AlertFactory;
-
     };
-
   })
 
-  .directive('bsAlert', function ($window, $sce, $alert) {
-
+  .directive('bsAlert', function($window, $sce, $alert) {
     return {
       restrict: 'EAC',
       scope: true,
-      link: function postLink (scope, element, attr, transclusion) {
-
+      link: function postLink(scope, element, attr, transclusion) {
         // Directive options
-        var options = {scope: scope, element: element, show: false};
-        angular.forEach(['template', 'templateUrl', 'controller', 'controllerAs', 'placement', 'keyboard', 'html', 'container', 'animation', 'duration', 'dismissable'], function (key) {
-          if (angular.isDefined(attr[key])) options[key] = attr[key];
-        });
+        var options = { scope: scope, element: element, show: false };
+        angular.forEach(
+          [
+            'template',
+            'templateUrl',
+            'controller',
+            'controllerAs',
+            'placement',
+            'keyboard',
+            'html',
+            'container',
+            'animation',
+            'duration',
+            'dismissable'
+          ],
+          function(key) {
+            if (angular.isDefined(attr[key])) options[key] = attr[key];
+          }
+        );
 
         // use string regex match boolean attr falsy values, leave truthy values be
         var falseValueRegExp = /^(false|0|)$/i;
-        angular.forEach(['keyboard', 'html', 'container', 'dismissable'], function (key) {
+        angular.forEach(['keyboard', 'html', 'container', 'dismissable'], function(key) {
           if (angular.isDefined(attr[key]) && falseValueRegExp.test(attr[key])) options[key] = false;
         });
 
         // bind functions from the attrs to the show and hide events
-        angular.forEach(['onBeforeShow', 'onShow', 'onBeforeHide', 'onHide'], function (key) {
+        angular.forEach(['onBeforeShow', 'onShow', 'onBeforeHide', 'onHide'], function(key) {
           var bsKey = 'bs' + key.charAt(0).toUpperCase() + key.slice(1);
           if (angular.isDefined(attr[bsKey])) {
             options[key] = scope.$eval(attr[bsKey]);
@@ -95,9 +106,9 @@ angular.module('mgcrea.ngStrap.alert', ['mgcrea.ngStrap.modal'])
         }
 
         // Support scope as data-attrs
-        angular.forEach(['title', 'content', 'type'], function (key) {
+        angular.forEach(['title', 'content', 'type'], function(key) {
           if (attr[key]) {
-            attr.$observe(key, function (newValue, oldValue) {
+            attr.$observe(key, function(newValue, oldValue) {
               scope[key] = $sce.trustAsHtml(newValue);
             });
           }
@@ -105,13 +116,17 @@ angular.module('mgcrea.ngStrap.alert', ['mgcrea.ngStrap.modal'])
 
         // Support scope as an object
         if (attr.bsAlert) {
-          scope.$watch(attr.bsAlert, function (newValue, oldValue) {
-            if (angular.isObject(newValue)) {
-              angular.extend(scope, newValue);
-            } else {
-              scope.content = newValue;
-            }
-          }, true);
+          scope.$watch(
+            attr.bsAlert,
+            function(newValue, oldValue) {
+              if (angular.isObject(newValue)) {
+                angular.extend(scope, newValue);
+              } else {
+                scope.content = newValue;
+              }
+            },
+            true
+          );
         }
 
         // Initialize alert
@@ -121,13 +136,13 @@ angular.module('mgcrea.ngStrap.alert', ['mgcrea.ngStrap.modal'])
         element.on(attr.trigger || 'click', alert.toggle);
 
         // Garbage collection
-        scope.$on('$destroy', function () {
+        scope.$on('$destroy', function() {
           if (alert) alert.destroy();
           options = null;
           alert = null;
         });
-
       }
     };
-
   });
+
+export default MODULE_NAME;

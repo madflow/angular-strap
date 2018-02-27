@@ -1,65 +1,62 @@
 'use strict';
 
-angular.module('mgcrea.ngStrap.navbar', [])
+import angular from 'angular';
 
-  .provider('$navbar', function () {
+const MODULE_NAME = 'mgcrea.ngStrap.navbar';
 
-    var defaults = this.defaults = {
+angular
+  .module(MODULE_NAME, [])
+
+  .provider('$navbar', function() {
+    var defaults = (this.defaults = {
       activeClass: 'active',
       routeAttr: 'data-match-route',
       strict: false
-    };
+    });
 
-    this.$get = function () {
-      return {defaults: defaults};
+    this.$get = function() {
+      return { defaults: defaults };
     };
-
   })
 
-  .directive('bsNavbar', function ($window, $location, $navbar) {
-
+  .directive('bsNavbar', function($window, $location, $navbar) {
     var defaults = $navbar.defaults;
 
     return {
       restrict: 'A',
-      link: function postLink (scope, element, attr, controller) {
-
+      link: function postLink(scope, element, attr, controller) {
         // Directive options
         var options = angular.copy(defaults);
-        angular.forEach(Object.keys(defaults), function (key) {
+        angular.forEach(Object.keys(defaults), function(key) {
           if (angular.isDefined(attr[key])) options[key] = attr[key];
         });
 
         // Watch for the $location
-        scope.$watch(function () {
+        scope.$watch(
+          function() {
+            return $location.path();
+          },
+          function(newValue, oldValue) {
+            var liElements = element[0].querySelectorAll('li[' + options.routeAttr + ']');
 
-          return $location.path();
+            angular.forEach(liElements, function(li) {
+              var liElement = angular.element(li);
+              var pattern = liElement.attr(options.routeAttr).replace('/', '\\/');
+              if (options.strict) {
+                pattern = '^' + pattern + '$';
+              }
+              var regexp = new RegExp(pattern, 'i');
 
-        }, function (newValue, oldValue) {
-
-          var liElements = element[0].querySelectorAll('li[' + options.routeAttr + ']');
-
-          angular.forEach(liElements, function (li) {
-
-            var liElement = angular.element(li);
-            var pattern = liElement.attr(options.routeAttr).replace('/', '\\/');
-            if (options.strict) {
-              pattern = '^' + pattern + '$';
-            }
-            var regexp = new RegExp(pattern, 'i');
-
-            if (regexp.test(newValue)) {
-              liElement.addClass(options.activeClass);
-            } else {
-              liElement.removeClass(options.activeClass);
-            }
-
-          });
-
-        });
-
+              if (regexp.test(newValue)) {
+                liElement.addClass(options.activeClass);
+              } else {
+                liElement.removeClass(options.activeClass);
+              }
+            });
+          }
+        );
       }
-
     };
-
   });
+
+export default MODULE_NAME;

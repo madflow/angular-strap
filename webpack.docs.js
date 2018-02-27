@@ -47,7 +47,7 @@ const config = env => {
             loader: 'babel-loader',
             options: {
               presets: ['@babel/preset-env'],
-              plugins: [require('@babel/plugin-syntax-dynamic-import')]
+              plugins: [require('@babel/plugin-syntax-dynamic-import'), require('babel-plugin-angularjs-annotate')]
             }
           }
         },

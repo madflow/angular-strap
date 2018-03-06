@@ -1,15 +1,32 @@
 'use strict';
 
+import angular from 'angular';
+import jQuery from 'jquery';
+import modal from '../modal';
+import templates from '../../../dist/modules/modal.tpl';
+const $ = jQuery;
+
+function countScopes(s, count) {
+  if (s !== null) {
+    s = s.$$childHead;
+    while (s !== null) {
+      count = countScopes(s, count);
+      s = s.$$nextSibling;
+    }
+  }
+  return ++count;
+}
+
 describe('modal', function() {
 
   var bodyEl = $('body'), sandboxEl;
   var $rootScope, $compile, $templateCache, $$rAF, $animate, $timeout, $httpBackend, $modal, scope;
 
-  beforeEach(module('ngSanitize'));
-  beforeEach(module('ngAnimate'));
-  beforeEach(module('ngAnimateMock'));
-  beforeEach(module('mgcrea.ngStrap.modal'));
-  beforeEach(module(function($controllerProvider) {
+  beforeEach(angular.mock.module('ngSanitize'));
+  beforeEach(angular.mock.module('ngAnimate'));
+  beforeEach(angular.mock.module('ngAnimateMock'));
+  beforeEach(angular.mock.module(modal));
+  beforeEach(angular.mock.module(function($controllerProvider) {
     $controllerProvider.register('MyModalController', function($scope) {
       $scope.title = 'foo';
       $scope.content = 'bar';
@@ -392,7 +409,7 @@ describe('modal', function() {
       it('should default to `am-fade` animation', function() {
         var elm = compileDirective('default');
         angular.element(elm[0]).triggerHandler('click');
-        expect(sandboxEl.children('.modal')).toHaveClass('am-fade');
+        expect(sandboxEl.children('.modal').hasClass('am-fade')).toBe(true);
       });
 
     });
@@ -420,7 +437,8 @@ describe('modal', function() {
         expect(evt.stopPropagation).not.toHaveBeenCalled();
       });
 
-      // Note: modal.trigger(evt) does not trigger modal keyup handler, only modal.triggerHandler(evt) does
+      // Note: modal.trigger(evt) does not trigger modal keyup handler, 
+      // only modal.triggerHandler(evt) does
       it('should remove modal when data-keyboard is truthy', function() {
         var elm = compileDirective('options-keyboard', {keyboard: 'true'});
         expect(bodyEl.find('.modal').length).toBe(0);
@@ -461,19 +479,19 @@ describe('modal', function() {
       it('should default to `top` placement', function() {
         var elm = compileDirective('default');
         angular.element(elm[0]).triggerHandler('click');
-        expect(sandboxEl.children('.modal')).toHaveClass('top');
+        expect(sandboxEl.children('.modal').hasClass('top')).toBe(true);
       });
 
       it('should support placement', function() {
         var elm = compileDirective('options-placement');
         angular.element(elm[0]).triggerHandler('click');
-        expect(sandboxEl.children('.modal')).toHaveClass('bottom');
+        expect(sandboxEl.children('.modal').hasClass('bottom')).toBe(true);
       });
 
       it('should support exotic-placement', function() {
         var elm = compileDirective('options-placement-exotic');
         angular.element(elm[0]).triggerHandler('click');
-        expect(sandboxEl.children('.modal')).toHaveClass('center');
+        expect(sandboxEl.children('.modal').hasClass('center')).toBe(true);
       });
 
     });
@@ -714,13 +732,13 @@ describe('modal', function() {
       it('should add class to the modal element', function() {
         var elm = compileDirective('options-modalClass');
         angular.element(elm[0]).triggerHandler('click');
-        expect(sandboxEl.children('.modal')).toHaveClass('my-custom-class');
+        expect(sandboxEl.children('.modal').hasClass('my-custom-class')).toBe(true);
       });
 
       it('should not add class to the modal element when modalClass is not present', function() {
         var elm = compileDirective('default');
         angular.element(elm[0]).triggerHandler('click');
-        expect(sandboxEl.children('.modal')).not.toHaveClass('my-custom-class');
+        expect(sandboxEl.children('.modal').hasClass('my-custom-class')).toBe(false);
       });
     });
 
@@ -728,19 +746,19 @@ describe('modal', function() {
       it('sets size class when specified', function() {
         var elm = compileDirective('options-size-lg');
         angular.element(elm[0]).triggerHandler('click');
-        expect(sandboxEl.find('.modal-dialog')).toHaveClass('modal-lg');
+        expect(sandboxEl.find('.modal-dialog').hasClass('modal-lg')).toBe(true);
       });
 
       it('does not set size class when not specified', function() {
         var elm = compileDirective('default');
         angular.element(elm[0]).triggerHandler('click');
-        expect(sandboxEl.find('.modal-dialog')).not.toHaveClass('modal-lg');
+        expect(sandboxEl.find('.modal-dialog').hasClass('modal-lg')).toBe(false);
       });
 
       it('does not set size class when invalid size is specified', function() {
         var elm = compileDirective('options-size-invalid');
         angular.element(elm[0]).triggerHandler('click');
-        expect(sandboxEl.find('.modal-dialog')).not.toHaveClass('modal-lg');
+        expect(sandboxEl.find('.modal-dialog').hasClass('modal-lg')).toBe(false);
       });
 
     });

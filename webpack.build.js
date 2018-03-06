@@ -28,7 +28,7 @@ const config = env => {
         {
           test: /\.html$/,
           use: [
-            { loader: 'ngtemplate-loader', options: { relativeTo: 'src/'} },
+            { loader: 'ngtemplate-loader', options: { relativeTo: 'src/' } },
             {
               loader: 'html-loader',
               options: {
@@ -44,11 +44,7 @@ const config = env => {
           exclude: /(node_modules)/,
           use: [
             {
-              loader: 'babel-loader',
-              options: {
-                presets: ['env'],
-                plugins: [require('babel-plugin-angularjs-annotate')]
-              }
+              loader: 'babel-loader'
             },
             { loader: 'eslint-loader' }
           ]

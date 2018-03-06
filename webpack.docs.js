@@ -8,7 +8,10 @@ const config = env => {
   const isProduction = env && env.production;
   const buildDir = isProduction ? 'pages' : 'pages-dev';
 
-  let plugins = [new HtmlWebpackPlugin({ template: './docs/index.html' }), new ExtractTextPlugin('styles.css')];
+  let plugins = [
+    new HtmlWebpackPlugin({ template: './docs/index.html' }),
+    new ExtractTextPlugin('styles.css')
+  ];
 
   if (isProduction) {
     plugins.push(
@@ -44,11 +47,7 @@ const config = env => {
           test: /\.js$/,
           exclude: /(node_modules)/,
           use: {
-            loader: 'babel-loader',
-            options: {
-              presets: ['env'],
-              plugins: [require('babel-plugin-angularjs-annotate')]
-            }
+            loader: 'babel-loader'
           }
         },
         {

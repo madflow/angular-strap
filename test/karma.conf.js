@@ -12,11 +12,11 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      '../node_modules/jquery/dist/jquery.js',
       '../node_modules/angular/angular.js',
       '../node_modules/angular-animate/angular-animate.js',
       '../node_modules/angular-sanitize/angular-sanitize.js',
       '../node_modules/angular-mocks/angular-mocks.js',
+      '../node_modules/jquery/dist/jquery.js',
       '../release/angular-strap.js',
       './helpers.js',
       //'../src/{,*/}/test/*.spec.js',

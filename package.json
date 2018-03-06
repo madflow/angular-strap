@@ -2,10 +2,7 @@
   "name": "angular-strap",
   "description": "AngularStrap - AngularJS directives for Bootstrap",
   "version": "2.3.12",
-  "keywords": [
-    "angular",
-    "bootstrap"
-  ],
+  "keywords": ["angular", "bootstrap"],
   "main": "index.js",
   "homepage": "http://mgcrea.github.io/angular-strap",
   "bugs": "https://github.com/mgcrea/angular-strap/issues",
@@ -32,9 +29,6 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.40",
-    "@babel/plugin-syntax-dynamic-import": "^7.0.0-beta.40",
-    "@babel/preset-env": "^7.0.0-beta.40",
     "@uirouter/angularjs": "^1.0.15",
     "angular": "^1.6.9",
     "angular-animate": "^1.6.9",
@@ -43,8 +37,10 @@
     "angular-motion": "^0.4.4",
     "angular-sanitize": "^1.6.9",
     "autoprefixer": "^8.0.0",
-    "babel-loader": "8.0.0-beta.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
     "babel-plugin-angularjs-annotate": "^0.8.2",
+    "babel-preset-env": "^1.6.1",
     "bootstrap": "^4.0.0",
     "clean-webpack-plugin": "^0.1.18",
     "css-loader": "^0.28.10",
@@ -76,8 +72,18 @@
   },
   "scripts": {
     "docs": "webpack --env.production --config webpack.docs.js",
-    "start": "webpack-dev-server --open",
+    "start": "webpack-dev-server --open --config webpack.docs.js",
     "build": "webpack --env.production --config webpack.build.js",
     "test": "karma start test/karma.conf.js"
-  }
+  },
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": ["last 2 versions", "safari >= 7"]
+        }
+      }
+    ]
+  ]
 }

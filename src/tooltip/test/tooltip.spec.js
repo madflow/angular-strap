@@ -1,6 +1,10 @@
 'use strict';
 /* global countScopes */
 
+import tooltip from '../tooltip';
+import templates from '../../../dist/modules/tooltip.tpl';
+
+
 describe('tooltip', function() {
   var bodyEl = $('body'),
     sandboxEl;
@@ -9,7 +13,7 @@ describe('tooltip', function() {
   beforeEach(angular.mock.module('ngSanitize'));
   beforeEach(angular.mock.module('ngAnimate'));
   beforeEach(angular.mock.module('ngAnimateMock'));
-  beforeEach(angular.mock.module('mgcrea.ngStrap.tooltip'));
+  beforeEach(angular.mock.module(tooltip));
 
   beforeEach(
     inject(function($injector) {

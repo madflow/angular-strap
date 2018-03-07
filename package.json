@@ -2,7 +2,10 @@
   "name": "angular-strap",
   "description": "AngularStrap - AngularJS directives for Bootstrap",
   "version": "2.3.12",
-  "keywords": ["angular", "bootstrap"],
+  "keywords": [
+    "angular",
+    "bootstrap"
+  ],
   "main": "index.js",
   "homepage": "http://mgcrea.github.io/angular-strap",
   "bugs": "https://github.com/mgcrea/angular-strap/issues",
@@ -53,7 +56,7 @@
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^2.30.1",
     "jest": "^22.4.2",
-    "jquery": "^2.2.4",
+    "jquery": "^3.3.1",
     "markdown-loader": "^2.0.2",
     "ngtemplate-loader": "^2.0.1",
     "node-sass": "^4.7.2",
@@ -70,12 +73,15 @@
     "docs": "webpack --env.production --config webpack.docs.js",
     "start": "webpack-dev-server --open --config webpack.docs.js",
     "build": "webpack --env.production --config webpack.build.js",
-    "test": "jest ./src/timepicker/test/*.spec.js"
+    "test": "jest ./src/*type*/test/*.spec.js"
   },
   "jest": {
     "verbose": true,
     "testURL": "http://localhost",
-    "moduleDirectories": ["node_modules", "src"],
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
     "setupTestFrameworkScriptFile": "<rootDir>/test/setup.js",
     "transform": {
       "^.+\\.(js|jsx)$": "babel-jest",
@@ -87,7 +93,10 @@
       "env",
       {
         "targets": {
-          "browsers": ["last 2 versions", "safari >= 7"]
+          "browsers": [
+            "last 2 versions",
+            "safari >= 7"
+          ]
         }
       }
     ]

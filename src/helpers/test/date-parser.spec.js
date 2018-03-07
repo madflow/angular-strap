@@ -1,11 +1,13 @@
 'use strict';
 /* global describe, beforeEach, inject, it, expect */
 
+import dateParser from '../date-parser';
+
 describe('dateParser', function() {
 
   var $compile, scope, $dateParser, parser, $locale;
 
-  beforeEach(module('mgcrea.ngStrap.helpers.dateParser'));
+  beforeEach(angular.mock.module(dateParser));
 
   beforeEach(inject(function(_$rootScope_, _$compile_, _$dateParser_, _$locale_) {
     scope = _$rootScope_;

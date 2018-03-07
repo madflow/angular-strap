@@ -3,7 +3,7 @@
 /* global describe, beforeEach, inject, it, expect, afterEach, spyOn, countScopes */
 
 import dropdown from '../dropdown';
-import modal from '../../modal/modal  ';
+import modal from '../../modal/modal';
 import templates from '../../../dist/modules/dropdown.tpl';
 
 describe('dropdown', function() {

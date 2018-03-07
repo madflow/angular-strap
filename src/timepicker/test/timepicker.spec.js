@@ -1281,14 +1281,14 @@ describe('timepicker', function() {
       ];
 
       beforeAll(function() {
-        jasmine.clock().install();
+        jest.useFakeTimers();
       });
       afterAll(function() {
-        jasmine.clock().uninstall();
+        jest.useRealTimers();
       });
 
       beforeEach(function() {
-        jasmine.clock().mockDate(times[i]);
+        //jasmine.clock().mockDate(times[i]);
         currentTime = new Date();
       });
 

@@ -1,10 +1,12 @@
 'use strict';
 
+import debounceService from '../debounce';
+
 describe('debounce', function() {
 
   var $compile, $timeout, scope, debounce, throttle;
 
-  beforeEach(module('mgcrea.ngStrap.helpers.debounce'));
+  beforeEach(angular.mock.module(debounceService));
 
   beforeEach(inject(function(_$rootScope_, _$compile_, _$timeout_, _debounce_, _throttle_) {
     scope = _$rootScope_;

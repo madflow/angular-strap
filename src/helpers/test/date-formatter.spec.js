@@ -1,18 +1,20 @@
 'use strict';
 
+import dateFormatterService from '../date-formatter';
+
 describe('dateUtil', function () {
 
   var $dateFormatter;
   var $locale;
   var dateFilter;
 
-  beforeEach(module('mgcrea.ngStrap.helpers.dateFormatter'));
+  beforeEach(angular.mock.module(dateFormatterService));
 
   // mock angular's dateFileter with a spy,
   // since we call it directly, not a method of it, we can't use jasmine.spyOn
   beforeEach(function() {
     dateFilter = jasmine.createSpy('dateFilter');
-    module(function ($provide) {
+    angular.mock.module(function ($provide) {
       $provide.value('dateFilter', dateFilter);
     })
   });

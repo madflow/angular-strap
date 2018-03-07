@@ -1,10 +1,12 @@
 'use strict';
 
+import parsedOptionsService from '../parse-options';
+
 describe('parseOptions', function () {
 
   var $compile, scope, $parseOptions;
 
-  beforeEach(module('mgcrea.ngStrap.helpers.parseOptions'));
+  beforeEach(angular.mock.module(parsedOptionsService));
 
   beforeEach(inject(function (_$rootScope_, _$compile_, _$parseOptions_) {
     scope = _$rootScope_;

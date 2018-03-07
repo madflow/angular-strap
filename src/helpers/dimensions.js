@@ -187,6 +187,7 @@ angular
      */
     fn.height = function(element, outer) {
       var value = element.offsetHeight;
+
       if (outer) {
         value += fn.css(element, 'marginTop', true) + fn.css(element, 'marginBottom', true);
       } else {

@@ -1,10 +1,13 @@
 'use strict';
 
+import typeahead from '../typeahead';
+import templates from '../../../dist/modules/typeahead.tpl';
+
 describe('typeahead', function() {
   var $compile, $templateCache, $typeahead, scope, sandboxEl, $q, $animate, $timeout, $$rAF;
 
   beforeEach(angular.mock.module('ngSanitize'));
-  beforeEach(angular.mock.module('mgcrea.ngStrap.typeahead'));
+  beforeEach(angular.mock.module(typeahead));
   beforeEach(angular.mock.module('ngAnimate'));
   beforeEach(angular.mock.module('ngAnimateMock'));
 

@@ -1,28 +1,35 @@
 'use strict';
 
-describe('aside', function () {
+import aside from '../aside';
+import templates from '../../../dist/modules/aside.tpl';
 
+describe('aside', function() {
   var $compile, $templateCache, scope, sandboxEl, $animate, $timeout, $aside;
   var bodyEl = $('body');
 
-  beforeEach(module('ngSanitize'));
-  beforeEach(module('ngAnimate'));
-  beforeEach(module('ngAnimateMock'));
-  beforeEach(module('mgcrea.ngStrap.aside'));
+  beforeEach(angular.mock.module('ngSanitize'));
+  beforeEach(angular.mock.module('ngAnimate'));
+  beforeEach(angular.mock.module('ngAnimateMock'));
+  beforeEach(angular.mock.module(aside));
 
-  beforeEach(inject(function (_$rootScope_, _$compile_, _$templateCache_, _$aside_, _$animate_, _$timeout_) {
-    scope = _$rootScope_.$new();
-    sandboxEl = $('<div>').attr('id', 'sandbox').appendTo($('body'));
-    $compile = _$compile_;
-    $templateCache = _$templateCache_;
-    $aside = _$aside_;
-    $animate = _$animate_;
-    $timeout = _$timeout_;
-    var flush = $animate.flush || $animate.triggerCallbacks;
-    $animate.flush = function() {
-      flush.call($animate); if(!$animate.triggerCallbacks) $timeout.flush();
-    };
-  }));
+  beforeEach(
+    inject(function(_$rootScope_, _$compile_, _$templateCache_, _$aside_, _$animate_, _$timeout_) {
+      scope = _$rootScope_.$new();
+      sandboxEl = $('<div>')
+        .attr('id', 'sandbox')
+        .appendTo($('body'));
+      $compile = _$compile_;
+      $templateCache = _$templateCache_;
+      $aside = _$aside_;
+      $animate = _$animate_;
+      $timeout = _$timeout_;
+      var flush = $animate.flush || $animate.triggerCallbacks;
+      $animate.flush = function() {
+        flush.call($animate);
+        if (!$animate.triggerCallbacks) $timeout.flush();
+      };
+    })
+  );
 
   afterEach(function() {
     scope.$destroy();
@@ -32,26 +39,27 @@ describe('aside', function () {
   // Templates
 
   var templates = {
-    'default': {
-      scope: {aside: {title: 'Title', content: 'Hello aside!'}},
+    default: {
+      scope: { aside: { title: 'Title', content: 'Hello aside!' } },
       element: '<a title="{{aside.title}}" data-content="{{aside.content}}" bs-aside>click me</a>'
     },
     'markup-scope': {
       element: '<a bs-aside="aside">click me</a>'
     },
     'markup-ngRepeat': {
-      scope: {items: [{name: 'foo', aside: {title: 'Title', content: 'Hello aside!'}}]},
-      element: '<ul><li ng-repeat="item in items"><a title="{{item.aside.title}}" data-content="{{item.aside.content}}" bs-aside>{{item.name}}</a></li></ul>'
+      scope: { items: [{ name: 'foo', aside: { title: 'Title', content: 'Hello aside!' } }] },
+      element:
+        '<ul><li ng-repeat="item in items"><a title="{{item.aside.title}}" data-content="{{item.aside.content}}" bs-aside>{{item.name}}</a></li></ul>'
     },
     'options-placement': {
       element: '<a data-placement="left" bs-aside="aside">click me</a>'
     },
     'options-template': {
-      scope: {aside: {title: 'Title', content: 'Hello aside!', counter: 0}, items: ['foo', 'bar', 'baz']},
+      scope: { aside: { title: 'Title', content: 'Hello aside!', counter: 0 }, items: ['foo', 'bar', 'baz'] },
       element: '<a data-template-url="custom" bs-aside="aside">click me</a>'
     },
     'options-html': {
-      scope: {aside: {title: 'title<br>next', content: 'content<br>next'}},
+      scope: { aside: { title: 'title<br>next', content: 'content<br>next' } },
       element: '<a bs-aside="aside" data-html="{{html}}">click me</a>'
     },
     'options-backdrop': {
@@ -64,7 +72,8 @@ describe('aside', function () {
       element: '<a bs-aside="aside" data-container="{{container}}">click me</a>'
     },
     'options-events': {
-      element: '<a bs-on-before-hide="onBeforeHide" bs-on-hide="onHide" bs-on-before-show="onBeforeShow" bs-on-show="onShow" bs-aside="aside">click me</a>'
+      element:
+        '<a bs-on-before-hide="onBeforeHide" bs-on-hide="onHide" bs-on-before-show="onBeforeShow" bs-on-show="onShow" bs-aside="aside">click me</a>'
     }
   };
 
@@ -79,8 +88,7 @@ describe('aside', function () {
 
   // Tests
 
-  describe('with default template', function () {
-
+  describe('with default template', function() {
     it('should open on click', function() {
       var elm = compileDirective('default');
       expect(sandboxEl.children('.aside').length).toBe(0);
@@ -116,24 +124,18 @@ describe('aside', function () {
       expect(sandboxEl.find('.aside-title').html()).toBe(scope.items[0].aside.title);
       expect(sandboxEl.find('.aside-body').html()).toBe(scope.items[0].aside.content);
     });
-
   });
 
-
-  describe('options', function () {
-
-    describe('animation', function () {
-
+  describe('options', function() {
+    describe('animation', function() {
       it('should default to `am-fade-and-slide-right` animation', function() {
         var elm = compileDirective('default');
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.children('.aside')).toHaveClass('am-fade-and-slide-right');
       });
-
     });
 
-    describe('placement', function () {
-
+    describe('placement', function() {
       it('should default to `top` placement', function() {
         var elm = compileDirective('default');
         angular.element(elm[0]).triggerHandler('click');
@@ -145,36 +147,32 @@ describe('aside', function () {
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.children('.aside')).toHaveClass('left');
       });
-
     });
 
-    describe('html', function () {
-
+    describe('html', function() {
       it('should not compile inner content by default', function() {
-        var elm = compileDirective('default', {aside: {title: 'title<br>next', content: 'content<br>next'}});
+        var elm = compileDirective('default', { aside: { title: 'title<br>next', content: 'content<br>next' } });
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.aside-title').html()).not.toBe('title<br>next');
         expect(sandboxEl.find('.aside-body').html()).not.toBe('content<br>next');
       });
 
       it('should compile inner content if html is truthy', function() {
-        var elm = compileDirective('options-html', {html: 'true'});
+        var elm = compileDirective('options-html', { html: 'true' });
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.aside-title').html()).toBe('title<br>next');
         expect(sandboxEl.find('.aside-body').html()).toBe('content<br>next');
       });
 
       it('should NOT compile inner content if html is false', function() {
-        var elm = compileDirective('options-html', {html: 'false'});
+        var elm = compileDirective('options-html', { html: 'false' });
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.aside-title').html()).not.toBe('title<br>next');
         expect(sandboxEl.find('.aside-body').html()).not.toBe('content<br>next');
       });
-
     });
 
-    describe('template', function () {
-
+    describe('template', function() {
       it('should support custom template', function() {
         $templateCache.put('custom', '<div class="aside"><div class="aside-inner">foo: {{title}}</div></div>');
         var elm = compileDirective('options-template');
@@ -183,7 +181,10 @@ describe('aside', function () {
       });
 
       it('should support template with ngRepeat', function() {
-        $templateCache.put('custom', '<div class="aside"><div class="aside-inner"><ul><li ng-repeat="item in items">{{item}}</li></ul></div></div>');
+        $templateCache.put(
+          'custom',
+          '<div class="aside"><div class="aside-inner"><ul><li ng-repeat="item in items">{{item}}</li></ul></div></div>'
+        );
         var elm = compileDirective('options-template');
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.aside-inner').text()).toBe('foobarbaz');
@@ -194,7 +195,10 @@ describe('aside', function () {
       });
 
       it('should support template with ngClick', function() {
-        $templateCache.put('custom', '<div class="aside"><div class="aside-inner"><a class="btn" ng-click="aside.counter=aside.counter+1">click me</a></div></div>');
+        $templateCache.put(
+          'custom',
+          '<div class="aside"><div class="aside-inner"><a class="btn" ng-click="aside.counter=aside.counter+1">click me</a></div></div>'
+        );
         var elm = compileDirective('options-template');
         angular.element(elm[0]).triggerHandler('click');
         expect(angular.element(sandboxEl.find('.aside-inner > .btn')[0]).triggerHandler('click'));
@@ -210,7 +214,10 @@ describe('aside', function () {
         var scopeCount = countScopes(scope, 0);
         var originalScope = scope;
         scope = scope.$new();
-        $templateCache.put('custom', '<div class="aside"><div class="aside-inner"><div ng-if="1===1">Fake element to force creation of a new $scope</div><div class="btn" ng-click="$hide()"></div></div></div>');
+        $templateCache.put(
+          'custom',
+          '<div class="aside"><div class="aside-inner"><div ng-if="1===1">Fake element to force creation of a new $scope</div><div class="btn" ng-click="$hide()"></div></div></div>'
+        );
         var elm = compileDirective('options-template');
 
         // We are only destroying the aside element before showing another
@@ -242,7 +249,6 @@ describe('aside', function () {
         // scope count should be the same as it was before directive was initialized
         expect(countScopes(scope, 0)).toBe(scopeCount);
       });
-
     });
 
     describe('backdrop', function() {
@@ -254,14 +260,14 @@ describe('aside', function () {
       });
 
       it('should show backdrop if data-backdrop is truthy', function() {
-        var elm = compileDirective('options-backdrop', {backdrop: 'true'});
+        var elm = compileDirective('options-backdrop', { backdrop: 'true' });
         expect(bodyEl.find('.aside-backdrop').length).toBe(0);
         angular.element(elm[0]).triggerHandler('click');
         expect(bodyEl.find('.aside-backdrop').length).toBe(1);
       });
 
       it('should not show backdrop if data-backdrop is false', function() {
-        var elm = compileDirective('options-backdrop', {backdrop: 'false'});
+        var elm = compileDirective('options-backdrop', { backdrop: 'false' });
         expect(bodyEl.find('.aside-backdrop').length).toBe(0);
         angular.element(elm[0]).triggerHandler('click');
         expect(bodyEl.find('.aside-backdrop').length).toBe(0);
@@ -288,41 +294,37 @@ describe('aside', function () {
         expect(angular.element(backdrop2).css('z-index')).toBe('1060');
         expect(angular.element(aside2).css('z-index')).toBe('1070');
       });
-
     });
 
     describe('keyboard', function() {
-
       it('should remove aside when data-keyboard is truthy', function() {
-        var elm = compileDirective('options-keyboard', {keyboard: 'true'});
+        var elm = compileDirective('options-keyboard', { keyboard: 'true' });
         expect(bodyEl.find('.aside').length).toBe(0);
         angular.element(elm[0]).triggerHandler('click');
         var aside = bodyEl.find('.aside');
         expect(aside.length).toBe(1);
-        var evt = jQuery.Event( 'keyup', { keyCode: 27, which: 27 } );
-        aside.triggerHandler(evt)
+        var evt = jQuery.Event('keyup', { keyCode: 27, which: 27 });
+        aside.triggerHandler(evt);
         expect(bodyEl.find('.aside').length).toBe(0);
       });
 
       it('should NOT remove aside when data-keyboard is falsy', function() {
-        var elm = compileDirective('options-keyboard', {keyboard: 'false'});
+        var elm = compileDirective('options-keyboard', { keyboard: 'false' });
         expect(bodyEl.find('.aside').length).toBe(0);
         angular.element(elm[0]).triggerHandler('click');
         var aside = bodyEl.find('.aside');
         expect(aside.length).toBe(1);
-        var evt = jQuery.Event( 'keyup', { keyCode: 27, which: 27 } );
-        aside.triggerHandler(evt)
+        var evt = jQuery.Event('keyup', { keyCode: 27, which: 27 });
+        aside.triggerHandler(evt);
         expect(bodyEl.find('.aside').length).toBe(1);
       });
-
     });
 
     describe('container', function() {
-
       it('accepts element object', function() {
         var testElm = angular.element('<div></div>');
         sandboxEl.append(testElm);
-        var myaside = $aside(angular.extend({}, templates['default'].scope.aside, {container: testElm}));
+        var myaside = $aside(angular.extend({}, templates['default'].scope.aside, { container: testElm }));
         scope.$digest();
         expect(angular.element(testElm.children()[0]).hasClass('aside')).toBeTruthy();
       });
@@ -330,21 +332,22 @@ describe('aside', function () {
       it('accepts data-container element selector', function() {
         var testElm = angular.element('<div id="testElm"></div>');
         sandboxEl.append(testElm);
-        var elm = compileDirective('options-container', {container: '#testElm'});
+        var elm = compileDirective('options-container', { container: '#testElm' });
         angular.element(elm[0]).triggerHandler('click');
         expect(angular.element(testElm.children()[0]).hasClass('aside')).toBeTruthy();
       });
 
       it('should belong to sandbox when data-container is falsy', function() {
-        var elm = compileDirective('options-container', angular.extend({}, templates['default'].scope.aside, {container: 'false'}));
+        var elm = compileDirective(
+          'options-container',
+          angular.extend({}, templates['default'].scope.aside, { container: 'false' })
+        );
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.aside').length).toBe(1);
       });
-
     });
 
     describe('onBeforeShow', function() {
-
       it('should invoke beforeShow event callback', function() {
         var beforeShow = false;
 
@@ -352,7 +355,7 @@ describe('aside', function () {
           beforeShow = true;
         }
 
-        var elm = compileDirective('options-events', {onBeforeShow: onBeforeShow});
+        var elm = compileDirective('options-events', { onBeforeShow: onBeforeShow });
 
         angular.element(elm[0]).triggerHandler('click');
 
@@ -361,7 +364,6 @@ describe('aside', function () {
     });
 
     describe('onShow', function() {
-
       it('should invoke show event callback', function() {
         var show = false;
 
@@ -369,7 +371,7 @@ describe('aside', function () {
           show = true;
         }
 
-        var elm = compileDirective('options-events', {onShow: onShow});
+        var elm = compileDirective('options-events', { onShow: onShow });
 
         angular.element(elm[0]).triggerHandler('click');
         $animate.flush();
@@ -379,7 +381,6 @@ describe('aside', function () {
     });
 
     describe('onBeforeHide', function() {
-
       it('should invoke beforeHide event callback', function() {
         var beforeHide = false;
 
@@ -387,7 +388,7 @@ describe('aside', function () {
           beforeHide = true;
         }
 
-        var elm = compileDirective('options-events', {onBeforeHide: onBeforeHide});
+        var elm = compileDirective('options-events', { onBeforeHide: onBeforeHide });
 
         angular.element(elm[0]).triggerHandler('click');
         angular.element(elm[0]).triggerHandler('click');
@@ -397,7 +398,6 @@ describe('aside', function () {
     });
 
     describe('onHide', function() {
-
       it('should invoke show event callback', function() {
         var hide = false;
 
@@ -405,7 +405,7 @@ describe('aside', function () {
           hide = true;
         }
 
-        var elm = compileDirective('options-events', {onHide: onHide});
+        var elm = compileDirective('options-events', { onHide: onHide });
 
         angular.element(elm[0]).triggerHandler('click');
         angular.element(elm[0]).triggerHandler('click');
@@ -414,9 +414,5 @@ describe('aside', function () {
         expect(hide).toBe(true);
       });
     });
-
-
-
   });
-
 });

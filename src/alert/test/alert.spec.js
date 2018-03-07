@@ -1,29 +1,38 @@
 'use strict';
 
-describe('alert', function() {
+import alert from '../alert';
+import modal from '../../modal/modal';
+import templates from '../../../dist/modules/alert.tpl';
 
-  var bodyEl = $('body'), sandboxEl;
+describe('alert', function() {
+  var bodyEl = $('body'),
+    sandboxEl;
   var $compile, $templateCache, $animate, $timeout, $alert, scope;
 
-  beforeEach(module('ngSanitize'));
-  beforeEach(module('ngAnimate'));
-  beforeEach(module('ngAnimateMock'));
-  beforeEach(module('mgcrea.ngStrap.modal', 'mgcrea.ngStrap.alert'));
+  beforeEach(angular.mock.module('ngSanitize'));
+  beforeEach(angular.mock.module('ngAnimate'));
+  beforeEach(angular.mock.module('ngAnimateMock'));
+  beforeEach(angular.mock.module(modal, alert));
 
-  beforeEach(inject(function (_$rootScope_, _$compile_, _$templateCache_, _$alert_, _$animate_, _$timeout_) {
-    scope = _$rootScope_.$new();
-    bodyEl.html('');
-    sandboxEl = $('<div>').attr('id', 'sandbox').appendTo($('body'));
-    $compile = _$compile_;
-    $templateCache = _$templateCache_;
-    $alert = _$alert_;
-    $animate = _$animate_;
-    $timeout = _$timeout_;
-    var flush = $animate.flush || $animate.triggerCallbacks;
-    $animate.flush = function() {
-      flush.call($animate); if(!$animate.triggerCallbacks) $timeout.flush();
-    };
-  }));
+  beforeEach(
+    inject(function(_$rootScope_, _$compile_, _$templateCache_, _$alert_, _$animate_, _$timeout_) {
+      scope = _$rootScope_.$new();
+      bodyEl.html('');
+      sandboxEl = $('<div>')
+        .attr('id', 'sandbox')
+        .appendTo($('body'));
+      $compile = _$compile_;
+      $templateCache = _$templateCache_;
+      $alert = _$alert_;
+      $animate = _$animate_;
+      $timeout = _$timeout_;
+      var flush = $animate.flush || $animate.triggerCallbacks;
+      $animate.flush = function() {
+        flush.call($animate);
+        if (!$animate.triggerCallbacks) $timeout.flush();
+      };
+    })
+  );
 
   afterEach(function() {
     scope.$destroy();
@@ -33,20 +42,21 @@ describe('alert', function() {
   // Templates
 
   var templates = {
-    'default': {
-      scope: {alert: {title: 'Title', content: 'Hello alert!'}},
+    default: {
+      scope: { alert: { title: 'Title', content: 'Hello alert!' } },
       element: '<a title="{{alert.title}}" data-content="{{alert.content}}" bs-alert>click me</a>'
     },
     'default-no-title': {
-      scope: {alert: {content: 'Hello alert!'}, title: 'Title'},
+      scope: { alert: { content: 'Hello alert!' }, title: 'Title' },
       element: '<a data-content="{{alert.content}}" bs-alert>click me</a>'
     },
     'markup-scope': {
       element: '<a bs-alert="alert">click me</a>'
     },
     'markup-ngRepeat': {
-      scope: {items: [{name: 'foo', alert: {title: 'Title', content: 'Hello alert!'}}]},
-      element: '<ul><li ng-repeat="item in items"><a title="{{item.alert.title}}" data-content="{{item.alert.content}}" bs-alert>{{item.name}}</a></li></ul>'
+      scope: { items: [{ name: 'foo', alert: { title: 'Title', content: 'Hello alert!' } }] },
+      element:
+        '<ul><li ng-repeat="item in items"><a title="{{item.alert.title}}" data-content="{{item.alert.content}}" bs-alert>{{item.name}}</a></li></ul>'
     },
     'markup-ngClick-service': {
       element: '<a ng-click="showAlert()">click me</a>'
@@ -55,7 +65,7 @@ describe('alert', function() {
       element: '<a data-placement="left" bs-alert="alert">click me</a>'
     },
     'options-html': {
-      scope: {alert: {title: 'title<br>next', content: 'content<br>next'}},
+      scope: { alert: { title: 'title<br>next', content: 'content<br>next' } },
       element: '<a title="{{alert.title}}" data-content="{{alert.content}}" data-html="{{html}}" bs-alert>click me</a>'
     },
     'options-keyboard': {
@@ -68,11 +78,12 @@ describe('alert', function() {
       element: '<a bs-alert="alert" data-dismissable="{{dismissable}}">click me</a>'
     },
     'options-template': {
-      scope: {alert: {title: 'Title', content: 'Hello alert!', counter: 0}, items: ['foo', 'bar', 'baz']},
+      scope: { alert: { title: 'Title', content: 'Hello alert!', counter: 0 }, items: ['foo', 'bar', 'baz'] },
       element: '<a data-template-url="custom" bs-alert="alert">click me</a>'
     },
     'options-events': {
-      element: '<a bs-on-before-hide="onBeforeHide" bs-on-hide="onHide" bs-on-before-show="onBeforeShow" bs-on-show="onShow" bs-alert="alert">click me</a>'
+      element:
+        '<a bs-on-before-hide="onBeforeHide" bs-on-hide="onHide" bs-on-before-show="onBeforeShow" bs-on-show="onShow" bs-alert="alert">click me</a>'
     }
   };
 
@@ -88,7 +99,6 @@ describe('alert', function() {
   // Tests
 
   describe('with default template', function() {
-
     it('should open on click', function() {
       var elm = compileDirective('default');
       expect(sandboxEl.children('.alert').length).toBe(0);
@@ -131,13 +141,11 @@ describe('alert', function() {
       expect(sandboxEl.find('.alert strong').html()).toBeUndefined();
       expect(sandboxEl.find('.alert').html()).toContain(scope.alert.content);
     });
-
   });
 
   describe('using service', function() {
-
     it('should correctly open on next digest', function() {
-      var myAlert = $alert(angular.extend({type: 'danger'}, templates['default'].scope.alert));
+      var myAlert = $alert(angular.extend({ type: 'danger' }, templates['default'].scope.alert));
       scope.$digest();
       expect(bodyEl.children('.alert').length).toBe(1);
       myAlert.hide();
@@ -155,7 +163,7 @@ describe('alert', function() {
 
     it('should correctly work with ngClick', function() {
       var elm = compileDirective('markup-ngClick-service');
-      var myAlert = $alert(angular.extend({show: false}, templates['default'].scope.alert));
+      var myAlert = $alert(angular.extend({ show: false }, templates['default'].scope.alert));
       scope.showAlert = function() {
         myAlert.$promise.then(myAlert.show);
       };
@@ -163,23 +171,18 @@ describe('alert', function() {
       angular.element(elm[0]).triggerHandler('click');
       expect(bodyEl.children('.alert').length).toBe(1);
     });
-
   });
 
   describe('options', function() {
-
     describe('animation', function() {
-
       it('should default to `am-fade` animation', function() {
         var elm = compileDirective('default');
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.children('.alert')).toHaveClass('am-fade');
       });
-
     });
 
     describe('placement', function() {
-
       it('should default to `null` placement', function() {
         var elm = compileDirective('default');
         angular.element(elm[0]).triggerHandler('click');
@@ -191,10 +194,9 @@ describe('alert', function() {
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.children('.alert')).toHaveClass('left');
       });
-
     });
 
-/*
+    /*
     describe('html', function() {
 
       //These tests currently fail because our current alert has ng-bind-html="content" instead of
@@ -226,7 +228,6 @@ describe('alert', function() {
 */
 
     describe('template', function() {
-
       it('should support custom template', function() {
         $templateCache.put('custom', '<div class="alert"><div class="alert-inner">foo: {{title}}</div></div>');
         var elm = compileDirective('options-template');
@@ -235,7 +236,10 @@ describe('alert', function() {
       });
 
       it('should support template with ngRepeat', function() {
-        $templateCache.put('custom', '<div class="alert"><div class="alert-inner"><ul><li ng-repeat="item in items">{{item}}</li></ul></div></div>');
+        $templateCache.put(
+          'custom',
+          '<div class="alert"><div class="alert-inner"><ul><li ng-repeat="item in items">{{item}}</li></ul></div></div>'
+        );
         var elm = compileDirective('options-template');
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.alert-inner').text()).toBe('foobarbaz');
@@ -246,7 +250,10 @@ describe('alert', function() {
       });
 
       it('should support template with ngClick', function() {
-        $templateCache.put('custom', '<div class="alert"><div class="alert-inner"><a class="btn" ng-click="alert.counter=alert.counter+1">click me</a></div></div>');
+        $templateCache.put(
+          'custom',
+          '<div class="alert"><div class="alert-inner"><a class="btn" ng-click="alert.counter=alert.counter+1">click me</a></div></div>'
+        );
         var elm = compileDirective('options-template');
         angular.element(elm[0]).triggerHandler('click');
         expect(angular.element(sandboxEl.find('.alert-inner > .btn')[0]).triggerHandler('click'));
@@ -257,7 +264,6 @@ describe('alert', function() {
         expect(angular.element(sandboxEl.find('.alert-inner > .btn')[0]).triggerHandler('click'));
         expect(scope.alert.counter).toBe(2);
       });
-
     });
 
     describe('keyboard', function() {
@@ -267,35 +273,33 @@ describe('alert', function() {
       // it's just that the alert template used here "doesn't" have tabindex on it, and still
       // the test succeeds. Not sure why that is.
       it('should remove alert when data-keyboard is truthy', function() {
-        var elm = compileDirective('options-keyboard', {keyboard: 'true'});
+        var elm = compileDirective('options-keyboard', { keyboard: 'true' });
         expect(bodyEl.find('.alert').length).toBe(0);
         angular.element(elm[0]).triggerHandler('click');
         var alert = bodyEl.find('.alert');
         expect(alert.length).toBe(1);
-        var evt = jQuery.Event( 'keyup', { keyCode: 27, which: 27 } );
-        alert.triggerHandler(evt)
+        var evt = jQuery.Event('keyup', { keyCode: 27, which: 27 });
+        alert.triggerHandler(evt);
         expect(bodyEl.find('.alert').length).toBe(0);
       });
 
       it('should NOT remove alert when data-keyboard is falsy', function() {
-        var elm = compileDirective('options-keyboard', {keyboard: 'false'});
+        var elm = compileDirective('options-keyboard', { keyboard: 'false' });
         expect(bodyEl.find('.alert').length).toBe(0);
         angular.element(elm[0]).triggerHandler('click');
         var alert = bodyEl.find('.alert');
         expect(alert.length).toBe(1);
-        var evt = jQuery.Event( 'keyup', { keyCode: 27, which: 27 } );
-        alert.triggerHandler(evt)
+        var evt = jQuery.Event('keyup', { keyCode: 27, which: 27 });
+        alert.triggerHandler(evt);
         expect(bodyEl.find('.alert').length).toBe(1);
       });
-
     });
 
     describe('container', function() {
-
       it('accepts element object', function() {
         var testElm = angular.element('<div></div>');
         sandboxEl.append(testElm);
-        var myalert = $alert(angular.extend({}, templates['default'].scope.alert, {container: testElm}));
+        var myalert = $alert(angular.extend({}, templates['default'].scope.alert, { container: testElm }));
         scope.$digest();
         expect(angular.element(testElm.children()[0]).hasClass('alert')).toBeTruthy();
       });
@@ -303,43 +307,42 @@ describe('alert', function() {
       it('accepts data-container element selector', function() {
         var testElm = angular.element('<div id="testElm"></div>');
         sandboxEl.append(testElm);
-        var elm = compileDirective('options-container', {container: '#testElm'});
+        var elm = compileDirective('options-container', { container: '#testElm' });
         angular.element(elm[0]).triggerHandler('click');
         expect(angular.element(testElm.children()[0]).hasClass('alert')).toBeTruthy();
       });
 
       it('should belong to sandbox when data-container is falsy', function() {
-        var elm = compileDirective('options-container', angular.extend({}, templates['default'].scope.alert, {container: 'false'}));
+        var elm = compileDirective(
+          'options-container',
+          angular.extend({}, templates['default'].scope.alert, { container: 'false' })
+        );
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.alert').length).toBe(1);
       });
-
     });
 
     describe('dismissable', function() {
-
       it('should be dismissable by default', function() {
         var elm = compileDirective('default');
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.alert button').length).toBe(1);
-      })
+      });
 
       it('should be dismissable when data-dismissable is truthy', function() {
-        var elm = compileDirective('options-dismissable', {dismissable: 'true'});
+        var elm = compileDirective('options-dismissable', { dismissable: 'true' });
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.alert button').length).toBe(1);
-      })
+      });
 
       it('should NOT be dismissable when data-dismissable is falsy', function() {
-        var elm = compileDirective('options-dismissable', {dismissable: 'false'});
+        var elm = compileDirective('options-dismissable', { dismissable: 'false' });
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.alert button').length).toBe(0);
-      })
-
-    })
+      });
+    });
 
     describe('onBeforeShow', function() {
-
       it('should invoke beforeShow event callback', function() {
         var beforeShow = false;
 
@@ -347,7 +350,7 @@ describe('alert', function() {
           beforeShow = true;
         }
 
-        var elm = compileDirective('options-events', {onBeforeShow: onBeforeShow});
+        var elm = compileDirective('options-events', { onBeforeShow: onBeforeShow });
 
         angular.element(elm[0]).triggerHandler('click');
 
@@ -356,7 +359,6 @@ describe('alert', function() {
     });
 
     describe('onShow', function() {
-
       it('should invoke show event callback', function() {
         var show = false;
 
@@ -364,7 +366,7 @@ describe('alert', function() {
           show = true;
         }
 
-        var elm = compileDirective('options-events', {onShow: onShow});
+        var elm = compileDirective('options-events', { onShow: onShow });
 
         angular.element(elm[0]).triggerHandler('click');
         $animate.flush();
@@ -374,7 +376,6 @@ describe('alert', function() {
     });
 
     describe('onBeforeHide', function() {
-
       it('should invoke beforeHide event callback', function() {
         var beforeHide = false;
 
@@ -382,7 +383,7 @@ describe('alert', function() {
           beforeHide = true;
         }
 
-        var elm = compileDirective('options-events', {onBeforeHide: onBeforeHide});
+        var elm = compileDirective('options-events', { onBeforeHide: onBeforeHide });
 
         angular.element(elm[0]).triggerHandler('click');
         angular.element(elm[0]).triggerHandler('click');
@@ -392,7 +393,6 @@ describe('alert', function() {
     });
 
     describe('onHide', function() {
-
       it('should invoke show event callback', function() {
         var hide = false;
 
@@ -400,7 +400,7 @@ describe('alert', function() {
           hide = true;
         }
 
-        var elm = compileDirective('options-events', {onHide: onHide});
+        var elm = compileDirective('options-events', { onHide: onHide });
 
         angular.element(elm[0]).triggerHandler('click');
         angular.element(elm[0]).triggerHandler('click');
@@ -409,7 +409,5 @@ describe('alert', function() {
         expect(hide).toBe(true);
       });
     });
-
   });
-
 });

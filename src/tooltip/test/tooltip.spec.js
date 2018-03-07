@@ -2,33 +2,38 @@
 /* global countScopes */
 
 describe('tooltip', function() {
-
-  var bodyEl = $('body'), sandboxEl;
+  var bodyEl = $('body'),
+    sandboxEl;
   var $rootScope, $compile, $templateCache, $$rAF, $animate, $timeout, $httpBackend, $tooltip, scope;
 
-  beforeEach(module('ngSanitize'));
-  beforeEach(module('ngAnimate'));
-  beforeEach(module('ngAnimateMock'));
-  beforeEach(module('mgcrea.ngStrap.tooltip'));
+  beforeEach(angular.mock.module('ngSanitize'));
+  beforeEach(angular.mock.module('ngAnimate'));
+  beforeEach(angular.mock.module('ngAnimateMock'));
+  beforeEach(angular.mock.module('mgcrea.ngStrap.tooltip'));
 
-  beforeEach(inject(function($injector) {
-    $rootScope = $injector.get('$rootScope');
-    $compile = $injector.get('$compile');
-    $templateCache = $injector.get('$templateCache');
-    $$rAF = $injector.get('$$rAF');
-    $animate = $injector.get('$animate');
-    $timeout = $injector.get('$timeout');
-    var flush = $animate.flush || $animate.triggerCallbacks;
-    $animate.flush = function() {
-      flush.call($animate); if(!$animate.triggerCallbacks) $timeout.flush();
-    };
-    $httpBackend = $injector.get('$httpBackend');
-    $tooltip = $injector.get('$tooltip');
+  beforeEach(
+    inject(function($injector) {
+      $rootScope = $injector.get('$rootScope');
+      $compile = $injector.get('$compile');
+      $templateCache = $injector.get('$templateCache');
+      $$rAF = $injector.get('$$rAF');
+      $animate = $injector.get('$animate');
+      $timeout = $injector.get('$timeout');
+      var flush = $animate.flush || $animate.triggerCallbacks;
+      $animate.flush = function() {
+        flush.call($animate);
+        if (!$animate.triggerCallbacks) $timeout.flush();
+      };
+      $httpBackend = $injector.get('$httpBackend');
+      $tooltip = $injector.get('$tooltip');
 
-    bodyEl.html('');
-    sandboxEl = $('<div>').attr('id', 'sandbox').appendTo(bodyEl);
-    scope = $rootScope.$new();
-  }));
+      bodyEl.html('');
+      sandboxEl = $('<div>')
+        .attr('id', 'sandbox')
+        .appendTo(bodyEl);
+      scope = $rootScope.$new();
+    })
+  );
 
   afterEach(function() {
     scope.$destroy();
@@ -38,12 +43,12 @@ describe('tooltip', function() {
   // Templates
 
   var templates = {
-    'default': {
-      scope: {tooltip: {title: 'Hello Tooltip!'}},
+    default: {
+      scope: { tooltip: { title: 'Hello Tooltip!' } },
       element: '<a title="{{tooltip.title}}" bs-tooltip>hover me</a>'
     },
     'default-with-id': {
-      scope: {tooltip: {title: 'Hello Tooltip!'}},
+      scope: { tooltip: { title: 'Hello Tooltip!' } },
       element: '<a id="link1" title="{{tooltip.title}}" bs-tooltip>hover me</a>'
     },
     'markup-button': {
@@ -53,7 +58,7 @@ describe('tooltip', function() {
       element: '<a bs-tooltip="tooltip">hover me</a>'
     },
     'markup-ngRepeat': {
-      scope: {items: [{name: 'foo', tooltip: 'Hello Tooltip!'}]},
+      scope: { items: [{ name: 'foo', tooltip: 'Hello Tooltip!' }] },
       element: '<ul><li ng-repeat="item in items"><a title="{{item.tooltip}}" bs-tooltip>{{item.name}}</a></li></ul>'
     },
     'markup-ngClick-service': {
@@ -66,7 +71,7 @@ describe('tooltip', function() {
       element: '<a data-delay="15,30" bs-tooltip="tooltip">hover me</a>'
     },
     'options-keyboard': {
-      scope: {tooltip: {title: 'Hello Tooltip!', keyboard: true}},
+      scope: { tooltip: { title: 'Hello Tooltip!', keyboard: true } },
       element: '<a data-keyboard="true" bs-tooltip="tooltip">hover me</a>'
     },
     'options-animation': {
@@ -148,10 +153,12 @@ describe('tooltip', function() {
       element: '<a data-placement="left" bs-tooltip="tooltip" data-viewport="\'#sandbox\'">hover me</a>'
     },
     'options-placement-viewport-padding': {
-      element: '<a data-placement="right" bs-tooltip="tooltip" data-viewport="{ selector: \'#sandbox\', padding: 10 }">hover me</a>'
+      element:
+        '<a data-placement="right" bs-tooltip="tooltip" data-viewport="{ selector: \'#sandbox\', padding: 10 }">hover me</a>'
     },
     'options-placement-viewport-exotic': {
-      element: '<a data-placement="bottom-right" bs-tooltip="tooltip" data-viewport="{ selector: \'#sandbox\', padding: 10 }">hover me</a>'
+      element:
+        '<a data-placement="bottom-right" bs-tooltip="tooltip" data-viewport="{ selector: \'#sandbox\', padding: 10 }">hover me</a>'
     },
     'options-trigger': {
       element: '<a data-trigger="click" bs-tooltip="tooltip">click me</a>'
@@ -160,53 +167,59 @@ describe('tooltip', function() {
       element: '<a data-trigger="contextmenu" bs-tooltip="tooltip">right-click me</a>'
     },
     'options-html': {
-      scope: {tooltip: {title: 'title<br>next'}},
+      scope: { tooltip: { title: 'title<br>next' } },
       element: '<a data-html="{{html}}" bs-tooltip="tooltip">hover me</a>'
     },
     'options-container': {
       element: '<a data-container="{{container}}" bs-tooltip="tooltip">hover me</a>'
     },
     'options-template': {
-      scope: {tooltip: {title: 'Hello Tooltip!', counter: 0}, items: ['foo', 'bar', 'baz']},
+      scope: { tooltip: { title: 'Hello Tooltip!', counter: 0 }, items: ['foo', 'bar', 'baz'] },
       element: '<a title="{{tooltip.title}}" data-template-url="custom" bs-tooltip>hover me</a>'
     },
     'options-titleTemplate': {
-      scope: {tooltip: {title: 'Hello Tooltip!', counter: 0}, items: ['foo', 'bar', 'baz']},
+      scope: { tooltip: { title: 'Hello Tooltip!', counter: 0 }, items: ['foo', 'bar', 'baz'] },
       element: '<a title="{{tooltip.title}}" data-title-template="custom" bs-tooltip>hover me</a>'
     },
     'options-events': {
-      scope: {onShow: function(tooltip) {}, onBeforeShow: function(tooltip) {}, onHide: function(tooltip) {}, onBeforeHide: function(tooltip) {}},
-      element: '<a data-bs-on-show="onShow" data-bs-on-before-show="onBeforeShow" data-bs-on-hide="onHide" data-bs-on-before-hide="onBeforeHide" bs-tooltip>hover me</a>'
+      scope: {
+        onShow: function(tooltip) {},
+        onBeforeShow: function(tooltip) {},
+        onHide: function(tooltip) {},
+        onBeforeHide: function(tooltip) {}
+      },
+      element:
+        '<a data-bs-on-show="onShow" data-bs-on-before-show="onBeforeShow" data-bs-on-hide="onHide" data-bs-on-before-hide="onBeforeHide" bs-tooltip>hover me</a>'
     },
     'bsShow-attr': {
-      scope: {tooltip: {title: 'Hello Tooltip!'}},
+      scope: { tooltip: { title: 'Hello Tooltip!' } },
       element: '<a title="{{tooltip.title}}" bs-tooltip bs-show="true">hover me</a>'
     },
     'bsShow-binding': {
-      scope: {isVisible: false, tooltip: {title: 'Hello Tooltip!'}},
+      scope: { isVisible: false, tooltip: { title: 'Hello Tooltip!' } },
       element: '<a title="{{tooltip.title}}" bs-tooltip bs-show="isVisible">hover me</a>'
     },
     'bsEnabled-attr': {
-      scope: {tooltip: {title: 'Hello Tooltip!'}},
+      scope: { tooltip: { title: 'Hello Tooltip!' } },
       element: '<a title="{{tooltip.title}}" bs-tooltip bs-enabled="false">hover me</a>'
     },
     'bsEnabled-attr-binding': {
-      scope: {tooltip: {title: 'Hello Tooltip!'}, isEnabled: true},
+      scope: { tooltip: { title: 'Hello Tooltip!' }, isEnabled: true },
       element: '<a title="{{tooltip.title}}" bs-tooltip bs-enabled="isEnabled">hover me</a>'
     },
     'bsTooltip-string': {
       element: '<a bs-tooltip="tooltip.title">hover me</a>'
     },
     'bsTooltip-ngRepeat-string': {
-      scope: {items: [{name: 'foo', tooltip: 'Hello Tooltip!'}]},
+      scope: { items: [{ name: 'foo', tooltip: 'Hello Tooltip!' }] },
       element: '<ul><li ng-repeat="item in items"><a bs-tooltip="item.tooltip">{{item.name}}</a></li></ul>'
     },
     'bsTooltip-noValue': {
-      scope: {title: 'Inherited Title'},
+      scope: { title: 'Inherited Title' },
       element: '<a bs-tooltip>hover me</a>'
     },
     'bsTooltip-ngDisabled': {
-      scope: {tooltip: {title: 'Hello Tooltip!'}, isDisabled: false},
+      scope: { tooltip: { title: 'Hello Tooltip!' }, isDisabled: false },
       element: '<a title="{{tooltip.title}}" bs-tooltip ng-disabled="isDisabled">hover me</a>'
     }
   };
@@ -223,7 +236,6 @@ describe('tooltip', function() {
   // Tests
 
   describe('with default template', function() {
-
     it('should open on mouseenter', function() {
       var elm = compileDirective('default');
       expect(sandboxEl.children('.tooltip').length).toBe(0);
@@ -284,7 +296,7 @@ describe('tooltip', function() {
 
     it('should NOT stopPropagation on mousedown if mouseDownStopPropagation is false', function() {
       var elm = compileDirective('markup-button');
-      var myTooltip = $tooltip(elm, {mouseDownStopPropagation: false, trigger: 'focus'});
+      var myTooltip = $tooltip(elm, { mouseDownStopPropagation: false, trigger: 'focus' });
       scope.$digest();
       var evt = jQuery.Event('mousedown');
       spyOn(evt, 'stopPropagation');
@@ -294,14 +306,13 @@ describe('tooltip', function() {
 
     it('should NOT preventDefault on mousedown if mouseDownPreventDefault is false', function() {
       var elm = compileDirective('markup-button');
-      var myTooltip = $tooltip(elm, {mouseDownPreventDefault: false, trigger: 'focus'});
+      var myTooltip = $tooltip(elm, { mouseDownPreventDefault: false, trigger: 'focus' });
       scope.$digest();
       var evt = jQuery.Event('mousedown');
       spyOn(evt, 'preventDefault');
       myTooltip.$onFocusElementMouseDown(evt);
       expect(evt.preventDefault).not.toHaveBeenCalled();
     });
-
   });
 
   describe('resource allocation', function() {
@@ -371,18 +382,18 @@ describe('tooltip', function() {
     });
 
     it('should support initial value true', function() {
-      var elm = compileDirective('bsShow-binding', {isVisible: true});
+      var elm = compileDirective('bsShow-binding', { isVisible: true });
       expect(scope.isVisible).toBeTruthy();
       expect(sandboxEl.children('.tooltip').length).toBe(1);
     });
 
     it('should support undefined value', function() {
-      var elm = compileDirective('bsShow-binding', {isVisible: undefined});
+      var elm = compileDirective('bsShow-binding', { isVisible: undefined });
       expect(sandboxEl.children('.tooltip').length).toBe(0);
     });
 
     it('should support string value', function() {
-      var elm = compileDirective('bsShow-binding', {isVisible: 'a string value'});
+      var elm = compileDirective('bsShow-binding', { isVisible: 'a string value' });
       expect(sandboxEl.children('.tooltip').length).toBe(0);
       scope.isVisible = 'TRUE';
       scope.$digest();
@@ -476,11 +487,9 @@ describe('tooltip', function() {
       angular.element(elm[0]).triggerHandler('mouseenter');
       expect(sandboxEl.children('.tooltip').length).toBe(1);
     });
-
   });
 
   describe('bsTooltip attribute', function() {
-
     it('should support string value', function() {
       var elm = compileDirective('bsTooltip-string');
       angular.element(elm[0]).triggerHandler('mouseenter');
@@ -501,11 +510,9 @@ describe('tooltip', function() {
       $animate.flush();
       expect(sandboxEl.find('.tooltip-inner').html()).toBe('');
     });
-
   });
 
   describe('using service', function() {
-
     it('should correctly open on next digest', function() {
       var myTooltip = $tooltip(sandboxEl, templates['default'].scope.tooltip);
       scope.$digest();
@@ -562,7 +569,7 @@ describe('tooltip', function() {
     it('should correctly work with ngClick with an isolated scope', function() {
       scope = scope.$new(true);
       var elm = compileDirective('markup-ngClick-service');
-      var myTooltip = $tooltip(sandboxEl, {scope:scope, trigger: 'manual'});
+      var myTooltip = $tooltip(sandboxEl, { scope: scope, trigger: 'manual' });
       scope.showTooltip = function() {
         myTooltip.$promise.then(myTooltip.show);
       };
@@ -572,19 +579,17 @@ describe('tooltip', function() {
     });
 
     it('should store config id value in instance', function() {
-      var myTooltip = $tooltip(sandboxEl, {scope:scope, trigger: 'manual', id: 'instance1'});
+      var myTooltip = $tooltip(sandboxEl, { scope: scope, trigger: 'manual', id: 'instance1' });
       expect(myTooltip.$id).toBe('instance1');
     });
 
     it('should fallback to element id value when id is not provided in config', function() {
-      var myTooltip = $tooltip(sandboxEl, {scope:scope, trigger: 'manual'});
+      var myTooltip = $tooltip(sandboxEl, { scope: scope, trigger: 'manual' });
       expect(myTooltip.$id).toBe('sandbox');
     });
-
   });
 
   describe('using scope helpers', function() {
-
     var elm, elmScope;
     beforeEach(function() {
       elm = compileDirective('default');
@@ -634,11 +639,9 @@ describe('tooltip', function() {
       expect(sandboxEl.children('.tooltip').length).toBe(1);
       expect(elmScope.$isShown).toBeTruthy();
     });
-
   });
 
   describe('show / hide events', function() {
-
     it('should dispatch show and show.before events', function() {
       var myTooltip = $tooltip(sandboxEl, templates['default'].scope.tooltip);
       var emit = spyOn(myTooltip.$scope, '$emit');
@@ -703,7 +706,6 @@ describe('tooltip', function() {
     });
 
     describe('onBeforeShow', function() {
-
       it('should invoke beforeShow event callback', function() {
         var beforeShow = false;
 
@@ -711,7 +713,7 @@ describe('tooltip', function() {
           beforeShow = true;
         }
 
-        var elm = compileDirective('options-events', {onBeforeShow: onBeforeShow});
+        var elm = compileDirective('options-events', { onBeforeShow: onBeforeShow });
 
         angular.element(elm[0]).triggerHandler('mouseenter');
 
@@ -720,7 +722,6 @@ describe('tooltip', function() {
     });
 
     describe('onShow', function() {
-
       it('should invoke show event callback', function() {
         var show = false;
 
@@ -728,7 +729,7 @@ describe('tooltip', function() {
           show = true;
         }
 
-        var elm = compileDirective('options-events', {onShow: onShow});
+        var elm = compileDirective('options-events', { onShow: onShow });
 
         angular.element(elm[0]).triggerHandler('mouseenter');
         $animate.flush();
@@ -738,7 +739,6 @@ describe('tooltip', function() {
     });
 
     describe('onBeforeHide', function() {
-
       it('should invoke beforeHide event callback', function() {
         var beforeHide = false;
 
@@ -746,7 +746,7 @@ describe('tooltip', function() {
           beforeHide = true;
         }
 
-        var elm = compileDirective('options-events', {onBeforeHide: onBeforeHide});
+        var elm = compileDirective('options-events', { onBeforeHide: onBeforeHide });
 
         angular.element(elm[0]).triggerHandler('mouseenter');
         angular.element(elm[0]).triggerHandler('blur');
@@ -756,7 +756,6 @@ describe('tooltip', function() {
     });
 
     describe('onHide', function() {
-
       it('should invoke show event callback', function() {
         var hide = false;
 
@@ -764,7 +763,7 @@ describe('tooltip', function() {
           hide = true;
         }
 
-        var elm = compileDirective('options-events', {onHide: onHide});
+        var elm = compileDirective('options-events', { onHide: onHide });
 
         angular.element(elm[0]).triggerHandler('mouseenter');
         angular.element(elm[0]).triggerHandler('blur');
@@ -775,7 +774,10 @@ describe('tooltip', function() {
     });
 
     it('should namespace show/hide events using the prefixEvent', function() {
-      var myTooltip = $tooltip(sandboxEl, angular.extend({prefixEvent: 'datepicker'}, templates['default'].scope.tooltip));
+      var myTooltip = $tooltip(
+        sandboxEl,
+        angular.extend({ prefixEvent: 'datepicker' }, templates['default'].scope.tooltip)
+      );
       var emit = spyOn(myTooltip.$scope, '$emit');
       scope.$digest();
       myTooltip.show();
@@ -788,21 +790,24 @@ describe('tooltip', function() {
       expect(emit).toHaveBeenCalledWith('datepicker.hide', myTooltip);
     });
 
-    it('should be invisible until it is positioned', inject(function ($$rAF) {
-      var myTooltip = $tooltip(sandboxEl, templates['default'].scope.tooltip);
-      scope.$digest();
-      myTooltip.show();
+    it(
+      'should be invisible until it is positioned',
+      inject(function($$rAF) {
+        var myTooltip = $tooltip(sandboxEl, templates['default'].scope.tooltip);
+        scope.$digest();
+        myTooltip.show();
 
-      expect(bodyEl.children('.tooltip').css('visibility')).toBe('hidden');
+        expect(bodyEl.children('.tooltip').css('visibility')).toBe('hidden');
 
-      // Positioning and visibility occurs inside the rAF callback.
-      $$rAF.flush();
-      expect(bodyEl.children('.tooltip').css('visibility')).toBe('visible');
-    }));
+        // Positioning and visibility occurs inside the rAF callback.
+        $$rAF.flush();
+        expect(bodyEl.children('.tooltip').css('visibility')).toBe('visible');
+      })
+    );
 
     it('should call show.before event with tooltip element instance id', function() {
       var elm = compileDirective('default-with-id');
-      var id = "";
+      var id = '';
       scope.$on('tooltip.show.before', function(evt, tooltip) {
         id = tooltip.$id;
       });
@@ -811,13 +816,10 @@ describe('tooltip', function() {
       scope.$digest();
       expect(id).toBe('link1');
     });
-
   });
 
   describe('options', function() {
-
     describe('animation', function() {
-
       it('should default to `am-fade` animation', function() {
         var elm = compileDirective('default');
         angular.element(elm[0]).triggerHandler('mouseenter');
@@ -829,11 +831,9 @@ describe('tooltip', function() {
         angular.element(elm[0]).triggerHandler('mouseenter');
         expect(sandboxEl.children('.tooltip').hasClass('am-flip-x')).toBeTruthy();
       });
-
     });
 
     describe('delay', function() {
-
       it('should support delay', function(done) {
         var elm = compileDirective('options-delay');
         angular.element(elm[0]).triggerHandler('mouseenter');
@@ -857,18 +857,19 @@ describe('tooltip', function() {
           done();
         }, 20);
       });
-
     });
 
     describe('keyboard', function() {
-
       it('should dismiss and stopPropagation if ESC is pressed when trigger !== "focus"', function() {
-        var myTooltip = $tooltip(sandboxEl, angular.extend({trigger: 'click'}, templates['options-keyboard'].scope.tooltip));
+        var myTooltip = $tooltip(
+          sandboxEl,
+          angular.extend({ trigger: 'click' }, templates['options-keyboard'].scope.tooltip)
+        );
         scope.$digest();
         expect(bodyEl.children('.tooltip').length).toBe(0);
         myTooltip.show();
         expect(bodyEl.children('.tooltip').length).toBe(1);
-        var evt = jQuery.Event( 'keyup', { keyCode: 27, which: 27 } );
+        var evt = jQuery.Event('keyup', { keyCode: 27, which: 27 });
         spyOn(evt, 'stopPropagation');
         myTooltip.$onKeyUp(evt);
         expect(bodyEl.children('.tooltip').length).toBe(0);
@@ -876,24 +877,29 @@ describe('tooltip', function() {
       });
 
       it('should NOT stopPropagation if ESC is pressed while tooltip is hidden', function() {
-        var myTooltip = $tooltip(sandboxEl, angular.extend({trigger: 'click'}, templates['options-keyboard'].scope.tooltip));
+        var myTooltip = $tooltip(
+          sandboxEl,
+          angular.extend({ trigger: 'click' }, templates['options-keyboard'].scope.tooltip)
+        );
         scope.$digest();
-        var evt = jQuery.Event( 'keyup', { keyCode: 27, which: 27 } );
+        var evt = jQuery.Event('keyup', { keyCode: 27, which: 27 });
         spyOn(evt, 'stopPropagation');
         myTooltip.$onKeyUp(evt);
         expect(evt.stopPropagation).not.toHaveBeenCalled();
       });
 
       it('should blur and stopPropagation if ESC is pressed when trigger === "focus"', function() {
-        var myTooltip = $tooltip(sandboxEl, angular.extend({trigger: 'focus'}, templates['options-keyboard'].scope.tooltip));
+        var myTooltip = $tooltip(
+          sandboxEl,
+          angular.extend({ trigger: 'focus' }, templates['options-keyboard'].scope.tooltip)
+        );
         spyOn(sandboxEl[0], 'blur');
-        var evt = jQuery.Event( 'keyup', { keyCode: 27, which: 27 } );
+        var evt = jQuery.Event('keyup', { keyCode: 27, which: 27 });
         spyOn(evt, 'stopPropagation');
         myTooltip.$onFocusKeyUp(evt);
         expect(sandboxEl[0].blur).toHaveBeenCalled();
         expect(evt.stopPropagation).toHaveBeenCalled();
       });
-
     });
 
     describe('placement', function() {
@@ -918,8 +924,8 @@ describe('tooltip', function() {
         expect(sandboxEl.children('.tooltip').hasClass('bottom-right')).toBeTruthy();
       });
 
-      describe('auto placement', function () {
-        it('should remove `auto` from placements when auto positioning', function () {
+      describe('auto placement', function() {
+        it('should remove `auto` from placements when auto positioning', function() {
           var elm = compileDirective('options-placement-auto-top');
           angular.element(elm[0]).triggerHandler('mouseenter');
 
@@ -931,7 +937,7 @@ describe('tooltip', function() {
           expect(sandboxEl.children('.tooltip').hasClass('top')).toBeTruthy();
         });
 
-        it('should remove `auto` from exotic placements when auto positioning', function () {
+        it('should remove `auto` from exotic placements when auto positioning', function() {
           var elm = compileDirective('options-placement-auto-exotic-top-left');
           angular.element(elm[0]).triggerHandler('mouseenter');
 
@@ -943,7 +949,7 @@ describe('tooltip', function() {
           expect(sandboxEl.children('.tooltip').hasClass('bottom-right')).toBeTruthy();
         });
 
-        it('should default to `top` when `auto` placement is set without a preference', function () {
+        it('should default to `top` when `auto` placement is set without a preference', function() {
           var elm = compileDirective('options-placement-auto');
           angular.element(elm[0]).triggerHandler('mouseenter');
 
@@ -978,30 +984,26 @@ describe('tooltip', function() {
     });
 
     describe('html', function() {
-
       it('should not compile inner content by default', function() {
-        var elm = compileDirective('default', {tooltip: {title: 'title<br>next'}});
+        var elm = compileDirective('default', { tooltip: { title: 'title<br>next' } });
         angular.element(elm[0]).triggerHandler('mouseenter');
         expect(sandboxEl.find('.tooltip-inner').html()).not.toBe('title<br>next');
       });
 
       it('should compile inner content if html is truthy', function() {
-        var elm = compileDirective('options-html', {html: 'true'});
+        var elm = compileDirective('options-html', { html: 'true' });
         angular.element(elm[0]).triggerHandler('mouseenter');
         expect(sandboxEl.find('.tooltip-inner').html()).toBe('title<br>next');
       });
 
       it('should NOT compile inner content if html is false', function() {
-        var elm = compileDirective('options-html', {html: 'false'});
+        var elm = compileDirective('options-html', { html: 'false' });
         angular.element(elm[0]).triggerHandler('mouseenter');
         expect(sandboxEl.find('.tooltip-inner').html()).not.toBe('title<br>next');
       });
-
-
     });
 
     describe('template', function() {
-
       it('should support custom template', function() {
         $templateCache.put('custom', '<div class="tooltip"><div class="tooltip-inner">foo: {{title}}</div></div>');
         var elm = compileDirective('options-template');
@@ -1010,14 +1012,21 @@ describe('tooltip', function() {
       });
 
       it('should support custom template loaded by ngInclude', function() {
-        $templateCache.put('custom', [200, '<div class="tooltip"><div class="tooltip-inner">foo: {{title}}</div></div>', {}, 'OK']);
+        $templateCache.put('custom', [
+          200,
+          '<div class="tooltip"><div class="tooltip-inner">foo: {{title}}</div></div>',
+          {},
+          'OK'
+        ]);
         var elm = compileDirective('options-template');
         angular.element(elm[0]).triggerHandler('mouseenter');
         expect(sandboxEl.find('.tooltip-inner').text()).toBe('foo: ' + scope.tooltip.title);
       });
 
       it('should request custom template via $http', function() {
-        $httpBackend.expectGET('custom').respond(200, '<div class="tooltip"><div class="tooltip-inner">foo: {{title}}</div></div>');
+        $httpBackend
+          .expectGET('custom')
+          .respond(200, '<div class="tooltip"><div class="tooltip-inner">foo: {{title}}</div></div>');
         var elm = compileDirective('options-template');
         $httpBackend.flush();
         angular.element(elm[0]).triggerHandler('mouseenter');
@@ -1025,7 +1034,9 @@ describe('tooltip', function() {
       });
 
       it('should request custom template via $http only once', function() {
-        $httpBackend.expectGET('custom').respond(200, '<div class="tooltip"><div class="tooltip-inner">foo: {{title}}</div></div>');
+        $httpBackend
+          .expectGET('custom')
+          .respond(200, '<div class="tooltip"><div class="tooltip-inner">foo: {{title}}</div></div>');
         var elm = compileDirective('options-template');
         var elmBis = compileDirective('options-template');
         $httpBackend.flush();
@@ -1034,7 +1045,10 @@ describe('tooltip', function() {
       });
 
       it('should support template with ngRepeat', function() {
-        $templateCache.put('custom', '<div class="tooltip"><div class="tooltip-inner"><ul><li ng-repeat="item in items">{{item}}</li></ul></div></div>');
+        $templateCache.put(
+          'custom',
+          '<div class="tooltip"><div class="tooltip-inner"><ul><li ng-repeat="item in items">{{item}}</li></ul></div></div>'
+        );
         var elm = compileDirective('options-template');
         angular.element(elm[0]).triggerHandler('mouseenter');
         expect(sandboxEl.find('.tooltip-inner').text()).toBe('foobarbaz');
@@ -1045,7 +1059,10 @@ describe('tooltip', function() {
       });
 
       it('should support template with ngClick', function() {
-        $templateCache.put('custom', '<div class="tooltip"><div class="tooltip-inner"><a class="btn" ng-click="tooltip.counter=tooltip.counter+1">click me</a></div></div>');
+        $templateCache.put(
+          'custom',
+          '<div class="tooltip"><div class="tooltip-inner"><a class="btn" ng-click="tooltip.counter=tooltip.counter+1">click me</a></div></div>'
+        );
         var elm = compileDirective('options-template');
         angular.element(elm[0]).triggerHandler('mouseenter');
         expect(angular.element(sandboxEl.find('.tooltip-inner > .btn')[0]).triggerHandler('click'));
@@ -1056,25 +1073,25 @@ describe('tooltip', function() {
         expect(angular.element(sandboxEl.find('.tooltip-inner > .btn')[0]).triggerHandler('click'));
         expect(scope.tooltip.counter).toBe(2);
       });
-
     });
 
     describe('titleTemplate', function() {
-
       it('should support custom titleTemplate', function() {
         $templateCache.put('custom', 'foo: {{title}}');
         var elm = compileDirective('options-titleTemplate');
         angular.element(elm[0]).triggerHandler('mouseenter');
-         expect(sandboxEl.find('.tooltip-inner').text()).toBe('foo: ' + scope.tooltip.title);
+        expect(sandboxEl.find('.tooltip-inner').text()).toBe('foo: ' + scope.tooltip.title);
       });
-
     });
 
     describe('container', function() {
       it('accepts element object', function() {
         var testElm = angular.element('<div></div>');
         sandboxEl.append(testElm);
-        var myTooltip = $tooltip(sandboxEl, angular.extend({}, templates['default'].scope.tooltip, {container: testElm}));
+        var myTooltip = $tooltip(
+          sandboxEl,
+          angular.extend({}, templates['default'].scope.tooltip, { container: testElm })
+        );
         scope.$digest();
         myTooltip.show();
         $animate.flush();
@@ -1084,7 +1101,10 @@ describe('tooltip', function() {
       it('should be contained by element specified in data-container', function() {
         var testElm = angular.element('<div id="testElm"></div>');
         sandboxEl.append(testElm);
-        var elm = compileDirective('options-container', angular.extend({}, templates['default'].scope.tooltip, {container: '#testElm'}));
+        var elm = compileDirective(
+          'options-container',
+          angular.extend({}, templates['default'].scope.tooltip, { container: '#testElm' })
+        );
         expect(testElm.children('.tooltip').length).toBe(0);
         angular.element(elm[0]).triggerHandler('mouseenter');
         $animate.flush();
@@ -1092,17 +1112,19 @@ describe('tooltip', function() {
       });
 
       it('should belong to sandbox when data-container is falsy', function() {
-        var elm = compileDirective('options-container', angular.extend({}, templates['default'].scope.tooltip, {container: 'false'}));
+        var elm = compileDirective(
+          'options-container',
+          angular.extend({}, templates['default'].scope.tooltip, { container: 'false' })
+        );
         expect(sandboxEl.children('.tooltip').length).toBe(0);
         angular.element(elm[0]).triggerHandler('mouseenter');
         $animate.flush();
         expect(sandboxEl.children('.tooltip').length).toBe(1);
       });
-
     });
 
-    describe('viewport', function () {
-      it('should default the viewport to body with a padding of 0 when not set', function () {
+    describe('viewport', function() {
+      it('should default the viewport to body with a padding of 0 when not set', function() {
         var myTooltip = $tooltip(sandboxEl, {});
         var tipOptions = myTooltip.$options;
 
@@ -1110,7 +1132,7 @@ describe('tooltip', function() {
         expect(tipOptions.viewport.padding).toBe(0);
       });
 
-      it('should support using an element', function () {
+      it('should support using an element', function() {
         var myViewport = angular.element(document.createElement('div'));
         var myTooltip = $tooltip(sandboxEl, { viewport: myViewport });
         var tipOptions = myTooltip.$options;
@@ -1118,7 +1140,7 @@ describe('tooltip', function() {
         expect(tipOptions.viewport).toBe(myViewport);
       });
 
-      it('should support specifying a selector and padding', function () {
+      it('should support specifying a selector and padding', function() {
         var myViewport = { selector: '#someSelector', padding: 100 };
         var myTooltip = $tooltip(sandboxEl, { viewport: myViewport });
         var tipOptions = myTooltip.$options;
@@ -1129,7 +1151,7 @@ describe('tooltip', function() {
     });
   });
 
-  describe('placements', function () {
+  describe('placements', function() {
     function calculatePlacements(placements, styleEl) {
       if (styleEl) {
         bodyEl.append(styleEl);
@@ -1144,7 +1166,7 @@ describe('tooltip', function() {
         var tipElement = sandboxEl.children('.tooltip')[0];
         placements[placement] = {
           top: tipElement.style.top,
-          left: tipElement.style.left,
+          left: tipElement.style.left
         };
 
         // Clear the sandbox after we've rendered
@@ -1158,172 +1180,187 @@ describe('tooltip', function() {
       return placements;
     }
 
-    var standardPlacements,
-        autoPlacements,
-        viewportPlacements;
+    var standardPlacements, autoPlacements, viewportPlacements;
 
-    beforeEach(function () {
-      var styleEl = $('<style>' +
-                      '    body { padding: 0; margin: 0; } ' +
-                      '    #sandbox { height: 100px; width: 100px; } ' +
-                      '    a { display: inline-block; height: 20px; width: 20px; } ' +
-                      '    .tooltip { height: 100px; width: 200px; position: absolute; } ' +  // Tooltip is purposely bigger than sandbox to trigger auto placement
-                      '</style>');
+    beforeEach(function() {
+      var styleEl = $(
+        '<style>' +
+        '    body { padding: 0; margin: 0; } ' +
+        '    #sandbox { height: 100px; width: 100px; } ' +
+        '    a { display: inline-block; height: 20px; width: 20px; } ' +
+        '    .tooltip { height: 100px; width: 200px; position: absolute; } ' + // Tooltip is purposely bigger than sandbox to trigger auto placement
+          '</style>'
+      );
 
-      standardPlacements = calculatePlacements({
-        'options-placement-top': {},
-        'options-placement-right': {},
-        'options-placement-bottom': {},
-        'options-placement-left': {},
-        'options-placement-exotic-top-left': {},
-        'options-placement-exotic-top-right': {},
-        'options-placement-exotic-bottom-left': {},
-        'options-placement-exotic-bottom-right': {},
-        'options-placement-exotic-right-top': {},
-        'options-placement-exotic-right-bottom': {},
-        'options-placement-exotic-left-top': {},
-        'options-placement-exotic-left-bottom': {}
-      }, styleEl);
+      standardPlacements = calculatePlacements(
+        {
+          'options-placement-top': {},
+          'options-placement-right': {},
+          'options-placement-bottom': {},
+          'options-placement-left': {},
+          'options-placement-exotic-top-left': {},
+          'options-placement-exotic-top-right': {},
+          'options-placement-exotic-bottom-left': {},
+          'options-placement-exotic-bottom-right': {},
+          'options-placement-exotic-right-top': {},
+          'options-placement-exotic-right-bottom': {},
+          'options-placement-exotic-left-top': {},
+          'options-placement-exotic-left-bottom': {}
+        },
+        styleEl
+      );
 
-      autoPlacements = calculatePlacements({
-        'options-placement-auto-top': {},
-        'options-placement-auto-right': {},
-        'options-placement-auto-bottom': {},
-        'options-placement-auto-left': {},
-        'options-placement-auto-exotic-top-left': {},
-        'options-placement-auto-exotic-top-right': {},
-        'options-placement-auto-exotic-bottom-left': {},
-        'options-placement-auto-exotic-bottom-right': {}
-      }, styleEl);
+      autoPlacements = calculatePlacements(
+        {
+          'options-placement-auto-top': {},
+          'options-placement-auto-right': {},
+          'options-placement-auto-bottom': {},
+          'options-placement-auto-left': {},
+          'options-placement-auto-exotic-top-left': {},
+          'options-placement-auto-exotic-top-right': {},
+          'options-placement-auto-exotic-bottom-left': {},
+          'options-placement-auto-exotic-bottom-right': {}
+        },
+        styleEl
+      );
 
       // Change the style for viewport testing
-      styleEl = $('<style>' +
-                  '    body { padding: 0; margin: 0; } ' +
-                  '    #sandbox { height: 200px; width: 200px; position: absolute; top: 100px; left: 100px; } ' +
-                  '    a { display: inline-block; height: 20px; width: 20px; position: absolute; } ' +
-                  '    .tooltip { height: 100px; width: 100px; position: absolute; } ' +
-                  '    a[data-placement="top"] { bottom: 0; left: 0; } ' +
-                  '    a[data-placement="right"] { top: 0; left: 0; } ' +
-                  '    a[data-placement="bottom"] { top: 0; right: 0; } ' +
-                  '    a[data-placement="left"] { bottom: 0; right: 0; } ' +
-                  '</style>');
+      styleEl = $(
+        '<style>' +
+          '    body { padding: 0; margin: 0; } ' +
+          '    #sandbox { height: 200px; width: 200px; position: absolute; top: 100px; left: 100px; } ' +
+          '    a { display: inline-block; height: 20px; width: 20px; position: absolute; } ' +
+          '    .tooltip { height: 100px; width: 100px; position: absolute; } ' +
+          '    a[data-placement="top"] { bottom: 0; left: 0; } ' +
+          '    a[data-placement="right"] { top: 0; left: 0; } ' +
+          '    a[data-placement="bottom"] { top: 0; right: 0; } ' +
+          '    a[data-placement="left"] { bottom: 0; right: 0; } ' +
+          '</style>'
+      );
 
-      viewportPlacements = calculatePlacements({
-        'options-placement-viewport-top': {},
-        'options-placement-viewport-right': {},
-        'options-placement-viewport-bottom': {},
-        'options-placement-viewport-left': {},
-        'options-placement-viewport-padding': {},
-        'options-placement-viewport-exotic': {}
-      }, styleEl);
+      viewportPlacements = calculatePlacements(
+        {
+          'options-placement-viewport-top': {},
+          'options-placement-viewport-right': {},
+          'options-placement-viewport-bottom': {},
+          'options-placement-viewport-left': {},
+          'options-placement-viewport-padding': {},
+          'options-placement-viewport-exotic': {}
+        },
+        styleEl
+      );
     });
 
-    describe('default placement', function () {
-      it('should be placed off screen till its been positioned', inject(function (dimensions) {
-        // Spy on setOffset and make it do nothing.  That way
-        // the initial position is maintained.
-        spyOn(dimensions, 'setOffset').and.callFake(function () {});
+    describe('default placement', function() {
+      it(
+        'should be placed off screen till its been positioned',
+        inject(function(dimensions) {
+          // Spy on setOffset and make it do nothing.  That way
+          // the initial position is maintained.
+          spyOn(dimensions, 'setOffset').and.callFake(function() {});
 
-        var elm = compileDirective('options-placement-top');
-        angular.element(elm[0]).triggerHandler('mouseenter');
+          var elm = compileDirective('options-placement-top');
+          angular.element(elm[0]).triggerHandler('mouseenter');
 
-        var tip = sandboxEl.children('.tooltip')[0];
-        expect(tip.style.top).toBe('-9999px');
-        expect(tip.style.left).toBe('-9999px');
-      }));
+          var tip = sandboxEl.children('.tooltip')[0];
+          expect(tip.style.top).toBe('-9999px');
+          expect(tip.style.left).toBe('-9999px');
+        })
+      );
 
-      it('should have the correct width when right:0 is previously set for the tooltip', inject(function (dimensions) {
-        bodyEl.append('<style>' +
-                      '    .tooltip { position: absolute; right: 0; } ' +
-                      '</style>');
+      it(
+        'should have the correct width when right:0 is previously set for the tooltip',
+        inject(function(dimensions) {
+          bodyEl.append('<style>' + '    .tooltip { position: absolute; right: 0; } ' + '</style>');
 
-        var elm = compileDirective('options-placement-top');
-        angular.element(elm[0]).triggerHandler('mouseenter');
+          var elm = compileDirective('options-placement-top');
+          angular.element(elm[0]).triggerHandler('mouseenter');
 
-        var tip = sandboxEl.children('.tooltip')[0];
-        expect(tip.offsetWidth <= 500).toBe(true);
-      }));
+          var tip = sandboxEl.children('.tooltip')[0];
+          expect(tip.offsetWidth <= 500).toBe(true);
+        })
+      );
     });
 
     describe('standard placements', function() {
-      it('should position the tooltip above the target when placement is `top`', function () {
+      it('should position the tooltip above the target when placement is `top`', function() {
         var placement = standardPlacements['options-placement-top'];
 
         expect(placement.top).toBe('-100px');
         expect(placement.left).toBe('-90px');
       });
 
-      it('should position the tooltip to the right of the target when placement is `right`', function () {
+      it('should position the tooltip to the right of the target when placement is `right`', function() {
         var placement = standardPlacements['options-placement-right'];
 
         expect(placement.top).toBe('-40px');
         expect(placement.left).toBe('20px');
       });
 
-      it('should position the tooltip below the target when placement is `bottom`', function () {
+      it('should position the tooltip below the target when placement is `bottom`', function() {
         var placement = standardPlacements['options-placement-bottom'];
 
         expect(placement.top).toBe('20px');
         expect(placement.left).toBe('-90px');
       });
 
-      it('should position the tooltip to the left of the target when placement is `left`', function () {
+      it('should position the tooltip to the left of the target when placement is `left`', function() {
         var placement = standardPlacements['options-placement-left'];
 
         expect(placement.top).toBe('-40px');
         expect(placement.left).toBe('-200px');
       });
 
-      it('should position the tooltip to the top-left of the target when placement is `top-left`', function () {
+      it('should position the tooltip to the top-left of the target when placement is `top-left`', function() {
         var placement = standardPlacements['options-placement-exotic-top-left'];
 
         expect(placement.top).toBe('-100px');
         expect(placement.left).toBe('0px');
       });
 
-      it('should position the tooltip to the top-right of the target when placement is `top-right`', function () {
+      it('should position the tooltip to the top-right of the target when placement is `top-right`', function() {
         var placement = standardPlacements['options-placement-exotic-top-right'];
 
         expect(placement.top).toBe('-100px');
         expect(placement.left).toBe('-180px');
       });
 
-      it('should position the tooltip to the bottom-left of the target when placement is `bottom-left`', function () {
+      it('should position the tooltip to the bottom-left of the target when placement is `bottom-left`', function() {
         var placement = standardPlacements['options-placement-exotic-bottom-left'];
 
         expect(placement.top).toBe('20px');
         expect(placement.left).toBe('0px');
       });
 
-      it('should position the tooltip to the bottom-right of the target when placement is `bottom-right`', function () {
+      it('should position the tooltip to the bottom-right of the target when placement is `bottom-right`', function() {
         var placement = standardPlacements['options-placement-exotic-bottom-right'];
 
         expect(placement.top).toBe('20px');
         expect(placement.left).toBe('-180px');
       });
 
-      it('should position the tooltip to the left-top of the target when placement is `left-top`', function () {
+      it('should position the tooltip to the left-top of the target when placement is `left-top`', function() {
         var placement = standardPlacements['options-placement-exotic-left-top'];
 
         expect(placement.top).toBe('-80px');
         expect(placement.left).toBe('-200px');
       });
 
-      it('should position the tooltip to the left-bottom of the target when placement is `left-bottom`', function () {
+      it('should position the tooltip to the left-bottom of the target when placement is `left-bottom`', function() {
         var placement = standardPlacements['options-placement-exotic-left-bottom'];
 
         expect(placement.top).toBe('0px');
         expect(placement.left).toBe('-200px');
       });
 
-      it('should position the tooltip to the right-top of the target when placement is `right-top`', function () {
+      it('should position the tooltip to the right-top of the target when placement is `right-top`', function() {
         var placement = standardPlacements['options-placement-exotic-right-top'];
 
         expect(placement.top).toBe('-80px');
         expect(placement.left).toBe('20px');
       });
 
-      it('should position the tooltip to the right-bottom of the target when placement is `right-bottom`', function () {
+      it('should position the tooltip to the right-bottom of the target when placement is `right-bottom`', function() {
         var placement = standardPlacements['options-placement-exotic-right-bottom'];
 
         expect(placement.top).toBe('0px');
@@ -1331,117 +1368,117 @@ describe('tooltip', function() {
       });
     });
 
-    describe('auto placements', function () {
-      it('should position the tooltip below the target when initial placement results in positioning outside its container', function () {
+    describe('auto placements', function() {
+      it('should position the tooltip below the target when initial placement results in positioning outside its container', function() {
         var autoTop = autoPlacements['options-placement-auto-top'];
         var bottom = standardPlacements['options-placement-bottom'];
 
         // top is offscreen, so it should swap to bottom and match the standard bottom
         expect(autoTop.top).toBe(bottom.top);
-        expect(autoTop.left).toBe(bottom.left)
+        expect(autoTop.left).toBe(bottom.left);
       });
 
-      it('should position the tooltip to the left of the target when initial placement results in positioning outside its container', function () {
+      it('should position the tooltip to the left of the target when initial placement results in positioning outside its container', function() {
         var autoRight = autoPlacements['options-placement-auto-right'];
         var left = standardPlacements['options-placement-left'];
 
         // right is offscreen, so it should swap to left and match the standard left
         expect(autoRight.top).toBe(left.top);
-        expect(autoRight.left).toBe(left.left)
+        expect(autoRight.left).toBe(left.left);
       });
 
-      it('should position the tooltip above the target when initial placement results in positioning outside its container', function () {
+      it('should position the tooltip above the target when initial placement results in positioning outside its container', function() {
         var autoBottom = autoPlacements['options-placement-auto-bottom'];
         var top = standardPlacements['options-placement-top'];
 
         // bottom is offscreen, so it should swap to top and match the standard top
         expect(autoBottom.top).toBe(top.top);
-        expect(autoBottom.left).toBe(top.left)
+        expect(autoBottom.left).toBe(top.left);
       });
 
-      it('should position the tooltip to the right of the target when initial placement results in positioning outside its container', function () {
+      it('should position the tooltip to the right of the target when initial placement results in positioning outside its container', function() {
         var autoLeft = autoPlacements['options-placement-auto-left'];
         var right = standardPlacements['options-placement-right'];
 
         // left is offscreen, so it should swap to right and match the standard right
         expect(autoLeft.top).toBe(right.top);
-        expect(autoLeft.left).toBe(right.left)
+        expect(autoLeft.left).toBe(right.left);
       });
 
-      it('should position the tooltip to the bottom-left of the target when initial placement results in positioning outside its container', function () {
+      it('should position the tooltip to the bottom-left of the target when initial placement results in positioning outside its container', function() {
         var autoTopRight = autoPlacements['options-placement-auto-exotic-top-right'];
         var bottomLeft = standardPlacements['options-placement-exotic-bottom-left'];
 
         // should swap to bottom-left and match the standard bottom-left
         expect(autoTopRight.top).toBe(bottomLeft.top);
-        expect(autoTopRight.left).toBe(bottomLeft.left)
+        expect(autoTopRight.left).toBe(bottomLeft.left);
       });
 
-      it('should position the tooltip to the bottom-right of the target when initial placement results in positioning outside its container', function () {
+      it('should position the tooltip to the bottom-right of the target when initial placement results in positioning outside its container', function() {
         var autoTopLeft = autoPlacements['options-placement-auto-exotic-top-left'];
         var bottomRight = standardPlacements['options-placement-exotic-bottom-right'];
 
         // should swap to bottom-right and match the standard bottom-right
         expect(autoTopLeft.top).toBe(bottomRight.top);
-        expect(autoTopLeft.left).toBe(bottomRight.left)
+        expect(autoTopLeft.left).toBe(bottomRight.left);
       });
 
-      it('should position the tooltip to the top-left of the target when initial placement results in positioning outside its container', function () {
+      it('should position the tooltip to the top-left of the target when initial placement results in positioning outside its container', function() {
         var autoBottomRight = autoPlacements['options-placement-auto-exotic-bottom-right'];
         var topLeft = standardPlacements['options-placement-exotic-top-left'];
 
         // should swap to top-left and match the standard top-left
         expect(autoBottomRight.top).toBe(topLeft.top);
-        expect(autoBottomRight.left).toBe(topLeft.left)
+        expect(autoBottomRight.left).toBe(topLeft.left);
       });
 
-      it('should position the tooltip to the top-left of the target when initial placement results in positioning outside its container', function () {
+      it('should position the tooltip to the top-left of the target when initial placement results in positioning outside its container', function() {
         var autoBottomLeft = autoPlacements['options-placement-auto-exotic-bottom-left'];
         var topRight = standardPlacements['options-placement-exotic-top-right'];
 
         // should swap to top-right and match the standard top-right
         expect(autoBottomLeft.top).toBe(topRight.top);
-        expect(autoBottomLeft.left).toBe(topRight.left)
+        expect(autoBottomLeft.left).toBe(topRight.left);
       });
     });
 
-    describe('viewport placements', function () {
-      it('should shift down when positioning results in being outsie of the viewport', function () {
+    describe('viewport placements', function() {
+      it('should shift down when positioning results in being outsie of the viewport', function() {
         var right = viewportPlacements['options-placement-viewport-right'];
 
         expect(right.top).toBe('0px');
         expect(right.left).toBe('20px');
       });
 
-      it('should shift left when positioning results in being outside of the viewport', function () {
+      it('should shift left when positioning results in being outside of the viewport', function() {
         var bottom = viewportPlacements['options-placement-viewport-bottom'];
 
         expect(bottom.top).toBe('20px');
         expect(bottom.left).toBe('100px');
       });
 
-      it('should shift right when positioning results in being outside of the viewport', function () {
+      it('should shift right when positioning results in being outside of the viewport', function() {
         var top = viewportPlacements['options-placement-viewport-top'];
 
         expect(top.top).toBe('80px');
         expect(top.left).toBe('0px');
       });
 
-      it('should shift up when positioning results in being outside of the viewport', function () {
+      it('should shift up when positioning results in being outside of the viewport', function() {
         var top = viewportPlacements['options-placement-viewport-left'];
 
         expect(top.top).toBe('100px');
         expect(top.left).toBe('80px');
       });
 
-      it('should use the padding to position the tooltip from the edge of the viewport', function () {
+      it('should use the padding to position the tooltip from the edge of the viewport', function() {
         var padding = viewportPlacements['options-placement-viewport-padding'];
 
         expect(padding.top).toBe('10px');
         expect(padding.left).toBe('20px');
       });
 
-      it('should ignore exotic placements', function () {
+      it('should ignore exotic placements', function() {
         var exotic = viewportPlacements['options-placement-viewport-exotic'];
 
         expect(exotic.top).toBe('20px');

@@ -1,11 +1,13 @@
 'use strict';
 
+import collapse from '../collapse';
+
 describe('collapse', function () {
 
   var $compile, $templateCache, $animate, scope, sandboxEl;
 
-  beforeEach(module('ngSanitize'));
-  beforeEach(module('mgcrea.ngStrap.collapse'));
+  beforeEach(angular.mock.module('ngSanitize'));
+  beforeEach(angular.mock.module(collapse));
 
   beforeEach(inject(function (_$rootScope_, _$compile_, _$templateCache_, _$animate_) {
     scope = _$rootScope_.$new();

@@ -1,11 +1,10 @@
 'use strict';
-// https://github.com/angular-ui/bootstrap/blob/master/src/tooltip/test/tooltip.spec.js
 
-describe('affix', function () {
+import affix from '../affix';
 
+describe('affix', function() {
   var $compile, scope, sandboxEl, $timeout;
   // var mouse = effroi.mouse;
-
 
   afterEach(function() {
     sandboxEl.remove();
@@ -15,23 +14,26 @@ describe('affix', function () {
   // Templates
 
   var templates = {
-    'default': {
-      element: '<div class="container" style="height: 200px;overflow: auto;" bs-affix-target>' +
-               '  <div style="height: 100px; background: red; margin-top:20px;" bs-affix data-offset-bottom="+250"></div>' +
-               '  <div style="height: 600px; background: blue;"></div>' +
-               '</div>'
+    default: {
+      element:
+        '<div class="container" style="height: 200px;overflow: auto;" bs-affix-target>' +
+        '  <div style="height: 100px; background: red; margin-top:20px;" bs-affix data-offset-bottom="+250"></div>' +
+        '  <div style="height: 600px; background: blue;"></div>' +
+        '</div>'
     },
-    'implicitWidth': {
-      element: '<div class="container" style="height: 200px;overflow: auto;" bs-affix-target>' +
-               '  <div style="width: 100px; height: 100px; background: red; margin-top:20px;" bs-affix data-offset-bottom="+250"></div>' +
-               '  <div style="height: 600px; background: blue;"></div>' +
-               '</div>'
+    implicitWidth: {
+      element:
+        '<div class="container" style="height: 200px;overflow: auto;" bs-affix-target>' +
+        '  <div style="width: 100px; height: 100px; background: red; margin-top:20px;" bs-affix data-offset-bottom="+250"></div>' +
+        '  <div style="height: 600px; background: blue;"></div>' +
+        '</div>'
     },
-    'noAddedInlineStyles': {
-      element: '<div class="container" style="height: 200px;overflow: auto;" bs-affix-target>' +
-               '  <div style="height: 100px; background: red; margin-top:20px;" bs-affix data-inline-styles="false" data-offset-bottom="+250"></div>' +
-               '  <div style="height: 600px; background: blue;"></div>' +
-               '</div>'
+    noAddedInlineStyles: {
+      element:
+        '<div class="container" style="height: 200px;overflow: auto;" bs-affix-target>' +
+        '  <div style="height: 100px; background: red; margin-top:20px;" bs-affix data-inline-styles="false" data-offset-bottom="+250"></div>' +
+        '  <div style="height: 600px; background: blue;"></div>' +
+        '</div>'
     }
   };
 
@@ -48,14 +50,15 @@ describe('affix', function () {
     scope = _$rootScope_;
     $compile = _$compile_;
     $timeout = _$timeout_;
-    sandboxEl = $('<div>').attr('id', 'sandbox').appendTo('body');
+    sandboxEl = $('<div>')
+      .attr('id', 'sandbox')
+      .appendTo('body');
   }
   // Tests
 
-  describe('default', function () {
-
-    beforeEach(module('ngSanitize'));
-    beforeEach(module('mgcrea.ngStrap.affix'));
+  describe('default', function() {
+    beforeEach(angular.mock.module('ngSanitize'));
+    beforeEach(angular.mock.module(affix));
 
     beforeEach(inject(sandboxSetup));
 
@@ -81,8 +84,8 @@ describe('affix', function () {
     it('should set affix-top class on top of scroll', function() {
       var scrollTarget = compileDirective('default');
       var affix = scrollTarget.find('[bs-affix]');
-      expect(affix).toHaveClass('affix-top');
-      expect(affix).not.toHaveClass('affix');
+      expect(affix.hasClass('affix-top')).toBe(true);
+      expect(affix.hasClass('affix')).toBe(false);
     });
 
     it('should set affix class', function(done) {
@@ -91,7 +94,7 @@ describe('affix', function () {
       scrollTarget.scrollTop(50);
 
       setTimeout(function() {
-        expect(affix).toHaveClass('affix');
+        expect(affix.hasClass('affix')).toBe(true);
         done();
       }, 0);
     });
@@ -122,9 +125,8 @@ describe('affix', function () {
   });
 
   describe('inline styles', function() {
-
-    beforeEach(module('ngSanitize'));
-    beforeEach(module('mgcrea.ngStrap.affix'));
+    beforeEach(angular.mock.module('ngSanitize'));
+    beforeEach(angular.mock.module(affix));
 
     beforeEach(inject(sandboxSetup));
 
@@ -146,23 +148,21 @@ describe('affix', function () {
     });
   });
 
-
-  describe('when the directive scope is destroyed', function(){
+  describe('when the directive scope is destroyed', function() {
     var $affix;
-    beforeEach(function(){
-      angular.module('test.mgcrea.ngStrap.affix', []).config(function($provide){
+    beforeEach(function() {
+      angular.angular.mock.module(affix, []).config(function($provide) {
         $affix = jasmine.createSpy('$affix');
         $provide.value('$affix', $affix);
       });
-
     });
-    beforeEach(module('ngSanitize'));
-    beforeEach(module('mgcrea.ngStrap.affix'));
-    beforeEach(module('test.mgcrea.ngStrap.affix'));
+    beforeEach(angular.mock.module('ngSanitize'));
+    beforeEach(angular.mock.module(affix));
+    beforeEach(angular.mock.module(`test.${affix}`));
 
     beforeEach(inject(sandboxSetup));
 
-    it('should call destory on the affix instance to remove event listeners and cleanup', function(){
+    it('should call destory on the affix instance to remove event listeners and cleanup', function() {
       var affixInstance = jasmine.createSpyObj('$affixInstance', ['destroy']);
       $affix.and.returnValue(affixInstance);
 
@@ -170,9 +170,6 @@ describe('affix', function () {
       expect($affix).toHaveBeenCalled();
       scope.$destroy();
       expect(affixInstance.destroy).toHaveBeenCalled();
-
     });
-
   });
-
 });

@@ -1,19 +1,23 @@
 'use strict';
-// https://github.com/angular-ui/bootstrap/blob/master/src/tooltip/test/tooltip.spec.js
 
-describe('affix', function () {
+import scrollspy from '../scrollspy';
 
+describe('affix', function() {
   var $compile, scope, sandboxEl;
   // var mouse = effroi.mouse;
 
-  beforeEach(module('ngSanitize'));
-  beforeEach(module('mgcrea.ngStrap.scrollspy'));
+  beforeEach(angular.mock.module('ngSanitize'));
+  beforeEach(angular.mock.module(scrollspy));
 
-  beforeEach(inject(function (_$rootScope_, _$compile_) {
-    scope = _$rootScope_.$new();
-    $compile = _$compile_;
-    sandboxEl = $('<div>').attr('id', 'sandbox').appendTo('body');
-  }));
+  beforeEach(
+    inject(function(_$rootScope_, _$compile_) {
+      scope = _$rootScope_.$new();
+      $compile = _$compile_;
+      sandboxEl = $('<div>')
+        .attr('id', 'sandbox')
+        .appendTo('body');
+    })
+  );
 
   afterEach(function() {
     sandboxEl.remove();
@@ -23,12 +27,9 @@ describe('affix', function () {
   // Templates
 
   var templates = {
-    'default': {
-      element: '<ul>' +
-               '  <li data-target="#modals" bs-scrollspy>' +
-               '    <a href="#modals">Modal</a>' +
-               '  </li>' +
-               '</ul>'
+    default: {
+      element:
+        '<ul>' + '  <li data-target="#modals" bs-scrollspy>' + '    <a href="#modals">Modal</a>' + '  </li>' + '</ul>'
     }
   };
 
@@ -43,9 +44,7 @@ describe('affix', function () {
 
   // Tests
 
-  describe('default', function () {
-
-
+  describe('default', function() {
     it('should support window.scrollTo', function() {
       var elm = compileDirective('default');
       // var windowEl = angular.element(window);
@@ -68,9 +67,9 @@ describe('affix', function () {
       // IE 9 throws an error if we use 'this' instead of '$scrollspy'
       // in the scroll element click handler
       var elm = compileDirective('default');
-      expect(function() { angular.element(window).triggerHandler('click'); }).not.toThrow();
+      expect(function() {
+        angular.element(window).triggerHandler('click');
+      }).not.toThrow();
     });
-
   });
-
 });

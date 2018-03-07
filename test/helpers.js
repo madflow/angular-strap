@@ -1,7 +1,6 @@
 'use strict';
 
 beforeEach(function() {
-  
   jasmine.addMatchers({
     toEquals: function(util, customEqualityTesters) {
       return {
@@ -63,3 +62,5 @@ function dd() {
   console.log(stack.join('\n'));
   process.exit(1);
 }
+
+export { countScopes, d, dd };

@@ -1,56 +1,49 @@
 'use strict';
 
-import angular from 'angular';
-import jQuery from 'jquery';
 import modal from '../modal';
 import templates from '../../../dist/modules/modal.tpl';
-const $ = jQuery;
-
-function countScopes(s, count) {
-  if (s !== null) {
-    s = s.$$childHead;
-    while (s !== null) {
-      count = countScopes(s, count);
-      s = s.$$nextSibling;
-    }
-  }
-  return ++count;
-}
 
 describe('modal', function() {
-
-  var bodyEl = $('body'), sandboxEl;
+  var bodyEl = $('body'),
+    sandboxEl;
   var $rootScope, $compile, $templateCache, $$rAF, $animate, $timeout, $httpBackend, $modal, scope;
 
   beforeEach(angular.mock.module('ngSanitize'));
   beforeEach(angular.mock.module('ngAnimate'));
   beforeEach(angular.mock.module('ngAnimateMock'));
   beforeEach(angular.mock.module(modal));
-  beforeEach(angular.mock.module(function($controllerProvider) {
-    $controllerProvider.register('MyModalController', function($scope) {
-      $scope.title = 'foo';
-      $scope.content = 'bar';
-    });
-  }));
+  beforeEach(
+    angular.mock.module(function($controllerProvider) {
+      $controllerProvider.register('MyModalController', function($scope) {
+        $scope.title = 'foo';
+        $scope.content = 'bar';
+      });
+    })
+  );
 
-  beforeEach(inject(function($injector) {
-    $rootScope = $injector.get('$rootScope');
-    $compile = $injector.get('$compile');
-    $templateCache = $injector.get('$templateCache');
-    $$rAF = $injector.get('$$rAF');
-    $animate = $injector.get('$animate');
-    $timeout = $injector.get('$timeout');
-    var flush = $animate.flush || $animate.triggerCallbacks;
-    $animate.flush = function() {
-      flush.call($animate); if(!$animate.triggerCallbacks) $timeout.flush();
-    };
-    $httpBackend = $injector.get('$httpBackend');
-    $modal = $injector.get('$modal');
+  beforeEach(
+    inject(function($injector) {
+      $rootScope = $injector.get('$rootScope');
+      $compile = $injector.get('$compile');
+      $templateCache = $injector.get('$templateCache');
+      $$rAF = $injector.get('$$rAF');
+      $animate = $injector.get('$animate');
+      $timeout = $injector.get('$timeout');
+      var flush = $animate.flush || $animate.triggerCallbacks;
+      $animate.flush = function() {
+        flush.call($animate);
+        if (!$animate.triggerCallbacks) $timeout.flush();
+      };
+      $httpBackend = $injector.get('$httpBackend');
+      $modal = $injector.get('$modal');
 
-    bodyEl.html('');
-    sandboxEl = $('<div>').attr('id', 'sandbox').appendTo(bodyEl);
-    scope = $rootScope.$new();
-  }));
+      bodyEl.html('');
+      sandboxEl = $('<div>')
+        .attr('id', 'sandbox')
+        .appendTo(bodyEl);
+      scope = $rootScope.$new();
+    })
+  );
 
   afterEach(function() {
     scope.$destroy();
@@ -60,24 +53,26 @@ describe('modal', function() {
   // Templates
 
   var templates = {
-    'default': {
-      scope: {modal: {title: 'Title', content: 'Hello Modal!'}},
+    default: {
+      scope: { modal: { title: 'Title', content: 'Hello Modal!' } },
       element: '<a title="{{modal.title}}" data-content="{{modal.content}}" bs-modal>click me</a>'
     },
     'default-with-namespace': {
-      scope: {modal: {title: 'Title', content: 'Hello Modal!'}},
-      element: '<a title="{{modal.title}}" data-content="{{modal.content}}" bs-modal data-prefix-event="datepicker">click me</a>'
+      scope: { modal: { title: 'Title', content: 'Hello Modal!' } },
+      element:
+        '<a title="{{modal.title}}" data-content="{{modal.content}}" bs-modal data-prefix-event="datepicker">click me</a>'
     },
     'default-with-id': {
-      scope: {modal: {title: 'Title', content: 'Hello Modal!'}},
+      scope: { modal: { title: 'Title', content: 'Hello Modal!' } },
       element: '<a id="modal1" title="{{modal.title}}" data-content="{{modal.content}}" bs-modal>click me</a>'
     },
     'markup-scope': {
       element: '<a bs-modal="modal">click me</a>'
     },
     'markup-ngRepeat': {
-      scope: {items: [{name: 'foo', modal: {title: 'Title', content: 'Hello Modal!'}}]},
-      element: '<ul><li ng-repeat="item in items"><a title="{{item.modal.title}}" data-content="{{item.modal.content}}" bs-modal>{{item.name}}</a></li></ul>'
+      scope: { items: [{ name: 'foo', modal: { title: 'Title', content: 'Hello Modal!' } }] },
+      element:
+        '<ul><li ng-repeat="item in items"><a title="{{item.modal.title}}" data-content="{{item.modal.content}}" bs-modal>{{item.name}}</a></li></ul>'
     },
     'markup-ngClick-service': {
       element: '<a ng-click="showModal()">click me</a>'
@@ -92,7 +87,7 @@ describe('modal', function() {
       element: '<a data-placement="center" bs-modal="modal">click me</a>'
     },
     'options-html': {
-      scope: {modal: {title: 'title<br>next', content: 'content<br>next'}},
+      scope: { modal: { title: 'title<br>next', content: 'content<br>next' } },
       element: '<a title="{{modal.title}}" data-content="{{modal.content}}" data-html="{{html}}" bs-modal>click me</a>'
     },
     'options-backdrop': {
@@ -105,12 +100,14 @@ describe('modal', function() {
       element: '<a bs-modal="modal" data-container="{{container}}">click me</a>'
     },
     'options-template': {
-      scope: {modal: {title: 'Title', content: 'Hello Modal!', counter: 0}, items: ['foo', 'bar', 'baz']},
-      element: '<a title="{{modal.title}}" data-content="{{modal.content}}" data-template-url="custom" bs-modal>click me</a>'
+      scope: { modal: { title: 'Title', content: 'Hello Modal!', counter: 0 }, items: ['foo', 'bar', 'baz'] },
+      element:
+        '<a title="{{modal.title}}" data-content="{{modal.content}}" data-template-url="custom" bs-modal>click me</a>'
     },
     'options-contentTemplate': {
-      scope: {modal: {title: 'Title', content: 'Hello Modal!', counter: 0}, items: ['foo', 'bar', 'baz']},
-      element: '<a title="{{modal.title}}" data-content="{{modal.content}}" data-content-template="custom" bs-modal>click me</a>'
+      scope: { modal: { title: 'Title', content: 'Hello Modal!', counter: 0 }, items: ['foo', 'bar', 'baz'] },
+      element:
+        '<a title="{{modal.title}}" data-content="{{modal.content}}" data-content-template="custom" bs-modal>click me</a>'
     },
     'options-modalClass': {
       element: '<a bs-modal="modal" data-modal-class="my-custom-class">click me</a>'
@@ -122,11 +119,12 @@ describe('modal', function() {
       element: '<a bs-modal="modal" data-size="md">click me</a>'
     },
     'options-events': {
-      element: '<a bs-on-before-hide="onBeforeHide" bs-on-hide="onHide" bs-on-before-show="onBeforeShow" bs-on-show="onShow" bs-modal="modal">click me</a>'
+      element:
+        '<a bs-on-before-hide="onBeforeHide" bs-on-hide="onHide" bs-on-before-show="onBeforeShow" bs-on-show="onShow" bs-modal="modal">click me</a>'
     },
     'options-z-index': {
       element: '<a bs-modal="modal" data-z-index="{{zIndex}}">click me</a>'
-    },
+    }
   };
 
   function compileDirective(template, locals) {
@@ -141,7 +139,6 @@ describe('modal', function() {
   // Tests
 
   describe('with default template', function() {
-
     it('should open on click', function() {
       var elm = compileDirective('default');
       expect(sandboxEl.children('.modal').length).toBe(0);
@@ -177,11 +174,9 @@ describe('modal', function() {
       expect(sandboxEl.find('.modal-title').html()).toBe(scope.items[0].modal.title);
       expect(sandboxEl.find('.modal-body').html()).toBe(scope.items[0].modal.content);
     });
-
   });
 
   describe('using service', function() {
-
     it('should correctly open on next digest', function() {
       var myModal = $modal(templates['default'].scope.modal);
       scope.$digest();
@@ -201,7 +196,7 @@ describe('modal', function() {
 
     it('should correctly work with ngClick', function() {
       var elm = compileDirective('markup-ngClick-service');
-      var myModal = $modal(angular.extend({show: false}, templates['default'].scope.modal));
+      var myModal = $modal(angular.extend({ show: false }, templates['default'].scope.modal));
       scope.showModal = function() {
         myModal.$promise.then(myModal.show);
       };
@@ -213,7 +208,7 @@ describe('modal', function() {
     it('should correctly work with ngClick with an isolated scope', function() {
       scope = scope.$new(true);
       var elm = compileDirective('markup-ngClick-service');
-      var myModal = $modal(angular.extend({show: false, scope: scope}, templates['default'].scope.modal));
+      var myModal = $modal(angular.extend({ show: false, scope: scope }, templates['default'].scope.modal));
       scope.showModal = function() {
         myModal.$promise.then(myModal.show);
       };
@@ -231,11 +226,9 @@ describe('modal', function() {
       var myModal = $modal({ title: 'Title', content: 'Hello Modal!', element: sandboxEl });
       expect(myModal.$id).toBe('sandbox');
     });
-
   });
 
   describe('using scope helpers', function() {
-
     var elm, elmScope;
     beforeEach(function() {
       elm = compileDirective('default');
@@ -247,7 +240,9 @@ describe('modal', function() {
       expect(sandboxEl.children('.modal').length).toBe(0);
       expect(elmScope.$isShown).toBeFalsy();
       elmScope.$show();
-      try { $animate.flush(); } catch(err) {}
+      try {
+        $animate.flush();
+      } catch (err) {}
       scope.$digest();
       expect(sandboxEl.children('.modal').length).toBe(1);
       expect(elmScope.$isShown).toBeTruthy();
@@ -272,7 +267,9 @@ describe('modal', function() {
       expect(sandboxEl.children('.modal').length).toBe(0);
       expect(elmScope.$isShown).toBeFalsy();
       elmScope.$hide();
-      try { $animate.flush(); } catch(err) {}
+      try {
+        $animate.flush();
+      } catch (err) {}
       scope.$digest();
       expect(sandboxEl.children('.modal').length).toBe(0);
       expect(elmScope.$isShown).toBeFalsy();
@@ -282,7 +279,9 @@ describe('modal', function() {
       expect(sandboxEl.children('.modal').length).toBe(0);
       expect(elmScope.$isShown).toBeFalsy();
       elmScope.$show();
-      try { $animate.flush(); } catch(err) {}
+      try {
+        $animate.flush();
+      } catch (err) {}
       scope.$digest();
       expect(sandboxEl.children('.modal').length).toBe(1);
       expect(elmScope.$isShown).toBeTruthy();
@@ -291,11 +290,9 @@ describe('modal', function() {
       expect(sandboxEl.children('.modal').length).toBe(1);
       expect(elmScope.$isShown).toBeTruthy();
     });
-
   });
 
   describe('show / hide events', function() {
-
     it('should dispatch show and show.before events', function() {
       var myModal = $modal(templates['default'].scope.modal);
       var emit = spyOn(myModal.$scope, '$emit').and.callThrough();
@@ -322,7 +319,7 @@ describe('modal', function() {
     });
 
     it('should namespace show/hide events using the prefixEvent', function() {
-      var myModal = $modal(angular.extend({prefixEvent: 'alert'}, templates['default'].scope.modal));
+      var myModal = $modal(angular.extend({ prefixEvent: 'alert' }, templates['default'].scope.modal));
       var emit = spyOn(myModal.$scope, '$emit').and.callThrough();
       scope.$digest();
       myModal.hide();
@@ -343,7 +340,9 @@ describe('modal', function() {
       });
       var myModal = $modal(templates['default'].scope.modal);
       scope.$digest();
-      try { $animate.flush(); } catch(err) {}
+      try {
+        $animate.flush();
+      } catch (err) {}
     });
 
     it('should be able to cancel hide on hide.before event', function() {
@@ -361,7 +360,7 @@ describe('modal', function() {
 
     it('should call show.before event with modal element instance id', function() {
       var elm = compileDirective('default-with-id');
-      var id = "";
+      var id = '';
       scope.$on('modal.show.before', function(evt, modal) {
         id = modal.$id;
       });
@@ -399,28 +398,23 @@ describe('modal', function() {
       expect(hideBefore).toBe(true);
       expect(hide).toBe(true);
     });
-
   });
 
   describe('options', function() {
-
     describe('animation', function() {
-
       it('should default to `am-fade` animation', function() {
         var elm = compileDirective('default');
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.children('.modal').hasClass('am-fade')).toBe(true);
       });
-
     });
 
     describe('keyboard', function() {
-
       it('should dismiss and stopPropagation if ESC is pressed', function() {
         var myModal = $modal(templates['default'].scope.modal);
         scope.$digest();
         expect(bodyEl.children('.modal').length).toBe(1);
-        var evt = jQuery.Event( 'keyup', { keyCode: 27, which: 27 } );
+        var evt = jQuery.Event('keyup', { keyCode: 27, which: 27 });
         spyOn(evt, 'stopPropagation');
         myModal.$onKeyUp(evt);
         expect(bodyEl.children('.modal').length).toBe(0);
@@ -431,51 +425,47 @@ describe('modal', function() {
         var myModal = $modal(templates['default'].scope.modal);
         scope.$digest();
         myModal.hide();
-        var evt = jQuery.Event( 'keyup', { keyCode: 27, which: 27 } );
+        var evt = jQuery.Event('keyup', { keyCode: 27, which: 27 });
         spyOn(evt, 'stopPropagation');
         myModal.$onKeyUp(evt);
         expect(evt.stopPropagation).not.toHaveBeenCalled();
       });
 
-      // Note: modal.trigger(evt) does not trigger modal keyup handler, 
+      // Note: modal.trigger(evt) does not trigger modal keyup handler,
       // only modal.triggerHandler(evt) does
       it('should remove modal when data-keyboard is truthy', function() {
-        var elm = compileDirective('options-keyboard', {keyboard: 'true'});
+        var elm = compileDirective('options-keyboard', { keyboard: 'true' });
         expect(bodyEl.find('.modal').length).toBe(0);
         angular.element(elm[0]).triggerHandler('click');
         var modal = bodyEl.find('.modal');
         expect(modal.length).toBe(1);
-        var evt = jQuery.Event( 'keyup', { keyCode: 27, which: 27 } );
-        modal.triggerHandler(evt)
+        var evt = jQuery.Event('keyup', { keyCode: 27, which: 27 });
+        modal.triggerHandler(evt);
         expect(bodyEl.find('.modal').length).toBe(0);
       });
 
       it('should NOT remove modal when data-keyboard is falsy', function() {
-        var elm = compileDirective('options-keyboard', {keyboard: 'false'});
+        var elm = compileDirective('options-keyboard', { keyboard: 'false' });
         expect(bodyEl.find('.modal').length).toBe(0);
         angular.element(elm[0]).triggerHandler('click');
         var modal = bodyEl.find('.modal');
         expect(modal.length).toBe(1);
-        var evt = jQuery.Event( 'keyup', { keyCode: 27, which: 27 } );
-        modal.triggerHandler(evt)
+        var evt = jQuery.Event('keyup', { keyCode: 27, which: 27 });
+        modal.triggerHandler(evt);
         expect(bodyEl.find('.modal').length).toBe(1);
       });
-
     });
 
     describe('controller', function() {
-
       it('should properly invoke our passed controller', function() {
         var elm = compileDirective('options-controller');
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.modal-title').html()).toBe('foo');
         expect(sandboxEl.find('.modal-body').html()).toBe('bar');
       });
-
     });
 
     describe('placement', function() {
-
       it('should default to `top` placement', function() {
         var elm = compileDirective('default');
         angular.element(elm[0]).triggerHandler('click');
@@ -493,27 +483,25 @@ describe('modal', function() {
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.children('.modal').hasClass('center')).toBe(true);
       });
-
     });
 
     describe('html', function() {
-
       it('should NOT compile inner content by default', function() {
-        var elm = compileDirective('default', {modal: {title: 'title<br>next', content: 'content<br>next</span>'}});
+        var elm = compileDirective('default', { modal: { title: 'title<br>next', content: 'content<br>next</span>' } });
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.modal-title').html()).not.toBe('title<br>next');
         expect(sandboxEl.find('.modal-body').html()).not.toBe('content<br>next');
       });
 
       it('should compile inner content if html is true', function() {
-        var elm = compileDirective('options-html', {html: true});
+        var elm = compileDirective('options-html', { html: true });
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.modal-title').html()).toBe('title<br>next');
         expect(sandboxEl.find('.modal-body').html()).toBe('content<br>next');
       });
 
       it('should compile inner content if html is truthy', function() {
-        var elm = compileDirective('options-html', {html: 'true'});
+        var elm = compileDirective('options-html', { html: 'true' });
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.modal-title').html()).toBe('title<br>next');
         expect(sandboxEl.find('.modal-body').html()).toBe('content<br>next');
@@ -521,37 +509,35 @@ describe('modal', function() {
 
       // we'll test all permutations of falsy here ('False', 0, ''). They all use the same regex, so once should suffice
       it('should NOT compile inner content if html is false', function() {
-        var elm = compileDirective('options-html', {html: false});
+        var elm = compileDirective('options-html', { html: false });
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.modal-title').html()).not.toBe('title<br>next');
         expect(sandboxEl.find('.modal-body').html()).not.toBe('content<br>next');
       });
 
       it('should NOT compile inner content if html is False', function() {
-        var elm = compileDirective('options-html', {html: 'False'});
+        var elm = compileDirective('options-html', { html: 'False' });
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.modal-title').html()).not.toBe('title<br>next');
         expect(sandboxEl.find('.modal-body').html()).not.toBe('content<br>next');
       });
 
       it('should NOT compile inner content if html is 0', function() {
-        var elm = compileDirective('options-html', {html: '0'});
+        var elm = compileDirective('options-html', { html: '0' });
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.modal-title').html()).not.toBe('title<br>next');
         expect(sandboxEl.find('.modal-body').html()).not.toBe('content<br>next');
       });
 
       it('should NOT compile inner content if html is empty string', function() {
-        var elm = compileDirective('options-html', {html: ''});
+        var elm = compileDirective('options-html', { html: '' });
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.modal-title').html()).not.toBe('title<br>next');
         expect(sandboxEl.find('.modal-body').html()).not.toBe('content<br>next');
       });
-
     });
 
     describe('template', function() {
-
       it('should support custom template', function() {
         $templateCache.put('custom', '<div class="modal"><div class="modal-inner">foo: {{title}}</div></div>');
         var elm = compileDirective('options-template');
@@ -560,14 +546,21 @@ describe('modal', function() {
       });
 
       it('should support custom template loaded by ngInclude', function() {
-        $templateCache.put('custom', [200, '<div class="modal"><div class="modal-inner">foo: {{title}}</div></div>', {}, 'OK']);
+        $templateCache.put('custom', [
+          200,
+          '<div class="modal"><div class="modal-inner">foo: {{title}}</div></div>',
+          {},
+          'OK'
+        ]);
         var elm = compileDirective('options-template');
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.modal-inner').text()).toBe('foo: ' + scope.modal.title);
       });
 
       it('should request custom template via $http', function() {
-        $httpBackend.expectGET('custom').respond(200,  '<div class="modal"><div class="modal-inner">foo: {{title}}</div></div>');
+        $httpBackend
+          .expectGET('custom')
+          .respond(200, '<div class="modal"><div class="modal-inner">foo: {{title}}</div></div>');
         var elm = compileDirective('options-template');
         $httpBackend.flush();
         angular.element(elm[0]).triggerHandler('click');
@@ -575,7 +568,9 @@ describe('modal', function() {
       });
 
       it('should request custom template via $http only once', function() {
-        $httpBackend.expectGET('custom').respond(200,  '<div class="modal"><div class="modal-inner">foo: {{title}}</div></div>');
+        $httpBackend
+          .expectGET('custom')
+          .respond(200, '<div class="modal"><div class="modal-inner">foo: {{title}}</div></div>');
         var elm = compileDirective('options-template');
         var elmBis = compileDirective('options-template');
         $httpBackend.flush();
@@ -584,7 +579,10 @@ describe('modal', function() {
       });
 
       it('should support template with ngRepeat', function() {
-        $templateCache.put('custom', '<div class="modal"><div class="modal-inner"><ul><li ng-repeat="item in items">{{item}}</li></ul></div></div>');
+        $templateCache.put(
+          'custom',
+          '<div class="modal"><div class="modal-inner"><ul><li ng-repeat="item in items">{{item}}</li></ul></div></div>'
+        );
         var elm = compileDirective('options-template');
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.modal-inner').text()).toBe('foobarbaz');
@@ -595,7 +593,10 @@ describe('modal', function() {
       });
 
       it('should support template with ngClick', function() {
-        $templateCache.put('custom', '<div class="modal"><div class="modal-inner"><a class="btn" ng-click="modal.counter=modal.counter+1">click me</a></div></div>');
+        $templateCache.put(
+          'custom',
+          '<div class="modal"><div class="modal-inner"><a class="btn" ng-click="modal.counter=modal.counter+1">click me</a></div></div>'
+        );
         var elm = compileDirective('options-template');
         angular.element(elm[0]).triggerHandler('click');
         expect(angular.element(sandboxEl.find('.modal-inner > .btn')[0]).triggerHandler('click'));
@@ -611,7 +612,10 @@ describe('modal', function() {
         var scopeCount = countScopes(scope, 0);
         var originalScope = scope;
         scope = scope.$new();
-        $templateCache.put('custom', '<div class="modal"><div class="modal-inner"><div ng-if="1===1">Fake element to force creation of a new $scope</div><div class="btn" ng-click="$hide()"></div></div></div>');
+        $templateCache.put(
+          'custom',
+          '<div class="modal"><div class="modal-inner"><div ng-if="1===1">Fake element to force creation of a new $scope</div><div class="btn" ng-click="$hide()"></div></div></div>'
+        );
         var elm = compileDirective('options-template');
 
         // We are only destroying the modal element before showing another
@@ -643,25 +647,22 @@ describe('modal', function() {
         // scope count should be the same as it was before directive was initialized
         expect(countScopes(scope, 0)).toBe(scopeCount);
       });
-
     });
 
     describe('contentTemplate', function() {
-
       it('should support custom contentTemplate', function() {
         $templateCache.put('custom', 'baz: {{title}}');
         var elm = compileDirective('options-contentTemplate');
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.modal-body').text()).toBe('baz: ' + scope.modal.title);
       });
-
     });
 
     describe('container', function() {
       it('accepts element object', function() {
         var testElm = angular.element('<div></div>');
         sandboxEl.append(testElm);
-        var myModal = $modal(angular.extend({}, templates['default'].scope.modal, {container: testElm}));
+        var myModal = $modal(angular.extend({}, templates['default'].scope.modal, { container: testElm }));
         scope.$digest();
         expect(angular.element(testElm.children()[0]).hasClass('modal')).toBeTruthy();
       });
@@ -669,17 +670,19 @@ describe('modal', function() {
       it('accepts data-container element selector', function() {
         var testElm = angular.element('<div id="testElm"></div>');
         sandboxEl.append(testElm);
-        var elm = compileDirective('options-container', {container: '#testElm'});
+        var elm = compileDirective('options-container', { container: '#testElm' });
         angular.element(elm[0]).triggerHandler('click');
         expect(angular.element(testElm.children()[0]).hasClass('modal')).toBeTruthy();
       });
 
       it('should belong to sandbox when data-container is falsy', function() {
-        var elm = compileDirective('options-container', angular.extend({}, templates['default'].scope.modal, {container: 'false'}));
+        var elm = compileDirective(
+          'options-container',
+          angular.extend({}, templates['default'].scope.modal, { container: 'false' })
+        );
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.modal').length).toBe(1);
       });
-
     });
 
     describe('backdrop', function() {
@@ -691,14 +694,14 @@ describe('modal', function() {
       });
 
       it('should show backdrop if data-backdrop is truthy', function() {
-        var elm = compileDirective('options-backdrop', {backdrop: 'anything'});
+        var elm = compileDirective('options-backdrop', { backdrop: 'anything' });
         expect(bodyEl.find('.modal-backdrop').length).toBe(0);
         angular.element(elm[0]).triggerHandler('click');
         expect(bodyEl.find('.modal-backdrop').length).toBe(1);
       });
 
       it('should not show backdrop if data-backdrop is false', function() {
-        var elm = compileDirective('options-backdrop', {backdrop: 'false'});
+        var elm = compileDirective('options-backdrop', { backdrop: 'false' });
         expect(bodyEl.find('.modal-backdrop').length).toBe(0);
         angular.element(elm[0]).triggerHandler('click');
         expect(bodyEl.find('.modal-backdrop').length).toBe(0);
@@ -725,7 +728,6 @@ describe('modal', function() {
         expect(angular.element(backdrop2).css('z-index')).toBe('1060');
         expect(angular.element(modal2).css('z-index')).toBe('1070');
       });
-
     });
 
     describe('modalClass', function() {
@@ -760,11 +762,9 @@ describe('modal', function() {
         angular.element(elm[0]).triggerHandler('click');
         expect(sandboxEl.find('.modal-dialog').hasClass('modal-lg')).toBe(false);
       });
-
     });
 
     describe('zIndex', function() {
-
       it('does not interfere with the default values', function() {
         var elm = compileDirective('default');
         angular.element(elm[0]).triggerHandler('click');
@@ -775,18 +775,16 @@ describe('modal', function() {
       });
 
       it('sets a custom z-index on a modal and decrements the backdrop z-index by 10', function() {
-        var elm = compileDirective('options-z-index', {zIndex: 2000});
+        var elm = compileDirective('options-z-index', { zIndex: 2000 });
         angular.element(elm[0]).triggerHandler('click');
         var modal = bodyEl.find('.modal')[0];
         var backdrop = bodyEl.find('.modal-backdrop')[0];
         expect(angular.element(modal).css('z-index')).toBe('2000');
         expect(angular.element(backdrop).css('z-index')).toBe('1990');
       });
-
     });
 
     describe('stackableModals', function() {
-
       it('remove class modal-open from body only when the last modal is closed', function() {
         var elm1 = compileDirective('default');
         var elm2 = compileDirective('default');
@@ -808,7 +806,6 @@ describe('modal', function() {
     });
 
     describe('onBeforeShow', function() {
-
       it('should invoke beforeShow event callback', function() {
         var beforeShow = false;
 
@@ -816,7 +813,7 @@ describe('modal', function() {
           beforeShow = true;
         }
 
-        var elm = compileDirective('options-events', {onBeforeShow: onBeforeShow});
+        var elm = compileDirective('options-events', { onBeforeShow: onBeforeShow });
 
         angular.element(elm[0]).triggerHandler('click');
 
@@ -825,7 +822,6 @@ describe('modal', function() {
     });
 
     describe('onShow', function() {
-
       it('should invoke show event callback', function() {
         var show = false;
 
@@ -833,7 +829,7 @@ describe('modal', function() {
           show = true;
         }
 
-        var elm = compileDirective('options-events', {onShow: onShow});
+        var elm = compileDirective('options-events', { onShow: onShow });
 
         angular.element(elm[0]).triggerHandler('click');
         $animate.flush();
@@ -843,7 +839,6 @@ describe('modal', function() {
     });
 
     describe('onBeforeHide', function() {
-
       it('should invoke beforeHide event callback', function() {
         var beforeHide = false;
 
@@ -851,7 +846,7 @@ describe('modal', function() {
           beforeHide = true;
         }
 
-        var elm = compileDirective('options-events', {onBeforeHide: onBeforeHide});
+        var elm = compileDirective('options-events', { onBeforeHide: onBeforeHide });
 
         angular.element(elm[0]).triggerHandler('click');
         angular.element(elm[0]).triggerHandler('click');
@@ -861,7 +856,6 @@ describe('modal', function() {
     });
 
     describe('onHide', function() {
-
       it('should invoke show event callback', function() {
         var hide = false;
 
@@ -869,7 +863,7 @@ describe('modal', function() {
           hide = true;
         }
 
-        var elm = compileDirective('options-events', {onHide: onHide});
+        var elm = compileDirective('options-events', { onHide: onHide });
 
         angular.element(elm[0]).triggerHandler('click');
         angular.element(elm[0]).triggerHandler('click');
@@ -878,7 +872,5 @@ describe('modal', function() {
         expect(hide).toBe(true);
       });
     });
-
   });
-
 });

@@ -177,50 +177,6 @@ angular
       }
       return offsetParent || docElement.documentElement;
     }
-
-    /**
-     * Provides equivalent of jQuery's height function
-     * @required-by bootstrap-affix
-     * @url http://api.jquery.com/height/
-     * @param element
-     * @param outer
-     */
-    fn.height = function(element, outer) {
-      var value = element.offsetHeight;
-
-      if (outer) {
-        value += fn.css(element, 'marginTop', true) + fn.css(element, 'marginBottom', true);
-      } else {
-        value -=
-          fn.css(element, 'paddingTop', true) +
-          fn.css(element, 'paddingBottom', true) +
-          fn.css(element, 'borderTopWidth', true) +
-          fn.css(element, 'borderBottomWidth', true);
-      }
-      return value;
-    };
-
-    /**
-     * Provides equivalent of jQuery's width function
-     * @required-by bootstrap-affix
-     * @url http://api.jquery.com/width/
-     * @param element
-     * @param outer
-     */
-    fn.width = function(element, outer) {
-      var value = element.offsetWidth;
-      if (outer) {
-        value += fn.css(element, 'marginLeft', true) + fn.css(element, 'marginRight', true);
-      } else {
-        value -=
-          fn.css(element, 'paddingLeft', true) +
-          fn.css(element, 'paddingRight', true) +
-          fn.css(element, 'borderLeftWidth', true) +
-          fn.css(element, 'borderRightWidth', true);
-      }
-      return value;
-    };
-
     return fn;
   });
 

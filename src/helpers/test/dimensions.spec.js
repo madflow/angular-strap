@@ -116,7 +116,7 @@ describe('dimensions', function () {
   });
 
 
-/**
+
   describe('fn.position', function () {
 
     it('should correctly match jQuery output for every template', function () {
@@ -132,21 +132,4 @@ describe('dimensions', function () {
 
   });
 
-  describe('fn.height, fn.width', function () {
-
-    it('should correctly match jQuery output for every template', function () {
-      angular.forEach(templates, function(template, name) {
-        var element = compileDirective(name);
-        if(!element.is('.btn')) element = element;
-        var height = dimensions.height(element[0]);
-        var jQueryHeight = element.height();
-        expect(height).toBe(jQueryHeight);
-        var width = dimensions.width(element[0]);
-        var jQueryWidth = element.width();
-        expect(width).toBe(jQueryWidth);
-      });
-    });
-
-  });
- */
 });

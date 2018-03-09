@@ -3,3 +3,6 @@
 # Tests failing
 
 * Datepicker
+* Tab
+* Timepicker
+* Tooltip

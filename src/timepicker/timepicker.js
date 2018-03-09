@@ -5,9 +5,7 @@ import dateParser from '../helpers/date-parser';
 import dateFormatter from '../helpers/date-formatter';
 import tooltip from '../tooltip/tooltip';
 
-import template from './timepicker.tpl.html';
-
-const MODULE_NAME = 'mgcrea.ngStrap.timepicker';
+import MODULE_NAME from './timepicker.module';
 
 angular
   .module(MODULE_NAME, [dateParser, dateFormatter, tooltip])

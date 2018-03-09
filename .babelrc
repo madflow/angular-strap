@@ -1,4 +1,4 @@
 {
     "presets": ["env"],
-    "plugins": ["angularjs-annotate", "transform-html-import-require-to-string"]
+    "plugins": ["angularjs-annotate"]
 }

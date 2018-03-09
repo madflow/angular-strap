@@ -1,8 +1,8 @@
 'use strict';
 
 import popover from '../popover';
+import popoverTpl from '../popover.tpl';
 
-import templates from '../../../dist/modules/popover.tpl';
 
 describe('popover', function() {
   var $compile, $templateCache, scope, sandboxEl, $window, $timeout, $popover, $animate;

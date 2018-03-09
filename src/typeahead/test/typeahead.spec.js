@@ -1,7 +1,7 @@
 'use strict';
 
 import typeahead from '../typeahead';
-import templates from '../../../dist/modules/typeahead.tpl';
+import typeaheadTpl from '../typeahead.tpl';
 
 describe('typeahead', function() {
   var $compile, $templateCache, $typeahead, scope, sandboxEl, $q, $animate, $timeout, $$rAF;

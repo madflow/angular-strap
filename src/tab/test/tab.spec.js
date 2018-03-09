@@ -1,7 +1,7 @@
 'use strict';
 
 import tab from '../tab';
-import templates from '../../../dist/modules/tab.tpl';
+import tabTpl from '../tab.tpl';
 
 describe('tab', function() {
   var $compile, $templateCache, scope, sandboxEl;

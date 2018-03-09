@@ -1,8 +1,7 @@
 'use strict';
 
 import angular from 'angular';
-
-const MODULE_NAME = 'mgcrea.ngStrap.navbar';
+import MODULE_NAME from './navbar.module';
 
 angular
   .module(MODULE_NAME, [])

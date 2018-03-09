@@ -4,9 +4,7 @@ import angular from 'angular';
 import tooltip from '../tooltip/tooltip';
 import parseOptions from '../helpers/parse-options';
 
-import template from './select.tpl.html';
-
-const MODULE_NAME = 'mgcrea.ngStrap.select';
+import MODULE_NAME from './select.module';
 
 angular
   .module(MODULE_NAME, [tooltip, parseOptions])

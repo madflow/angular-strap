@@ -1,7 +1,7 @@
 'use strict';
 
 import timepicker from '../timepicker';
-import templates from '../../../dist/modules/timepicker.tpl';
+import timepickerTpl from '../timepicker.tpl';
 
 describe('timepicker', function() {
   var $compile, $templateCache, $animate, $timepicker, dateFilter, scope, sandboxEl, today, $timeout;

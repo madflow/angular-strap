@@ -4,9 +4,7 @@ import angular from 'angular';
 import core from '../helpers/core';
 import dimensions from '../helpers/dimensions';
 
-import template from './tooltip.tpl.html';
-
-const MODULE_NAME = 'mgcrea.ngStrap.tooltip';
+import MODULE_NAME from './tooltip.module';
 
 angular
   .module(MODULE_NAME, [core, dimensions])

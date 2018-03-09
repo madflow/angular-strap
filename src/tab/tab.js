@@ -1,9 +1,7 @@
 'use strict';
 
 import angular from 'angular';
-import template from './tab.tpl.html';
-
-const MODULE_NAME = 'mgcrea.ngStrap.tab';
+import MODULE_NAME from './tab.module';
 
 angular
   .module(MODULE_NAME, [])

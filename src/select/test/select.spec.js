@@ -1,7 +1,7 @@
 'use strict';
 
 import select from '../select';
-import templates from '../../../dist/modules/select.tpl';
+import selectTpl from '../select.tpl';
 
 describe('select', function() {
   var $compile, $templateCache, $select, scope, sandboxEl, $timeout, $animate, $window;

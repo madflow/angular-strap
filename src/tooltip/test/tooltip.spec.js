@@ -2,7 +2,7 @@
 /* global countScopes */
 
 import tooltip from '../tooltip';
-import templates from '../../../dist/modules/tooltip.tpl';
+import tooltipTpl from '../tooltip.tpl';
 
 
 describe('tooltip', function() {

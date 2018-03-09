@@ -3,8 +3,7 @@
 import angular from 'angular';
 import debounce from '../helpers/debounce';
 import dimensions from '../helpers/dimensions';
-
-const MODULE_NAME = 'mgcrea.ngStrap.scrollspy';
+import MODULE_NAME from './scrollspy.module';
 
 angular
   .module(MODULE_NAME, [debounce, dimensions])

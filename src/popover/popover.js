@@ -2,8 +2,7 @@
 
 import angular from 'angular';
 import tooltip from '../tooltip/tooltip';
-
-const MODULE_NAME = 'mgcrea.ngStrap.popover';
+import MODULE_NAME from './popover.module';
 
 angular
   .module(MODULE_NAME, [tooltip])

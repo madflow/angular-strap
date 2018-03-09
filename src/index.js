@@ -1,4 +1,3 @@
-import affix from './affix/affix';
 import alert from './alert/alert';
 import aside from './aside/aside';
 import button from './button/button';
@@ -18,7 +17,6 @@ import typeahead from './typeahead/typeahead';
 import modules from './module';
 
 export {
-  affix,
   alert,
   aside,
   button,

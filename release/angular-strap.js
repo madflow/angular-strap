@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -94,15 +94,15 @@ var _angular = __webpack_require__(0);
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _core = __webpack_require__(5);
+var _core = __webpack_require__(4);
 
 var _core2 = _interopRequireDefault(_core);
 
-var _dimensions = __webpack_require__(2);
+var _dimensions = __webpack_require__(3);
 
 var _dimensions2 = _interopRequireDefault(_dimensions);
 
-var _tooltipTpl = __webpack_require__(18);
+var _tooltipTpl = __webpack_require__(16);
 
 var _tooltipTpl2 = _interopRequireDefault(_tooltipTpl);
 
@@ -993,237 +993,15 @@ var _angular = __webpack_require__(0);
 
 var _angular2 = _interopRequireDefault(_angular);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var MODULE_NAME = 'mgcrea.ngStrap.helpers.dimensions';
-
-_angular2.default.module(MODULE_NAME, []).factory('dimensions', function () {
-  var fn = {};
-
-  /**
-   * Test the element nodeName
-   * @param element
-   * @param name
-   */
-  var nodeName = fn.nodeName = function (element, name) {
-    return element.nodeName && element.nodeName.toLowerCase() === name.toLowerCase();
-  };
-
-  /**
-   * Returns the element computed style
-   * @param element
-   * @param prop
-   * @param extra
-   */
-  fn.css = function (element, prop, extra) {
-    var value;
-    if (element.currentStyle) {
-      // IE
-      value = element.currentStyle[prop];
-    } else if (window.getComputedStyle) {
-      value = window.getComputedStyle(element)[prop];
-    } else {
-      value = element.style[prop];
-    }
-    return extra === true ? parseFloat(value) || 0 : value;
-  };
-
-  /**
-   * Provides read-only equivalent of jQuery's offset function:
-   * @required-by bootstrap-tooltip, bootstrap-affix
-   * @url http://api.jquery.com/offset/
-   * @param element
-   */
-  fn.offset = function (element) {
-    var boxRect = element.getBoundingClientRect();
-    var docElement = element.ownerDocument;
-    return {
-      width: boxRect.width || element.offsetWidth,
-      height: boxRect.height || element.offsetHeight,
-      top: boxRect.top + (window.pageYOffset || docElement.documentElement.scrollTop) - (docElement.documentElement.clientTop || 0),
-      left: boxRect.left + (window.pageXOffset || docElement.documentElement.scrollLeft) - (docElement.documentElement.clientLeft || 0)
-    };
-  };
-
-  /**
-   * Provides set equivalent of jQuery's offset function:
-   * @required-by bootstrap-tooltip
-   * @url http://api.jquery.com/offset/
-   * @param element
-   * @param options
-   * @param i
-   */
-  fn.setOffset = function (element, options, i) {
-    var curPosition;
-    var curLeft;
-    var curCSSTop;
-    var curTop;
-    var curOffset;
-    var curCSSLeft;
-    var calculatePosition;
-    var position = fn.css(element, 'position');
-    var curElem = _angular2.default.element(element);
-    var props = {};
-
-    // Set position first, in-case top/left are set even on static elem
-    if (position === 'static') {
-      element.style.position = 'relative';
-    }
-
-    curOffset = fn.offset(element);
-    curCSSTop = fn.css(element, 'top');
-    curCSSLeft = fn.css(element, 'left');
-    calculatePosition = (position === 'absolute' || position === 'fixed') && (curCSSTop + curCSSLeft).indexOf('auto') > -1;
-
-    // Need to be able to calculate position if either
-    // top or left is auto and position is either absolute or fixed
-    if (calculatePosition) {
-      curPosition = fn.position(element);
-      curTop = curPosition.top;
-      curLeft = curPosition.left;
-    } else {
-      curTop = parseFloat(curCSSTop) || 0;
-      curLeft = parseFloat(curCSSLeft) || 0;
-    }
-
-    if (_angular2.default.isFunction(options)) {
-      options = options.call(element, i, curOffset);
-    }
-
-    if (options.top !== null) {
-      props.top = options.top - curOffset.top + curTop;
-    }
-    if (options.left !== null) {
-      props.left = options.left - curOffset.left + curLeft;
-    }
-
-    if ('using' in options) {
-      options.using.call(curElem, props);
-    } else {
-      curElem.css({
-        top: props.top + 'px',
-        left: props.left + 'px'
-      });
-    }
-  };
-
-  /**
-   * Provides read-only equivalent of jQuery's position function
-   * @required-by bootstrap-tooltip, bootstrap-affix
-   * @url http://api.jquery.com/offset/
-   * @param element
-   */
-  fn.position = function (element) {
-    var offsetParentRect = { top: 0, left: 0 };
-    var offsetParentEl;
-    var offset;
-
-    // Fixed elements are offset from window (parentOffset = {top:0, left: 0}, because it is it's only offset parent
-    if (fn.css(element, 'position') === 'fixed') {
-      // We assume that getBoundingClientRect is available when computed position is fixed
-      offset = element.getBoundingClientRect();
-    } else {
-      // Get *real* offsetParentEl
-      offsetParentEl = offsetParentElement(element);
-
-      // Get correct offsets
-      offset = fn.offset(element);
-      if (!nodeName(offsetParentEl, 'html')) {
-        offsetParentRect = fn.offset(offsetParentEl);
-      }
-
-      // Add offsetParent borders
-      offsetParentRect.top += fn.css(offsetParentEl, 'borderTopWidth', true);
-      offsetParentRect.left += fn.css(offsetParentEl, 'borderLeftWidth', true);
-    }
-
-    // Subtract parent offsets and element margins
-    return {
-      width: element.offsetWidth,
-      height: element.offsetHeight,
-      top: offset.top - offsetParentRect.top - fn.css(element, 'marginTop', true),
-      left: offset.left - offsetParentRect.left - fn.css(element, 'marginLeft', true)
-    };
-  };
-
-  /**
-   * Returns the closest, non-statically positioned offsetParent of a given element
-   * @required-by fn.position
-   * @param element
-   */
-  function offsetParentElement(element) {
-    var docElement = element.ownerDocument;
-    var offsetParent = element.offsetParent || docElement;
-    if (nodeName(offsetParent, '#document')) return docElement.documentElement;
-    while (offsetParent && !nodeName(offsetParent, 'html') && fn.css(offsetParent, 'position') === 'static') {
-      offsetParent = offsetParent.offsetParent;
-    }
-    return offsetParent || docElement.documentElement;
-  }
-
-  /**
-   * Provides equivalent of jQuery's height function
-   * @required-by bootstrap-affix
-   * @url http://api.jquery.com/height/
-   * @param element
-   * @param outer
-   */
-  fn.height = function (element, outer) {
-    var value = element.offsetHeight;
-    if (outer) {
-      value += fn.css(element, 'marginTop', true) + fn.css(element, 'marginBottom', true);
-    } else {
-      value -= fn.css(element, 'paddingTop', true) + fn.css(element, 'paddingBottom', true) + fn.css(element, 'borderTopWidth', true) + fn.css(element, 'borderBottomWidth', true);
-    }
-    return value;
-  };
-
-  /**
-   * Provides equivalent of jQuery's width function
-   * @required-by bootstrap-affix
-   * @url http://api.jquery.com/width/
-   * @param element
-   * @param outer
-   */
-  fn.width = function (element, outer) {
-    var value = element.offsetWidth;
-    if (outer) {
-      value += fn.css(element, 'marginLeft', true) + fn.css(element, 'marginRight', true);
-    } else {
-      value -= fn.css(element, 'paddingLeft', true) + fn.css(element, 'paddingRight', true) + fn.css(element, 'borderLeftWidth', true) + fn.css(element, 'borderRightWidth', true);
-    }
-    return value;
-  };
-
-  return fn;
-});
-
-exports.default = MODULE_NAME;
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _angular = __webpack_require__(0);
-
-var _angular2 = _interopRequireDefault(_angular);
-
-var _core = __webpack_require__(5);
+var _core = __webpack_require__(4);
 
 var _core2 = _interopRequireDefault(_core);
 
-var _dimensions = __webpack_require__(2);
+var _dimensions = __webpack_require__(3);
 
 var _dimensions2 = _interopRequireDefault(_dimensions);
 
-var _modalTpl = __webpack_require__(12);
+var _modalTpl = __webpack_require__(6);
 
 var _modalTpl2 = _interopRequireDefault(_modalTpl);
 
@@ -1661,7 +1439,7 @@ _angular2.default.module(MODULE_NAME, [_core2.default, _dimensions2.default]).pr
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1677,64 +1455,178 @@ var _angular2 = _interopRequireDefault(_angular);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var MODULE_NAME = 'mgcrea.ngStrap.helpers.debounce';
+var MODULE_NAME = 'mgcrea.ngStrap.helpers.dimensions';
 
-_angular2.default.module(MODULE_NAME, [])
+_angular2.default.module(MODULE_NAME, []).factory('dimensions', function () {
+  var fn = {};
 
-// @source jashkenas/underscore
-// @url https://github.com/jashkenas/underscore/blob/1.5.2/underscore.js#L693
-.factory('debounce', ['$timeout', function ($timeout) {
-  return function (func, wait, immediate) {
-    var timeout = null;
-    return function () {
-      var context = this;
-      var args = arguments;
-      var callNow = immediate && !timeout;
-      if (timeout) {
-        $timeout.cancel(timeout);
-      }
-      timeout = $timeout(function later() {
-        timeout = null;
-        if (!immediate) {
-          func.apply(context, args);
-        }
-      }, wait, false);
-      if (callNow) {
-        func.apply(context, args);
-      }
-      return timeout;
+  /**
+   * Test the element nodeName
+   * @param element
+   * @param name
+   */
+  var nodeName = fn.nodeName = function (element, name) {
+    return element.nodeName && element.nodeName.toLowerCase() === name.toLowerCase();
+  };
+
+  /**
+   * Returns the element computed style
+   * @param element
+   * @param prop
+   * @param extra
+   */
+  fn.css = function (element, prop, extra) {
+    var value;
+    if (element.currentStyle) {
+      // IE
+      value = element.currentStyle[prop];
+    } else if (window.getComputedStyle) {
+      value = window.getComputedStyle(element)[prop];
+    } else {
+      value = element.style[prop];
+    }
+    return extra === true ? parseFloat(value) || 0 : value;
+  };
+
+  /**
+   * Provides read-only equivalent of jQuery's offset function:
+   * @required-by bootstrap-tooltip, bootstrap-affix
+   * @url http://api.jquery.com/offset/
+   * @param element
+   */
+  fn.offset = function (element) {
+    var boxRect = element.getBoundingClientRect();
+    var docElement = element.ownerDocument;
+    return {
+      width: boxRect.width || element.offsetWidth,
+      height: boxRect.height || element.offsetHeight,
+      top: boxRect.top + (window.pageYOffset || docElement.documentElement.scrollTop) - (docElement.documentElement.clientTop || 0),
+      left: boxRect.left + (window.pageXOffset || docElement.documentElement.scrollLeft) - (docElement.documentElement.clientLeft || 0)
     };
   };
-}])
 
-// @source jashkenas/underscore
-// @url https://github.com/jashkenas/underscore/blob/1.5.2/underscore.js#L661
-.factory('throttle', ['$timeout', function ($timeout) {
-  return function (func, wait, options) {
-    var timeout = null;
-    if (!options) options = {};
-    return function () {
-      var context = this;
-      var args = arguments;
-      if (!timeout) {
-        if (options.leading !== false) {
-          func.apply(context, args);
-        }
-        timeout = $timeout(function later() {
-          timeout = null;
-          if (options.trailing !== false) {
-            func.apply(context, args);
-          }
-        }, wait, false);
+  /**
+   * Provides set equivalent of jQuery's offset function:
+   * @required-by bootstrap-tooltip
+   * @url http://api.jquery.com/offset/
+   * @param element
+   * @param options
+   * @param i
+   */
+  fn.setOffset = function (element, options, i) {
+    var curPosition;
+    var curLeft;
+    var curCSSTop;
+    var curTop;
+    var curOffset;
+    var curCSSLeft;
+    var calculatePosition;
+    var position = fn.css(element, 'position');
+    var curElem = _angular2.default.element(element);
+    var props = {};
+
+    // Set position first, in-case top/left are set even on static elem
+    if (position === 'static') {
+      element.style.position = 'relative';
+    }
+
+    curOffset = fn.offset(element);
+    curCSSTop = fn.css(element, 'top');
+    curCSSLeft = fn.css(element, 'left');
+    calculatePosition = (position === 'absolute' || position === 'fixed') && (curCSSTop + curCSSLeft).indexOf('auto') > -1;
+
+    // Need to be able to calculate position if either
+    // top or left is auto and position is either absolute or fixed
+    if (calculatePosition) {
+      curPosition = fn.position(element);
+      curTop = curPosition.top;
+      curLeft = curPosition.left;
+    } else {
+      curTop = parseFloat(curCSSTop) || 0;
+      curLeft = parseFloat(curCSSLeft) || 0;
+    }
+
+    if (_angular2.default.isFunction(options)) {
+      options = options.call(element, i, curOffset);
+    }
+
+    if (options.top !== null) {
+      props.top = options.top - curOffset.top + curTop;
+    }
+    if (options.left !== null) {
+      props.left = options.left - curOffset.left + curLeft;
+    }
+
+    if ('using' in options) {
+      options.using.call(curElem, props);
+    } else {
+      curElem.css({
+        top: props.top + 'px',
+        left: props.left + 'px'
+      });
+    }
+  };
+
+  /**
+   * Provides read-only equivalent of jQuery's position function
+   * @required-by bootstrap-tooltip, bootstrap-affix
+   * @url http://api.jquery.com/offset/
+   * @param element
+   */
+  fn.position = function (element) {
+    var offsetParentRect = { top: 0, left: 0 };
+    var offsetParentEl;
+    var offset;
+
+    // Fixed elements are offset from window (parentOffset = {top:0, left: 0}, because it is it's only offset parent
+    if (fn.css(element, 'position') === 'fixed') {
+      // We assume that getBoundingClientRect is available when computed position is fixed
+      offset = element.getBoundingClientRect();
+    } else {
+      // Get *real* offsetParentEl
+      offsetParentEl = offsetParentElement(element);
+
+      // Get correct offsets
+      offset = fn.offset(element);
+      if (!nodeName(offsetParentEl, 'html')) {
+        offsetParentRect = fn.offset(offsetParentEl);
       }
+
+      // Add offsetParent borders
+      offsetParentRect.top += fn.css(offsetParentEl, 'borderTopWidth', true);
+      offsetParentRect.left += fn.css(offsetParentEl, 'borderLeftWidth', true);
+    }
+
+    // Subtract parent offsets and element margins
+    return {
+      width: element.offsetWidth,
+      height: element.offsetHeight,
+      top: offset.top - offsetParentRect.top - fn.css(element, 'marginTop', true),
+      left: offset.left - offsetParentRect.left - fn.css(element, 'marginLeft', true)
     };
   };
-}]);
+
+  /**
+   * Returns the closest, non-statically positioned offsetParent of a given element
+   * @required-by fn.position
+   * @param element
+   */
+  function offsetParentElement(element) {
+    var docElement = element.ownerDocument;
+    var offsetParent = element.offsetParent || docElement;
+    if (nodeName(offsetParent, '#document')) return docElement.documentElement;
+    while (offsetParent && !nodeName(offsetParent, 'html') && fn.css(offsetParent, 'position') === 'static') {
+      offsetParent = offsetParent.offsetParent;
+    }
+    return offsetParent || docElement.documentElement;
+  }
+  return fn;
+});
 
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1934,7 +1826,159 @@ function bsCompilerService($q, $http, $injector, $compile, $controller, $templat
 exports.default = MODULE_NAME;
 
 /***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MODULE_NAME = undefined;
+
+var _angular = __webpack_require__(0);
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _modal = __webpack_require__(2);
+
+var _modal2 = _interopRequireDefault(_modal);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var MODULE_NAME = 'mgcrea.ngStrap.alert';
+
+_angular2.default.module(MODULE_NAME, [_modal2.default]).provider('$alert', function () {
+  var defaults = this.defaults = {
+    animation: 'am-fade',
+    prefixClass: 'alert',
+    prefixEvent: 'alert',
+    placement: null,
+    templateUrl: 'alert/alert.tpl.html',
+    container: false,
+    element: null,
+    backdrop: false,
+    keyboard: true,
+    show: true,
+    // Specific options
+    duration: false,
+    type: false,
+    dismissable: true
+  };
+
+  this.$get = ['$modal', '$timeout', function ($modal, $timeout) {
+    function AlertFactory(config) {
+      var $alert = {};
+
+      // Common vars
+      var options = _angular2.default.extend({}, defaults, config);
+
+      $alert = $modal(options);
+
+      // Support scope as string options [/*title, content, */ type, dismissable]
+      $alert.$scope.dismissable = !!options.dismissable;
+      if (options.type) {
+        $alert.$scope.type = options.type;
+      }
+
+      // Support auto-close duration
+      var show = $alert.show;
+      if (options.duration) {
+        $alert.show = function () {
+          show();
+          $timeout(function () {
+            $alert.hide();
+          }, options.duration * 1000);
+        };
+      }
+
+      return $alert;
+    }
+
+    return AlertFactory;
+  }];
+}).directive('bsAlert', ['$window', '$sce', '$alert', function ($window, $sce, $alert) {
+  return {
+    restrict: 'EAC',
+    scope: true,
+    link: function postLink(scope, element, attr, transclusion) {
+      // Directive options
+      var options = { scope: scope, element: element, show: false };
+      _angular2.default.forEach(['template', 'templateUrl', 'controller', 'controllerAs', 'placement', 'keyboard', 'html', 'container', 'animation', 'duration', 'dismissable'], function (key) {
+        if (_angular2.default.isDefined(attr[key])) options[key] = attr[key];
+      });
+
+      // use string regex match boolean attr falsy values, leave truthy values be
+      var falseValueRegExp = /^(false|0|)$/i;
+      _angular2.default.forEach(['keyboard', 'html', 'container', 'dismissable'], function (key) {
+        if (_angular2.default.isDefined(attr[key]) && falseValueRegExp.test(attr[key])) options[key] = false;
+      });
+
+      // bind functions from the attrs to the show and hide events
+      _angular2.default.forEach(['onBeforeShow', 'onShow', 'onBeforeHide', 'onHide'], function (key) {
+        var bsKey = 'bs' + key.charAt(0).toUpperCase() + key.slice(1);
+        if (_angular2.default.isDefined(attr[bsKey])) {
+          options[key] = scope.$eval(attr[bsKey]);
+        }
+      });
+
+      // overwrite inherited title value when no value specified
+      // fix for angular 1.3.1 531a8de72c439d8ddd064874bf364c00cedabb11
+      if (!scope.hasOwnProperty('title')) {
+        scope.title = '';
+      }
+
+      // Support scope as data-attrs
+      _angular2.default.forEach(['title', 'content', 'type'], function (key) {
+        if (attr[key]) {
+          attr.$observe(key, function (newValue, oldValue) {
+            scope[key] = $sce.trustAsHtml(newValue);
+          });
+        }
+      });
+
+      // Support scope as an object
+      if (attr.bsAlert) {
+        scope.$watch(attr.bsAlert, function (newValue, oldValue) {
+          if (_angular2.default.isObject(newValue)) {
+            _angular2.default.extend(scope, newValue);
+          } else {
+            scope.content = newValue;
+          }
+        }, true);
+      }
+
+      // Initialize alert
+      var alert = $alert(options);
+
+      // Trigger
+      element.on(attr.trigger || 'click', alert.toggle);
+
+      // Garbage collection
+      scope.$on('$destroy', function () {
+        if (alert) alert.destroy();
+        options = null;
+        alert = null;
+      });
+    }
+  };
+}]);
+
+exports.MODULE_NAME = MODULE_NAME;
+exports.default = MODULE_NAME;
+
+/***/ }),
 /* 6 */
+/***/ (function(module, exports) {
+
+var path = 'modal/modal.tpl.html';
+var html = "<div class=modal tabindex=-1 role=dialog aria-hidden=true> <div class=modal-dialog> <div class=modal-content> <div class=modal-header ng-show=title> <h5 class=modal-title ng-bind=title></h5> <button type=button role=button class=close aria-label=Close ng-click=$hide()><span aria-hidden=true>&times;</span></button> </div> <div class=modal-body ng-bind=content></div> <div class=modal-footer> <button type=button class=\"btn btn-default\" ng-click=$hide() aria-label=Close>Close</button> </div> </div> </div> </div> ";
+window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
+module.exports = path;
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2314,7 +2358,7 @@ _angular2.default.module(MODULE_NAME, []).provider('$dateParser', ['$localeProvi
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2395,7 +2439,7 @@ _angular2.default.module(MODULE_NAME, []).service('$dateFormatter', ['$locale', 
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2488,7 +2532,7 @@ _angular2.default.module(MODULE_NAME, []).provider('$parseOptions', function () 
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2497,61 +2541,57 @@ exports.default = MODULE_NAME;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.typeahead = exports.tooltip = exports.timepicker = exports.tab = exports.select = exports.scrollspy = exports.popover = exports.navbar = exports.modal = exports.datepicker = exports.collapse = exports.button = exports.aside = exports.alert = exports.affix = undefined;
+exports.typeahead = exports.tooltip = exports.timepicker = exports.tab = exports.select = exports.scrollspy = exports.popover = exports.navbar = exports.modal = exports.datepicker = exports.collapse = exports.button = exports.aside = exports.alert = undefined;
 
-var _affix = __webpack_require__(10);
-
-var _affix2 = _interopRequireDefault(_affix);
-
-var _alert = __webpack_require__(11);
+var _alert = __webpack_require__(5);
 
 var _alert2 = _interopRequireDefault(_alert);
 
-var _aside = __webpack_require__(13);
+var _aside = __webpack_require__(11);
 
 var _aside2 = _interopRequireDefault(_aside);
 
-var _button = __webpack_require__(15);
+var _button = __webpack_require__(13);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _collapse = __webpack_require__(16);
+var _collapse = __webpack_require__(14);
 
 var _collapse2 = _interopRequireDefault(_collapse);
 
-var _datepicker = __webpack_require__(17);
+var _datepicker = __webpack_require__(15);
 
 var _datepicker2 = _interopRequireDefault(_datepicker);
 
-var _dropdown = __webpack_require__(20);
+var _dropdown = __webpack_require__(18);
 
 var _dropdown2 = _interopRequireDefault(_dropdown);
 
-var _modal = __webpack_require__(3);
+var _modal = __webpack_require__(2);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _navbar = __webpack_require__(22);
+var _navbar = __webpack_require__(20);
 
 var _navbar2 = _interopRequireDefault(_navbar);
 
-var _popover = __webpack_require__(23);
+var _popover = __webpack_require__(21);
 
 var _popover2 = _interopRequireDefault(_popover);
 
-var _scrollspy = __webpack_require__(24);
+var _scrollspy = __webpack_require__(22);
 
 var _scrollspy2 = _interopRequireDefault(_scrollspy);
 
-var _select = __webpack_require__(25);
+var _select = __webpack_require__(24);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _tab = __webpack_require__(27);
+var _tab = __webpack_require__(26);
 
 var _tab2 = _interopRequireDefault(_tab);
 
-var _timepicker = __webpack_require__(29);
+var _timepicker = __webpack_require__(28);
 
 var _timepicker2 = _interopRequireDefault(_timepicker);
 
@@ -2559,17 +2599,16 @@ var _tooltip = __webpack_require__(1);
 
 var _tooltip2 = _interopRequireDefault(_tooltip);
 
-var _typeahead = __webpack_require__(31);
+var _typeahead = __webpack_require__(30);
 
 var _typeahead2 = _interopRequireDefault(_typeahead);
 
-var _module = __webpack_require__(33);
+var _module = __webpack_require__(32);
 
 var _module2 = _interopRequireDefault(_module);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.affix = _affix2.default;
 exports.alert = _alert2.default;
 exports.aside = _aside2.default;
 exports.button = _button2.default;
@@ -2587,269 +2626,6 @@ exports.typeahead = _typeahead2.default;
 exports.default = _module2.default;
 
 /***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _angular = __webpack_require__(0);
-
-var _angular2 = _interopRequireDefault(_angular);
-
-var _dimensions = __webpack_require__(2);
-
-var _dimensions2 = _interopRequireDefault(_dimensions);
-
-var _debounce = __webpack_require__(4);
-
-var _debounce2 = _interopRequireDefault(_debounce);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var MODULE_NAME = 'mgcrea.ngStrap.affix';
-
-_angular2.default.module(MODULE_NAME, [_dimensions2.default, _debounce2.default]).provider('$affix', function () {
-  var defaults = this.defaults = {
-    offsetTop: 'auto',
-    inlineStyles: true,
-    setWidth: true
-  };
-
-  this.$get = ['$window', 'debounce', 'dimensions', function ($window, debounce, dimensions) {
-    var bodyEl = _angular2.default.element($window.document.body);
-    var windowEl = _angular2.default.element($window);
-
-    function AffixFactory(element, config) {
-      var $affix = {};
-
-      // Common vars
-      var options = _angular2.default.extend({}, defaults, config);
-      var targetEl = options.target;
-
-      // Initial private vars
-      var reset = 'affix affix-top affix-bottom';
-      var setWidth = false;
-      var initialAffixTop = 0;
-      var initialOffsetTop = 0;
-      var offsetTop = 0;
-      var offsetBottom = 0;
-      var affixed = null;
-      var unpin = null;
-
-      var parent = element.parent();
-      // Options: custom parent
-      if (options.offsetParent) {
-        if (options.offsetParent.match(/^\d+$/)) {
-          for (var i = 0; i < options.offsetParent * 1 - 1; i++) {
-            parent = parent.parent();
-          }
-        } else {
-          parent = _angular2.default.element(options.offsetParent);
-        }
-      }
-
-      $affix.init = function () {
-        this.$parseOffsets();
-        initialOffsetTop = dimensions.offset(element[0]).top + initialAffixTop;
-        setWidth = options.setWidth && !element[0].style.width;
-
-        // Bind events
-        targetEl.on('scroll', this.checkPosition);
-        targetEl.on('click', this.checkPositionWithEventLoop);
-        windowEl.on('resize', this.$debouncedOnResize);
-
-        // Both of these checkPosition() calls are necessary for the case where
-        // the user hits refresh after scrolling to the bottom of the page.
-        this.checkPosition();
-        this.checkPositionWithEventLoop();
-      };
-
-      $affix.destroy = function () {
-        // Unbind events
-        targetEl.off('scroll', this.checkPosition);
-        targetEl.off('click', this.checkPositionWithEventLoop);
-        windowEl.off('resize', this.$debouncedOnResize);
-      };
-
-      $affix.checkPositionWithEventLoop = function () {
-        // IE 9 throws an error if we use 'this' instead of '$affix'
-        // in this setTimeout call
-        setTimeout($affix.checkPosition, 1);
-      };
-
-      $affix.checkPosition = function () {
-        // if (!this.$element.is(':visible')) return
-
-        var scrollTop = getScrollTop();
-        var position = dimensions.offset(element[0]);
-        var elementHeight = dimensions.height(element[0]);
-
-        // Get required affix class according to position
-        var affix = getRequiredAffixClass(unpin, position, elementHeight);
-
-        // Did affix status changed this last check?
-        if (affixed === affix) return;
-        affixed = affix;
-
-        if (affix === 'top') {
-          unpin = null;
-          if (setWidth) {
-            element.css('width', '');
-          }
-          if (options.inlineStyles) {
-            element.css('position', options.offsetParent ? '' : 'relative');
-            element.css('top', '');
-          }
-        } else if (affix === 'bottom') {
-          if (options.offsetUnpin) {
-            unpin = -(options.offsetUnpin * 1);
-          } else {
-            // Calculate unpin threshold when affixed to bottom.
-            // Hopefully the browser scrolls pixel by pixel.
-            unpin = position.top - scrollTop;
-          }
-          if (setWidth) {
-            element.css('width', '');
-          }
-          if (options.inlineStyles) {
-            element.css('position', options.offsetParent ? '' : 'relative');
-            element.css('top', options.offsetParent ? '' : bodyEl[0].offsetHeight - offsetBottom - elementHeight - initialOffsetTop + 'px');
-          }
-        } else {
-          // affix === 'middle'
-          unpin = null;
-          if (setWidth) {
-            element.css('width', element[0].offsetWidth + 'px');
-          }
-          if (options.inlineStyles) {
-            element.css('position', 'fixed');
-            element.css('top', initialAffixTop + 'px');
-          }
-        }
-
-        // Add proper affix class
-        element.removeClass(reset).addClass('affix' + (affix !== 'middle' ? '-' + affix : ''));
-      };
-
-      $affix.$onResize = function () {
-        $affix.$parseOffsets();
-        $affix.checkPosition();
-      };
-      $affix.$debouncedOnResize = debounce($affix.$onResize, 50);
-
-      $affix.$parseOffsets = function () {
-        var initialPosition = element[0].style.position;
-        var initialTop = element[0].style.top;
-        // Reset position to calculate correct offsetTop
-        if (options.inlineStyles) {
-          element.css('position', options.offsetParent ? '' : 'relative');
-          element.css('top', '');
-        }
-
-        if (options.offsetTop) {
-          if (options.offsetTop === 'auto') {
-            options.offsetTop = '+0';
-          }
-          if (options.offsetTop.match(/^[-+]\d+$/)) {
-            initialAffixTop = -options.offsetTop * 1;
-            if (options.offsetParent) {
-              offsetTop = dimensions.offset(parent[0]).top + options.offsetTop * 1;
-            } else {
-              offsetTop = dimensions.offset(element[0]).top - dimensions.css(element[0], 'marginTop', true) + options.offsetTop * 1;
-            }
-          } else {
-            offsetTop = options.offsetTop * 1;
-          }
-        }
-
-        if (options.offsetBottom) {
-          if (options.offsetParent && options.offsetBottom.match(/^[-+]\d+$/)) {
-            // add 1 pixel due to rounding problems...
-            offsetBottom = getScrollHeight() - (dimensions.offset(parent[0]).top + dimensions.height(parent[0])) + options.offsetBottom * 1 + 1;
-          } else {
-            offsetBottom = options.offsetBottom * 1;
-          }
-        }
-
-        // Bring back the element's position after calculations
-        if (options.inlineStyles) {
-          element.css('position', initialPosition);
-          element.css('top', initialTop);
-        }
-      };
-
-      // Private methods
-
-      function getRequiredAffixClass(_unpin, position, elementHeight) {
-        var scrollTop = getScrollTop();
-        var scrollHeight = getScrollHeight();
-
-        if (scrollTop <= offsetTop) {
-          return 'top';
-        } else if (_unpin !== null) {
-          return scrollTop + _unpin <= position.top ? 'middle' : 'bottom';
-        } else if (offsetBottom !== null && position.top + elementHeight + initialAffixTop >= scrollHeight - offsetBottom) {
-          return 'bottom';
-        }
-        return 'middle';
-      }
-
-      function getScrollTop() {
-        return targetEl[0] === $window ? $window.pageYOffset : targetEl[0].scrollTop;
-      }
-
-      function getScrollHeight() {
-        return targetEl[0] === $window ? $window.document.body.scrollHeight : targetEl[0].scrollHeight;
-      }
-
-      $affix.init();
-      return $affix;
-    }
-
-    return AffixFactory;
-  }];
-}).directive('bsAffix', ['$affix', '$window', '$timeout', function ($affix, $window, $timeout) {
-  return {
-    restrict: 'EAC',
-    require: '^?bsAffixTarget',
-    link: function postLink(scope, element, attr, affixTarget) {
-      var options = { scope: scope, target: affixTarget ? affixTarget.$element : _angular2.default.element($window) };
-      _angular2.default.forEach(['offsetTop', 'offsetBottom', 'offsetParent', 'offsetUnpin', 'inlineStyles', 'setWidth'], function (key) {
-        if (_angular2.default.isDefined(attr[key])) {
-          var option = attr[key];
-          if (/true/i.test(option)) option = true;
-          if (/false/i.test(option)) option = false;
-          options[key] = option;
-        }
-      });
-
-      var affix;
-      $timeout(function () {
-        affix = $affix(element, options);
-      });
-      scope.$on('$destroy', function () {
-        if (affix) affix.destroy();
-        options = null;
-        affix = null;
-      });
-    }
-  };
-}]).directive('bsAffixTarget', function () {
-  return {
-    controller: ['$element', function controller($element) {
-      this.$element = $element;
-    }]
-  };
-});
-
-exports.default = MODULE_NAME;
-
-/***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2864,161 +2640,11 @@ var _angular = __webpack_require__(0);
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _modal = __webpack_require__(3);
+var _modal = __webpack_require__(2);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var MODULE_NAME = 'mgcrea.ngStrap.alert';
-
-_angular2.default.module(MODULE_NAME, [_modal2.default]).provider('$alert', function () {
-  var defaults = this.defaults = {
-    animation: 'am-fade',
-    prefixClass: 'alert',
-    prefixEvent: 'alert',
-    placement: null,
-    templateUrl: 'alert/alert.tpl.html',
-    container: false,
-    element: null,
-    backdrop: false,
-    keyboard: true,
-    show: true,
-    // Specific options
-    duration: false,
-    type: false,
-    dismissable: true
-  };
-
-  this.$get = ['$modal', '$timeout', function ($modal, $timeout) {
-    function AlertFactory(config) {
-      var $alert = {};
-
-      // Common vars
-      var options = _angular2.default.extend({}, defaults, config);
-
-      $alert = $modal(options);
-
-      // Support scope as string options [/*title, content, */ type, dismissable]
-      $alert.$scope.dismissable = !!options.dismissable;
-      if (options.type) {
-        $alert.$scope.type = options.type;
-      }
-
-      // Support auto-close duration
-      var show = $alert.show;
-      if (options.duration) {
-        $alert.show = function () {
-          show();
-          $timeout(function () {
-            $alert.hide();
-          }, options.duration * 1000);
-        };
-      }
-
-      return $alert;
-    }
-
-    return AlertFactory;
-  }];
-}).directive('bsAlert', ['$window', '$sce', '$alert', function ($window, $sce, $alert) {
-  return {
-    restrict: 'EAC',
-    scope: true,
-    link: function postLink(scope, element, attr, transclusion) {
-      // Directive options
-      var options = { scope: scope, element: element, show: false };
-      _angular2.default.forEach(['template', 'templateUrl', 'controller', 'controllerAs', 'placement', 'keyboard', 'html', 'container', 'animation', 'duration', 'dismissable'], function (key) {
-        if (_angular2.default.isDefined(attr[key])) options[key] = attr[key];
-      });
-
-      // use string regex match boolean attr falsy values, leave truthy values be
-      var falseValueRegExp = /^(false|0|)$/i;
-      _angular2.default.forEach(['keyboard', 'html', 'container', 'dismissable'], function (key) {
-        if (_angular2.default.isDefined(attr[key]) && falseValueRegExp.test(attr[key])) options[key] = false;
-      });
-
-      // bind functions from the attrs to the show and hide events
-      _angular2.default.forEach(['onBeforeShow', 'onShow', 'onBeforeHide', 'onHide'], function (key) {
-        var bsKey = 'bs' + key.charAt(0).toUpperCase() + key.slice(1);
-        if (_angular2.default.isDefined(attr[bsKey])) {
-          options[key] = scope.$eval(attr[bsKey]);
-        }
-      });
-
-      // overwrite inherited title value when no value specified
-      // fix for angular 1.3.1 531a8de72c439d8ddd064874bf364c00cedabb11
-      if (!scope.hasOwnProperty('title')) {
-        scope.title = '';
-      }
-
-      // Support scope as data-attrs
-      _angular2.default.forEach(['title', 'content', 'type'], function (key) {
-        if (attr[key]) {
-          attr.$observe(key, function (newValue, oldValue) {
-            scope[key] = $sce.trustAsHtml(newValue);
-          });
-        }
-      });
-
-      // Support scope as an object
-      if (attr.bsAlert) {
-        scope.$watch(attr.bsAlert, function (newValue, oldValue) {
-          if (_angular2.default.isObject(newValue)) {
-            _angular2.default.extend(scope, newValue);
-          } else {
-            scope.content = newValue;
-          }
-        }, true);
-      }
-
-      // Initialize alert
-      var alert = $alert(options);
-
-      // Trigger
-      element.on(attr.trigger || 'click', alert.toggle);
-
-      // Garbage collection
-      scope.$on('$destroy', function () {
-        if (alert) alert.destroy();
-        options = null;
-        alert = null;
-      });
-    }
-  };
-}]);
-
-exports.default = MODULE_NAME;
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-var path = 'modal/modal.tpl.html';
-var html = "<div class=modal tabindex=-1 role=dialog aria-hidden=true> <div class=modal-dialog> <div class=modal-content> <div class=modal-header ng-show=title> <h5 class=modal-title ng-bind=title></h5> <button type=button role=button class=close aria-label=Close ng-click=$hide()><span aria-hidden=true>&times;</span></button> </div> <div class=modal-body ng-bind=content></div> <div class=modal-footer> <button type=button class=\"btn btn-default\" ng-click=$hide() aria-label=Close>Close</button> </div> </div> </div> </div> ";
-window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
-module.exports = path;
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _angular = __webpack_require__(0);
-
-var _angular2 = _interopRequireDefault(_angular);
-
-var _modal = __webpack_require__(3);
-
-var _modal2 = _interopRequireDefault(_modal);
-
-var _asideTpl = __webpack_require__(14);
+var _asideTpl = __webpack_require__(12);
 
 var _asideTpl2 = _interopRequireDefault(_asideTpl);
 
@@ -3120,7 +2746,7 @@ _angular2.default.module(MODULE_NAME, [_modal2.default]).provider('$aside', func
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 14 */
+/* 12 */
 /***/ (function(module, exports) {
 
 var path = 'aside/aside.tpl.html';
@@ -3129,7 +2755,7 @@ window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, htm
 module.exports = path;
 
 /***/ }),
-/* 15 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3293,7 +2919,7 @@ _angular2.default.module(MODULE_NAME, []).provider('$button', function () {
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 16 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3569,7 +3195,7 @@ _angular2.default.module(MODULE_NAME, []).provider('$collapse', function () {
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 17 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3583,11 +3209,11 @@ var _angular = __webpack_require__(0);
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _dateParser = __webpack_require__(6);
+var _dateParser = __webpack_require__(7);
 
 var _dateParser2 = _interopRequireDefault(_dateParser);
 
-var _dateFormatter = __webpack_require__(7);
+var _dateFormatter = __webpack_require__(8);
 
 var _dateFormatter2 = _interopRequireDefault(_dateFormatter);
 
@@ -3595,7 +3221,7 @@ var _tooltip = __webpack_require__(1);
 
 var _tooltip2 = _interopRequireDefault(_tooltip);
 
-var _datepickerTpl = __webpack_require__(19);
+var _datepickerTpl = __webpack_require__(17);
 
 var _datepickerTpl2 = _interopRequireDefault(_datepickerTpl);
 
@@ -4325,7 +3951,7 @@ _angular2.default.module(MODULE_NAME, [_dateParser2.default, _dateFormatter2.def
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 18 */
+/* 16 */
 /***/ (function(module, exports) {
 
 var path = 'tooltip/tooltip.tpl.html';
@@ -4334,7 +3960,7 @@ window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, htm
 module.exports = path;
 
 /***/ }),
-/* 19 */
+/* 17 */
 /***/ (function(module, exports) {
 
 var path = 'datepicker/datepicker.tpl.html';
@@ -4343,7 +3969,7 @@ window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, htm
 module.exports = path;
 
 /***/ }),
-/* 20 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4361,7 +3987,7 @@ var _tooltip = __webpack_require__(1);
 
 var _tooltip2 = _interopRequireDefault(_tooltip);
 
-var _dropdownTpl = __webpack_require__(21);
+var _dropdownTpl = __webpack_require__(19);
 
 var _dropdownTpl2 = _interopRequireDefault(_dropdownTpl);
 
@@ -4542,7 +4168,7 @@ _angular2.default.module(MODULE_NAME, [_tooltip2.default]).provider('$dropdown',
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 21 */
+/* 19 */
 /***/ (function(module, exports) {
 
 var path = 'dropdown/dropdown.tpl.html';
@@ -4551,7 +4177,7 @@ window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, htm
 module.exports = path;
 
 /***/ }),
-/* 22 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4619,7 +4245,7 @@ _angular2.default.module(MODULE_NAME, []).provider('$navbar', function () {
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 23 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4797,7 +4423,7 @@ _angular2.default.module(MODULE_NAME, [_tooltip2.default]).provider('$popover', 
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 24 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4811,11 +4437,11 @@ var _angular = __webpack_require__(0);
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _debounce = __webpack_require__(4);
+var _debounce = __webpack_require__(23);
 
 var _debounce2 = _interopRequireDefault(_debounce);
 
-var _dimensions = __webpack_require__(2);
+var _dimensions = __webpack_require__(3);
 
 var _dimensions2 = _interopRequireDefault(_dimensions);
 
@@ -5053,7 +4679,80 @@ _angular2.default.module(MODULE_NAME, [_debounce2.default, _dimensions2.default]
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 25 */
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _angular = __webpack_require__(0);
+
+var _angular2 = _interopRequireDefault(_angular);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var MODULE_NAME = 'mgcrea.ngStrap.helpers.debounce';
+
+_angular2.default.module(MODULE_NAME, [])
+
+// @source jashkenas/underscore
+// @url https://github.com/jashkenas/underscore/blob/1.5.2/underscore.js#L693
+.factory('debounce', ['$timeout', function ($timeout) {
+  return function (func, wait, immediate) {
+    var timeout = null;
+    return function () {
+      var context = this;
+      var args = arguments;
+      var callNow = immediate && !timeout;
+      if (timeout) {
+        $timeout.cancel(timeout);
+      }
+      timeout = $timeout(function later() {
+        timeout = null;
+        if (!immediate) {
+          func.apply(context, args);
+        }
+      }, wait, false);
+      if (callNow) {
+        func.apply(context, args);
+      }
+      return timeout;
+    };
+  };
+}])
+
+// @source jashkenas/underscore
+// @url https://github.com/jashkenas/underscore/blob/1.5.2/underscore.js#L661
+.factory('throttle', ['$timeout', function ($timeout) {
+  return function (func, wait, options) {
+    var timeout = null;
+    if (!options) options = {};
+    return function () {
+      var context = this;
+      var args = arguments;
+      if (!timeout) {
+        if (options.leading !== false) {
+          func.apply(context, args);
+        }
+        timeout = $timeout(function later() {
+          timeout = null;
+          if (options.trailing !== false) {
+            func.apply(context, args);
+          }
+        }, wait, false);
+      }
+    };
+  };
+}]);
+
+exports.default = MODULE_NAME;
+
+/***/ }),
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5071,11 +4770,11 @@ var _tooltip = __webpack_require__(1);
 
 var _tooltip2 = _interopRequireDefault(_tooltip);
 
-var _parseOptions = __webpack_require__(8);
+var _parseOptions = __webpack_require__(9);
 
 var _parseOptions2 = _interopRequireDefault(_parseOptions);
 
-var _selectTpl = __webpack_require__(26);
+var _selectTpl = __webpack_require__(25);
 
 var _selectTpl2 = _interopRequireDefault(_selectTpl);
 
@@ -5484,7 +5183,7 @@ _angular2.default.module(MODULE_NAME, [_tooltip2.default, _parseOptions2.default
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 26 */
+/* 25 */
 /***/ (function(module, exports) {
 
 var path = 'select/select.tpl.html';
@@ -5493,7 +5192,7 @@ window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, htm
 module.exports = path;
 
 /***/ }),
-/* 27 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5507,7 +5206,7 @@ var _angular = __webpack_require__(0);
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _tabTpl = __webpack_require__(28);
+var _tabTpl = __webpack_require__(27);
 
 var _tabTpl2 = _interopRequireDefault(_tabTpl);
 
@@ -5718,7 +5417,7 @@ _angular2.default.module(MODULE_NAME, []).provider('$tab', function () {
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 28 */
+/* 27 */
 /***/ (function(module, exports) {
 
 var path = 'tab/tab.tpl.html';
@@ -5727,7 +5426,7 @@ window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, htm
 module.exports = path;
 
 /***/ }),
-/* 29 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5741,11 +5440,11 @@ var _angular = __webpack_require__(0);
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _dateParser = __webpack_require__(6);
+var _dateParser = __webpack_require__(7);
 
 var _dateParser2 = _interopRequireDefault(_dateParser);
 
-var _dateFormatter = __webpack_require__(7);
+var _dateFormatter = __webpack_require__(8);
 
 var _dateFormatter2 = _interopRequireDefault(_dateFormatter);
 
@@ -5753,7 +5452,7 @@ var _tooltip = __webpack_require__(1);
 
 var _tooltip2 = _interopRequireDefault(_tooltip);
 
-var _timepickerTpl = __webpack_require__(30);
+var _timepickerTpl = __webpack_require__(29);
 
 var _timepickerTpl2 = _interopRequireDefault(_timepickerTpl);
 
@@ -6345,7 +6044,7 @@ _angular2.default.module(MODULE_NAME, [_dateParser2.default, _dateFormatter2.def
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 30 */
+/* 29 */
 /***/ (function(module, exports) {
 
 var path = 'timepicker/timepicker.tpl.html';
@@ -6354,7 +6053,7 @@ window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, htm
 module.exports = path;
 
 /***/ }),
-/* 31 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6374,11 +6073,11 @@ var _tooltip = __webpack_require__(1);
 
 var _tooltip2 = _interopRequireDefault(_tooltip);
 
-var _parseOptions = __webpack_require__(8);
+var _parseOptions = __webpack_require__(9);
 
 var _parseOptions2 = _interopRequireDefault(_parseOptions);
 
-var _typeaheadTpl = __webpack_require__(32);
+var _typeaheadTpl = __webpack_require__(31);
 
 var _typeaheadTpl2 = _interopRequireDefault(_typeaheadTpl);
 
@@ -6723,7 +6422,7 @@ _angular2.default.module(MODULE_NAME, [_tooltip2.default, _parseOptions2.default
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports) {
 
 var path = 'typeahead/typeahead.tpl.html';
@@ -6732,7 +6431,7 @@ window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, htm
 module.exports = path;
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6744,7 +6443,7 @@ var _angular2 = _interopRequireDefault(_angular);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_angular2.default.module('mgcrea.ngStrap', ['mgcrea.ngStrap.modal', 'mgcrea.ngStrap.aside', 'mgcrea.ngStrap.alert', 'mgcrea.ngStrap.button', 'mgcrea.ngStrap.select', 'mgcrea.ngStrap.datepicker', 'mgcrea.ngStrap.timepicker', 'mgcrea.ngStrap.navbar', 'mgcrea.ngStrap.tooltip', 'mgcrea.ngStrap.popover', 'mgcrea.ngStrap.dropdown', 'mgcrea.ngStrap.typeahead', 'mgcrea.ngStrap.scrollspy', 'mgcrea.ngStrap.affix', 'mgcrea.ngStrap.tab', 'mgcrea.ngStrap.collapse']);
+_angular2.default.module('mgcrea.ngStrap', ['mgcrea.ngStrap.modal', 'mgcrea.ngStrap.aside', 'mgcrea.ngStrap.alert', 'mgcrea.ngStrap.button', 'mgcrea.ngStrap.select', 'mgcrea.ngStrap.datepicker', 'mgcrea.ngStrap.timepicker', 'mgcrea.ngStrap.navbar', 'mgcrea.ngStrap.tooltip', 'mgcrea.ngStrap.popover', 'mgcrea.ngStrap.dropdown', 'mgcrea.ngStrap.typeahead', 'mgcrea.ngStrap.scrollspy', 'mgcrea.ngStrap.tab', 'mgcrea.ngStrap.collapse']);
 
 /***/ })
 /******/ ]);

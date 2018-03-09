@@ -2,12 +2,15 @@ const webpack = require('webpack');
 const path = require('path');
 const pkg = require('./package.json');
 
-let libraryName = pkg.name;
+let libraryName = '[name]';
 let outputFile = libraryName + '.js';
 
 const config = env => {
   return {
-    entry: './src/index.js',
+    entry: {
+      'angular-strap': './src/index.js',
+      'angular-strap.tpl': './src/templates.js'
+    },
     output: {
       path: path.resolve(__dirname, 'release'),
       filename: outputFile,

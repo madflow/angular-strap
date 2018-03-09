@@ -1,0 +1,38 @@
+@import "../../../node_modules/bootstrap/scss/bootstrap";
+
+/*
+ * Popovers corner placement
+ *
+ * Inherit exotic positionning from basic ones & fix arrow placement
+ */
+
+// .popover {
+//   &.top-left {
+//     @include popover.top;
+//     .arrow {
+//       @include popover.top .arrow;
+//       left: 10%;
+//     }
+//   }
+//   &.top-right {
+//     @include popover.top;
+//     .arrow {
+//       @include popover.top .arrow;
+//       left: 90%;
+//     }
+//   }
+//   &.bottom-left {
+//     @include popover.bottom;
+//     .arrow {
+//       @include popover.bottom .arrow;
+//       left: 10%;
+//     }
+//   }
+//   &.bottom-right {
+//     @include popover.bottom;
+//     .arrow {
+//       @include popover.bottom .arrow;
+//       left: 90%;
+//     }
+//   }
+// }

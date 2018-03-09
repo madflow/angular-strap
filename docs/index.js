@@ -10,6 +10,7 @@ import bootstrapGridCss from 'bootstrap/scss/bootstrap-grid.scss';
 import bootstrapCss from 'bootstrap/scss/bootstrap.scss';
 import highlightCss from 'highlight.js/styles/github.css';
 import angularMotionCss from 'angular-motion/dist/angular-motion.css';
+import bootstrapAdditons from '../src/extras/bootstrap-additions/bootstrap-additions.scss';
 
 import docCss from './styles.css';
 
@@ -24,7 +25,15 @@ import tooltipDoc from 'tooltip/docs/tooltip';
 import routes from './routes';
 
 angular
-  .module('docs', ['mgcrea.ngStrap', 'hljs', uiRouter, angularAnimate, alertDoc, modalDoc, tooltipDoc])
+  .module('docs', [
+    'mgcrea.ngStrap',
+    'hljs',
+    uiRouter,
+    angularAnimate,
+    alertDoc,
+    modalDoc,
+    tooltipDoc
+  ])
   .config(function($sceProvider) {
     $sceProvider.enabled(false);
   })

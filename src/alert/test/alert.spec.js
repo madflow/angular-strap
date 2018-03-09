@@ -1,8 +1,8 @@
 'use strict';
 
 import alert from '../alert';
+import alertTpl from '../alert.tpl.js';
 import modal from '../../modal/modal';
-import templates from '../../../dist/modules/alert.tpl';
 
 describe('alert', function() {
   var bodyEl = $('body'),
@@ -12,7 +12,7 @@ describe('alert', function() {
   beforeEach(angular.mock.module('ngSanitize'));
   beforeEach(angular.mock.module('ngAnimate'));
   beforeEach(angular.mock.module('ngAnimateMock'));
-  beforeEach(angular.mock.module(modal, alert));
+  beforeEach(angular.mock.module(modal, alert, alertTpl));
 
   beforeEach(
     inject(function(_$rootScope_, _$compile_, _$templateCache_, _$alert_, _$animate_, _$timeout_) {

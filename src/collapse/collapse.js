@@ -1,8 +1,7 @@
 'use strict';
 
-const MODULE_NAME = 'mgcrea.ngStrap.collapse';
-
 import angular from 'angular';
+import MODULE_NAME from './collapse.module';
 
 angular
   .module(MODULE_NAME, [])

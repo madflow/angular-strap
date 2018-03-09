@@ -1,9 +1,8 @@
 'use strict';
 
-const MODULE_NAME = 'mgcrea.ngStrap.alert';
-
 import angular from 'angular';
 import modal from '../modal/modal';
+import MODULE_NAME from './alert.module';
 
 angular
   .module(MODULE_NAME, [modal])

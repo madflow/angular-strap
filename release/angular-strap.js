@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -94,7 +94,7 @@ var _angular = __webpack_require__(0);
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _core = __webpack_require__(4);
+var _core = __webpack_require__(5);
 
 var _core2 = _interopRequireDefault(_core);
 
@@ -102,11 +102,10 @@ var _dimensions = __webpack_require__(3);
 
 var _dimensions2 = _interopRequireDefault(_dimensions);
 
-var _tooltipTpl = __webpack_require__(16);
-
-var _tooltipTpl2 = _interopRequireDefault(_tooltipTpl);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var template = '<div class="tooltip in" ng-show="title">\n  <div class="tooltip-arrow"></div>\n  <div class="tooltip-inner" ng-bind="title"></div>\n</div>\n';
+
 
 var MODULE_NAME = 'mgcrea.ngStrap.tooltip';
 
@@ -993,7 +992,7 @@ var _angular = __webpack_require__(0);
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _core = __webpack_require__(4);
+var _core = __webpack_require__(5);
 
 var _core2 = _interopRequireDefault(_core);
 
@@ -1001,15 +1000,16 @@ var _dimensions = __webpack_require__(3);
 
 var _dimensions2 = _interopRequireDefault(_dimensions);
 
-var _modalTpl = __webpack_require__(6);
+var _modal = __webpack_require__(11);
 
-var _modalTpl2 = _interopRequireDefault(_modalTpl);
+var _modal2 = _interopRequireDefault(_modal);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var MODULE_NAME = 'mgcrea.ngStrap.modal';
+var template = '<div class="modal" tabindex="-1" role="dialog" aria-hidden="true">\n<!--<span role="dialog" class="sr-only"></span>-->\n  <div class="modal-dialog">\n    <div class="modal-content">\n      <div class="modal-header" ng-show="title">\n        <h5 class="modal-title" ng-bind="title"></h5>\n        <button type="button" role="button" class="close" aria-label="Close" ng-click="$hide()"><span aria-hidden="true">&times;</span></button>\n      </div>\n      <div class="modal-body" ng-bind="content"></div>\n      <div class="modal-footer">\n        <button type="button" class="btn btn-default" ng-click="$hide()" aria-label="Close">Close</button>\n      </div>\n    </div>\n  </div>\n</div>\n';
 
-_angular2.default.module(MODULE_NAME, [_core2.default, _dimensions2.default]).provider('$modal', function () {
+
+_angular2.default.module(_modal2.default, [_core2.default, _dimensions2.default]).provider('$modal', function () {
   var defaults = this.defaults = {
     animation: 'am-fade',
     backdropAnimation: 'am-fade',
@@ -1436,7 +1436,7 @@ _angular2.default.module(MODULE_NAME, [_core2.default, _dimensions2.default]).pr
   };
 }]);
 
-exports.default = MODULE_NAME;
+exports.default = _modal2.default;
 
 /***/ }),
 /* 3 */
@@ -1627,6 +1627,20 @@ exports.default = MODULE_NAME;
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var MODULE_NAME = 'mgcrea.ngStrap.alert';
+
+exports.default = MODULE_NAME;
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1826,159 +1840,7 @@ function bsCompilerService($q, $http, $injector, $compile, $controller, $templat
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.MODULE_NAME = undefined;
-
-var _angular = __webpack_require__(0);
-
-var _angular2 = _interopRequireDefault(_angular);
-
-var _modal = __webpack_require__(2);
-
-var _modal2 = _interopRequireDefault(_modal);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var MODULE_NAME = 'mgcrea.ngStrap.alert';
-
-_angular2.default.module(MODULE_NAME, [_modal2.default]).provider('$alert', function () {
-  var defaults = this.defaults = {
-    animation: 'am-fade',
-    prefixClass: 'alert',
-    prefixEvent: 'alert',
-    placement: null,
-    templateUrl: 'alert/alert.tpl.html',
-    container: false,
-    element: null,
-    backdrop: false,
-    keyboard: true,
-    show: true,
-    // Specific options
-    duration: false,
-    type: false,
-    dismissable: true
-  };
-
-  this.$get = ['$modal', '$timeout', function ($modal, $timeout) {
-    function AlertFactory(config) {
-      var $alert = {};
-
-      // Common vars
-      var options = _angular2.default.extend({}, defaults, config);
-
-      $alert = $modal(options);
-
-      // Support scope as string options [/*title, content, */ type, dismissable]
-      $alert.$scope.dismissable = !!options.dismissable;
-      if (options.type) {
-        $alert.$scope.type = options.type;
-      }
-
-      // Support auto-close duration
-      var show = $alert.show;
-      if (options.duration) {
-        $alert.show = function () {
-          show();
-          $timeout(function () {
-            $alert.hide();
-          }, options.duration * 1000);
-        };
-      }
-
-      return $alert;
-    }
-
-    return AlertFactory;
-  }];
-}).directive('bsAlert', ['$window', '$sce', '$alert', function ($window, $sce, $alert) {
-  return {
-    restrict: 'EAC',
-    scope: true,
-    link: function postLink(scope, element, attr, transclusion) {
-      // Directive options
-      var options = { scope: scope, element: element, show: false };
-      _angular2.default.forEach(['template', 'templateUrl', 'controller', 'controllerAs', 'placement', 'keyboard', 'html', 'container', 'animation', 'duration', 'dismissable'], function (key) {
-        if (_angular2.default.isDefined(attr[key])) options[key] = attr[key];
-      });
-
-      // use string regex match boolean attr falsy values, leave truthy values be
-      var falseValueRegExp = /^(false|0|)$/i;
-      _angular2.default.forEach(['keyboard', 'html', 'container', 'dismissable'], function (key) {
-        if (_angular2.default.isDefined(attr[key]) && falseValueRegExp.test(attr[key])) options[key] = false;
-      });
-
-      // bind functions from the attrs to the show and hide events
-      _angular2.default.forEach(['onBeforeShow', 'onShow', 'onBeforeHide', 'onHide'], function (key) {
-        var bsKey = 'bs' + key.charAt(0).toUpperCase() + key.slice(1);
-        if (_angular2.default.isDefined(attr[bsKey])) {
-          options[key] = scope.$eval(attr[bsKey]);
-        }
-      });
-
-      // overwrite inherited title value when no value specified
-      // fix for angular 1.3.1 531a8de72c439d8ddd064874bf364c00cedabb11
-      if (!scope.hasOwnProperty('title')) {
-        scope.title = '';
-      }
-
-      // Support scope as data-attrs
-      _angular2.default.forEach(['title', 'content', 'type'], function (key) {
-        if (attr[key]) {
-          attr.$observe(key, function (newValue, oldValue) {
-            scope[key] = $sce.trustAsHtml(newValue);
-          });
-        }
-      });
-
-      // Support scope as an object
-      if (attr.bsAlert) {
-        scope.$watch(attr.bsAlert, function (newValue, oldValue) {
-          if (_angular2.default.isObject(newValue)) {
-            _angular2.default.extend(scope, newValue);
-          } else {
-            scope.content = newValue;
-          }
-        }, true);
-      }
-
-      // Initialize alert
-      var alert = $alert(options);
-
-      // Trigger
-      element.on(attr.trigger || 'click', alert.toggle);
-
-      // Garbage collection
-      scope.$on('$destroy', function () {
-        if (alert) alert.destroy();
-        options = null;
-        alert = null;
-      });
-    }
-  };
-}]);
-
-exports.MODULE_NAME = MODULE_NAME;
-exports.default = MODULE_NAME;
-
-/***/ }),
 /* 6 */
-/***/ (function(module, exports) {
-
-var path = 'modal/modal.tpl.html';
-var html = "<div class=modal tabindex=-1 role=dialog aria-hidden=true> <div class=modal-dialog> <div class=modal-content> <div class=modal-header ng-show=title> <h5 class=modal-title ng-bind=title></h5> <button type=button role=button class=close aria-label=Close ng-click=$hide()><span aria-hidden=true>&times;</span></button> </div> <div class=modal-body ng-bind=content></div> <div class=modal-footer> <button type=button class=\"btn btn-default\" ng-click=$hide() aria-label=Close>Close</button> </div> </div> </div> </div> ";
-window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
-module.exports = path;
-
-/***/ }),
-/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2358,7 +2220,7 @@ _angular2.default.module(MODULE_NAME, []).provider('$dateParser', ['$localeProvi
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2439,7 +2301,7 @@ _angular2.default.module(MODULE_NAME, []).service('$dateFormatter', ['$locale', 
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2532,7 +2394,7 @@ _angular2.default.module(MODULE_NAME, []).provider('$parseOptions', function () 
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2543,11 +2405,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.typeahead = exports.tooltip = exports.timepicker = exports.tab = exports.select = exports.scrollspy = exports.popover = exports.navbar = exports.modal = exports.datepicker = exports.collapse = exports.button = exports.aside = exports.alert = undefined;
 
-var _alert = __webpack_require__(5);
+var _alert = __webpack_require__(10);
 
 var _alert2 = _interopRequireDefault(_alert);
 
-var _aside = __webpack_require__(11);
+var _aside = __webpack_require__(12);
 
 var _aside2 = _interopRequireDefault(_aside);
 
@@ -2563,7 +2425,7 @@ var _datepicker = __webpack_require__(15);
 
 var _datepicker2 = _interopRequireDefault(_datepicker);
 
-var _dropdown = __webpack_require__(18);
+var _dropdown = __webpack_require__(16);
 
 var _dropdown2 = _interopRequireDefault(_dropdown);
 
@@ -2571,27 +2433,27 @@ var _modal = __webpack_require__(2);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _navbar = __webpack_require__(20);
+var _navbar = __webpack_require__(17);
 
 var _navbar2 = _interopRequireDefault(_navbar);
 
-var _popover = __webpack_require__(21);
+var _popover = __webpack_require__(18);
 
 var _popover2 = _interopRequireDefault(_popover);
 
-var _scrollspy = __webpack_require__(22);
+var _scrollspy = __webpack_require__(19);
 
 var _scrollspy2 = _interopRequireDefault(_scrollspy);
 
-var _select = __webpack_require__(24);
+var _select = __webpack_require__(21);
 
 var _select2 = _interopRequireDefault(_select);
 
-var _tab = __webpack_require__(26);
+var _tab = __webpack_require__(22);
 
 var _tab2 = _interopRequireDefault(_tab);
 
-var _timepicker = __webpack_require__(28);
+var _timepicker = __webpack_require__(23);
 
 var _timepicker2 = _interopRequireDefault(_timepicker);
 
@@ -2599,11 +2461,11 @@ var _tooltip = __webpack_require__(1);
 
 var _tooltip2 = _interopRequireDefault(_tooltip);
 
-var _typeahead = __webpack_require__(30);
+var _typeahead = __webpack_require__(24);
 
 var _typeahead2 = _interopRequireDefault(_typeahead);
 
-var _module = __webpack_require__(32);
+var _module = __webpack_require__(25);
 
 var _module2 = _interopRequireDefault(_module);
 
@@ -2626,7 +2488,166 @@ exports.typeahead = _typeahead2.default;
 exports.default = _module2.default;
 
 /***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MODULE_NAME = undefined;
+
+var _angular = __webpack_require__(0);
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _modal = __webpack_require__(2);
+
+var _modal2 = _interopRequireDefault(_modal);
+
+var _alert = __webpack_require__(4);
+
+var _alert2 = _interopRequireDefault(_alert);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_angular2.default.module(_alert2.default, [_modal2.default]).provider('$alert', function () {
+  var defaults = this.defaults = {
+    animation: 'am-fade',
+    prefixClass: 'alert',
+    prefixEvent: 'alert',
+    placement: null,
+    templateUrl: 'alert/alert.tpl.html',
+    container: false,
+    element: null,
+    backdrop: false,
+    keyboard: true,
+    show: true,
+    // Specific options
+    duration: false,
+    type: false,
+    dismissable: true
+  };
+
+  this.$get = ['$modal', '$timeout', function ($modal, $timeout) {
+    function AlertFactory(config) {
+      var $alert = {};
+
+      // Common vars
+      var options = _angular2.default.extend({}, defaults, config);
+
+      $alert = $modal(options);
+
+      // Support scope as string options [/*title, content, */ type, dismissable]
+      $alert.$scope.dismissable = !!options.dismissable;
+      if (options.type) {
+        $alert.$scope.type = options.type;
+      }
+
+      // Support auto-close duration
+      var show = $alert.show;
+      if (options.duration) {
+        $alert.show = function () {
+          show();
+          $timeout(function () {
+            $alert.hide();
+          }, options.duration * 1000);
+        };
+      }
+
+      return $alert;
+    }
+
+    return AlertFactory;
+  }];
+}).directive('bsAlert', ['$window', '$sce', '$alert', function ($window, $sce, $alert) {
+  return {
+    restrict: 'EAC',
+    scope: true,
+    link: function postLink(scope, element, attr, transclusion) {
+      // Directive options
+      var options = { scope: scope, element: element, show: false };
+      _angular2.default.forEach(['template', 'templateUrl', 'controller', 'controllerAs', 'placement', 'keyboard', 'html', 'container', 'animation', 'duration', 'dismissable'], function (key) {
+        if (_angular2.default.isDefined(attr[key])) options[key] = attr[key];
+      });
+
+      // use string regex match boolean attr falsy values, leave truthy values be
+      var falseValueRegExp = /^(false|0|)$/i;
+      _angular2.default.forEach(['keyboard', 'html', 'container', 'dismissable'], function (key) {
+        if (_angular2.default.isDefined(attr[key]) && falseValueRegExp.test(attr[key])) options[key] = false;
+      });
+
+      // bind functions from the attrs to the show and hide events
+      _angular2.default.forEach(['onBeforeShow', 'onShow', 'onBeforeHide', 'onHide'], function (key) {
+        var bsKey = 'bs' + key.charAt(0).toUpperCase() + key.slice(1);
+        if (_angular2.default.isDefined(attr[bsKey])) {
+          options[key] = scope.$eval(attr[bsKey]);
+        }
+      });
+
+      // overwrite inherited title value when no value specified
+      // fix for angular 1.3.1 531a8de72c439d8ddd064874bf364c00cedabb11
+      if (!scope.hasOwnProperty('title')) {
+        scope.title = '';
+      }
+
+      // Support scope as data-attrs
+      _angular2.default.forEach(['title', 'content', 'type'], function (key) {
+        if (attr[key]) {
+          attr.$observe(key, function (newValue, oldValue) {
+            scope[key] = $sce.trustAsHtml(newValue);
+          });
+        }
+      });
+
+      // Support scope as an object
+      if (attr.bsAlert) {
+        scope.$watch(attr.bsAlert, function (newValue, oldValue) {
+          if (_angular2.default.isObject(newValue)) {
+            _angular2.default.extend(scope, newValue);
+          } else {
+            scope.content = newValue;
+          }
+        }, true);
+      }
+
+      // Initialize alert
+      var alert = $alert(options);
+
+      // Trigger
+      element.on(attr.trigger || 'click', alert.toggle);
+
+      // Garbage collection
+      scope.$on('$destroy', function () {
+        if (alert) alert.destroy();
+        options = null;
+        alert = null;
+      });
+    }
+  };
+}]);
+
+exports.MODULE_NAME = _alert2.default;
+exports.default = _alert2.default;
+
+/***/ }),
 /* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var MODULE_NAME = 'mgcrea.ngStrap.modal';
+
+exports.default = MODULE_NAME;
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2644,13 +2665,12 @@ var _modal = __webpack_require__(2);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _asideTpl = __webpack_require__(12);
-
-var _asideTpl2 = _interopRequireDefault(_asideTpl);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var MODULE_NAME = 'mgcrea.ngStrap.aside';
+
+var template = '<div class="aside" tabindex="-1" role="dialog">\n  <div class="aside-dialog">\n    <div class="aside-content">\n      <div class="aside-header" ng-show="title">\n        <button type="button" class="close" ng-click="$hide()">&times;</button>\n        <h4 class="aside-title" ng-bind="title"></h4>\n      </div>\n      <div class="aside-body" ng-bind="content"></div>\n      <div class="aside-footer">\n        <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>\n      </div>\n    </div>\n  </div>\n</div>\n';
+
 
 _angular2.default.module(MODULE_NAME, [_modal2.default]).provider('$aside', function () {
   var defaults = this.defaults = {
@@ -2744,15 +2764,6 @@ _angular2.default.module(MODULE_NAME, [_modal2.default]).provider('$aside', func
 }]);
 
 exports.default = MODULE_NAME;
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-var path = 'aside/aside.tpl.html';
-var html = "<div class=aside tabindex=-1 role=dialog> <div class=aside-dialog> <div class=aside-content> <div class=aside-header ng-show=title> <button type=button class=close ng-click=$hide()>&times;</button> <h4 class=aside-title ng-bind=title></h4> </div> <div class=aside-body ng-bind=content></div> <div class=aside-footer> <button type=button class=\"btn btn-default\" ng-click=$hide()>Close</button> </div> </div> </div> </div> ";
-window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
-module.exports = path;
 
 /***/ }),
 /* 13 */
@@ -3209,11 +3220,11 @@ var _angular = __webpack_require__(0);
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _dateParser = __webpack_require__(7);
+var _dateParser = __webpack_require__(6);
 
 var _dateParser2 = _interopRequireDefault(_dateParser);
 
-var _dateFormatter = __webpack_require__(8);
+var _dateFormatter = __webpack_require__(7);
 
 var _dateFormatter2 = _interopRequireDefault(_dateFormatter);
 
@@ -3221,11 +3232,10 @@ var _tooltip = __webpack_require__(1);
 
 var _tooltip2 = _interopRequireDefault(_tooltip);
 
-var _datepickerTpl = __webpack_require__(17);
-
-var _datepickerTpl2 = _interopRequireDefault(_datepickerTpl);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var template = '<div class="dropdown-menu datepicker" ng-class="\'datepicker-mode-\' + $mode" style="max-width: 320px;" aria-hidden="true">\n<table style="table-layout: fixed; height: 100%; width: 100%;">\n  <thead>\n    <tr class="text-center">\n      <th>\n        <button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$selectPane(-1)">\n          <i class="{{$iconLeft}}"></i>\n        </button>\n      </th>\n      <th colspan="{{ rows[0].length - 2 }}">\n        <button tabindex="-1" type="button" class="btn btn-default btn-block text-strong"  ng-click="$toggleMode()">\n          <strong style="text-transform: capitalize;" ng-bind="title"></strong>\n        </button>\n      </th>\n      <th>\n        <button tabindex="-1" type="button" class="btn btn-default pull-right" ng-click="$selectPane(+1)">\n          <i class="{{$iconRight}}"></i>\n        </button>\n      </th>\n    </tr>\n    <tr ng-if="showLabels" ng-bind-html="labels"></tr>\n  </thead>\n  <tbody>\n    <tr ng-repeat="(i, row) in rows" height="{{ 100 / rows.length }}%">\n      <td class="text-center" ng-repeat="(j, el) in row">\n        <button tabindex="-1" type="button" class="btn btn-default" style="width: 100%" ng-class="{\'btn-primary\': el.selected, \'btn-info btn-today\': el.isToday && !el.selected}" ng-click="$select(el.date, el.disabled)" ng-disabled="el.disabled">\n          <span ng-class="{\'text-muted\': el.muted}" ng-bind="el.label"></span>\n        </button>\n      </td>\n    </tr>\n  </tbody>\n  <tfoot>\n    <tr>\n      <td colspan="{{ rows[0].length }}">\n        <div class="btn-group btn-group-justified" role="group">\n          <div class="btn-group" role="group" ng-if="$hasToday">\n            <button type="button" class="btn btn-default today " ng-click="$setToday()" ng-disabled="isTodayDisabled">\n              <strong style="text-transform: capitalize;">Today</strong>\n            </button>\n          </div>\n          <div class="btn-group" role="group" ng-if="$hasClear">\n            <button type="button" class="btn btn-default clear" ng-click="$clear()">\n              <strong style="text-transform: capitalize;">Clear</strong>\n            </button>\n          </div>\n        </div>\n      </td>\n    </tr>\n  </tfoot>\n</table>\n</div>\n';
+
 
 var MODULE_NAME = 'mgcrea.ngStrap.datepicker';
 
@@ -3952,24 +3962,6 @@ exports.default = MODULE_NAME;
 
 /***/ }),
 /* 16 */
-/***/ (function(module, exports) {
-
-var path = 'tooltip/tooltip.tpl.html';
-var html = "<div class=\"tooltip in\" ng-show=title> <div class=tooltip-arrow></div> <div class=tooltip-inner ng-bind=title></div> </div> ";
-window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
-module.exports = path;
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
-var path = 'datepicker/datepicker.tpl.html';
-var html = "<div class=\"dropdown-menu datepicker\" ng-class=\"'datepicker-mode-' + $mode\" style=max-width:320px aria-hidden=true> <table style=table-layout:fixed;height:100%;width:100%> <thead> <tr class=text-center> <th> <button tabindex=-1 type=button class=\"btn btn-default pull-left\" ng-click=$selectPane(-1)> <i class={{$iconLeft}}></i> </button> </th> <th colspan=\"{{ rows[0].length - 2 }}\"> <button tabindex=-1 type=button class=\"btn btn-default btn-block text-strong\" ng-click=$toggleMode()> <strong style=text-transform:capitalize ng-bind=title></strong> </button> </th> <th> <button tabindex=-1 type=button class=\"btn btn-default pull-right\" ng-click=$selectPane(+1)> <i class={{$iconRight}}></i> </button> </th> </tr> <tr ng-if=showLabels ng-bind-html=labels></tr> </thead> <tbody> <tr ng-repeat=\"(i, row) in rows\" height=\"{{ 100 / rows.length }}%\"> <td class=text-center ng-repeat=\"(j, el) in row\"> <button tabindex=-1 type=button class=\"btn btn-default\" style=width:100% ng-class=\"{'btn-primary': el.selected, 'btn-info btn-today': el.isToday && !el.selected}\" ng-click=\"$select(el.date, el.disabled)\" ng-disabled=el.disabled> <span ng-class=\"{'text-muted': el.muted}\" ng-bind=el.label></span> </button> </td> </tr> </tbody> <tfoot> <tr> <td colspan=\"{{ rows[0].length }}\"> <div class=\"btn-group btn-group-justified\" role=group> <div class=btn-group role=group ng-if=$hasToday> <button type=button class=\"btn btn-default today\" ng-click=$setToday() ng-disabled=isTodayDisabled> <strong style=text-transform:capitalize>Today</strong> </button> </div> <div class=btn-group role=group ng-if=$hasClear> <button type=button class=\"btn btn-default clear\" ng-click=$clear()> <strong style=text-transform:capitalize>Clear</strong> </button> </div> </div> </td> </tr> </tfoot> </table> </div> ";
-window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
-module.exports = path;
-
-/***/ }),
-/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3987,11 +3979,10 @@ var _tooltip = __webpack_require__(1);
 
 var _tooltip2 = _interopRequireDefault(_tooltip);
 
-var _dropdownTpl = __webpack_require__(19);
-
-var _dropdownTpl2 = _interopRequireDefault(_dropdownTpl);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var template = '<ul tabindex="-1" class="dropdown-menu" role="menu" ng-show="content && content.length">\n  <li role="presentation" ng-class="{divider: item.divider, active: item.active}" ng-repeat="item in content">\n    <a role="menuitem" tabindex="-1" ng-href="{{item.href}}" ng-if="!item.divider && item.href" target="{{item.target || \'\'}}" ng-bind="item.text"></a>\n    <a role="menuitem" tabindex="-1" href="javascript:void(0)" ng-if="!item.divider && item.click" ng-click="$eval(item.click);$hide()" ng-bind="item.text"></a>\n  </li>\n</ul>\n';
+
 
 var MODULE_NAME = 'mgcrea.ngStrap.dropdown';
 
@@ -4168,16 +4159,7 @@ _angular2.default.module(MODULE_NAME, [_tooltip2.default]).provider('$dropdown',
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 19 */
-/***/ (function(module, exports) {
-
-var path = 'dropdown/dropdown.tpl.html';
-var html = "<ul tabindex=-1 class=dropdown-menu role=menu ng-show=\"content && content.length\"> <li role=presentation ng-class=\"{divider: item.divider, active: item.active}\" ng-repeat=\"item in content\"> <a role=menuitem tabindex=-1 ng-href={{item.href}} ng-if=\"!item.divider && item.href\" target=\"{{item.target || ''}}\" ng-bind=item.text></a> <a role=menuitem tabindex=-1 href=javascript:void(0) ng-if=\"!item.divider && item.click\" ng-click=$eval(item.click);$hide() ng-bind=item.text></a> </li> </ul> ";
-window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
-module.exports = path;
-
-/***/ }),
-/* 20 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4245,7 +4227,7 @@ _angular2.default.module(MODULE_NAME, []).provider('$navbar', function () {
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 21 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4423,7 +4405,7 @@ _angular2.default.module(MODULE_NAME, [_tooltip2.default]).provider('$popover', 
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 22 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4437,7 +4419,7 @@ var _angular = __webpack_require__(0);
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _debounce = __webpack_require__(23);
+var _debounce = __webpack_require__(20);
 
 var _debounce2 = _interopRequireDefault(_debounce);
 
@@ -4679,7 +4661,7 @@ _angular2.default.module(MODULE_NAME, [_debounce2.default, _dimensions2.default]
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 23 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4752,7 +4734,7 @@ _angular2.default.module(MODULE_NAME, [])
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 24 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4770,15 +4752,14 @@ var _tooltip = __webpack_require__(1);
 
 var _tooltip2 = _interopRequireDefault(_tooltip);
 
-var _parseOptions = __webpack_require__(9);
+var _parseOptions = __webpack_require__(8);
 
 var _parseOptions2 = _interopRequireDefault(_parseOptions);
 
-var _selectTpl = __webpack_require__(25);
-
-var _selectTpl2 = _interopRequireDefault(_selectTpl);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var template = '<ul tabindex="-1" class="select dropdown-menu" ng-show="$isVisible()" role="menu">\n  <li ng-if="$showAllNoneButtons">\n    <div class="btn-group" style="margin-bottom: 5px; margin-left: 5px">\n      <button type="button" class="btn btn-default btn-xs" ng-click="$selectAll()">{{$allText}}</button>\n      <button type="button" class="btn btn-default btn-xs" ng-click="$selectNone()">{{$noneText}}</button>\n    </div>\n  </li>\n  <li role="presentation" ng-repeat="match in $matches" ng-class="{active: $isActive($index)}">\n    <a style="cursor: default;" role="menuitem" tabindex="-1" ng-click="$select($index, $event)">\n      <i class="{{$iconCheckmark}} pull-right" ng-if="$isMultiple && $isActive($index)"></i>\n      <span ng-bind="match.label" role="menuitem"></span>\n    </a>\n  </li>\n</ul>\n';
+
 
 var MODULE_NAME = 'mgcrea.ngStrap.select';
 
@@ -5183,16 +5164,7 @@ _angular2.default.module(MODULE_NAME, [_tooltip2.default, _parseOptions2.default
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 25 */
-/***/ (function(module, exports) {
-
-var path = 'select/select.tpl.html';
-var html = "<ul tabindex=-1 class=\"select dropdown-menu\" ng-show=$isVisible() role=menu> <li ng-if=$showAllNoneButtons> <div class=btn-group style=margin-bottom:5px;margin-left:5px> <button type=button class=\"btn btn-default btn-xs\" ng-click=$selectAll()>{{$allText}}</button> <button type=button class=\"btn btn-default btn-xs\" ng-click=$selectNone()>{{$noneText}}</button> </div> </li> <li role=presentation ng-repeat=\"match in $matches\" ng-class=\"{active: $isActive($index)}\"> <a style=cursor:default role=menuitem tabindex=-1 ng-click=\"$select($index, $event)\"> <i class=\"{{$iconCheckmark}} pull-right\" ng-if=\"$isMultiple && $isActive($index)\"></i> <span ng-bind=match.label role=menuitem></span> </a> </li> </ul> ";
-window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
-module.exports = path;
-
-/***/ }),
-/* 26 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5206,11 +5178,10 @@ var _angular = __webpack_require__(0);
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _tabTpl = __webpack_require__(27);
-
-var _tabTpl2 = _interopRequireDefault(_tabTpl);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var template = '<ul class="nav" ng-class="$navClass" role="tablist">\n  <li role="presentation" ng-repeat="$pane in $panes track by $index" ng-class="[ $isActive($pane, $index) ? $activeClass : \'\', $pane.disabled ? \'disabled\' : \'\' ]">\n    <a role="tab" data-toggle="tab" ng-click="!$pane.disabled && $setActive($pane.name || $index)" data-index="{{ $index }}" ng-bind-html="$pane.title" aria-controls="$pane.title" ng-keypress="$onKeyPress($event, $pane.name || $index)" href=""></a>\n  </li>\n</ul>\n<div ng-transclude class="tab-content">\n</div>\n';
+
 
 var MODULE_NAME = 'mgcrea.ngStrap.tab';
 
@@ -5417,16 +5388,7 @@ _angular2.default.module(MODULE_NAME, []).provider('$tab', function () {
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 27 */
-/***/ (function(module, exports) {
-
-var path = 'tab/tab.tpl.html';
-var html = "<ul class=nav ng-class=$navClass role=tablist> <li role=presentation ng-repeat=\"$pane in $panes track by $index\" ng-class=\"[ $isActive($pane, $index) ? $activeClass : '', $pane.disabled ? 'disabled' : '' ]\"> <a role=tab data-toggle=tab ng-click=\"!$pane.disabled && $setActive($pane.name || $index)\" data-index=\"{{ $index }}\" ng-bind-html=$pane.title aria-controls=$pane.title ng-keypress=\"$onKeyPress($event, $pane.name || $index)\" href=\"\"></a> </li> </ul> <div ng-transclude class=tab-content> </div> ";
-window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
-module.exports = path;
-
-/***/ }),
-/* 28 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5440,11 +5402,11 @@ var _angular = __webpack_require__(0);
 
 var _angular2 = _interopRequireDefault(_angular);
 
-var _dateParser = __webpack_require__(7);
+var _dateParser = __webpack_require__(6);
 
 var _dateParser2 = _interopRequireDefault(_dateParser);
 
-var _dateFormatter = __webpack_require__(8);
+var _dateFormatter = __webpack_require__(7);
 
 var _dateFormatter2 = _interopRequireDefault(_dateFormatter);
 
@@ -5452,11 +5414,10 @@ var _tooltip = __webpack_require__(1);
 
 var _tooltip2 = _interopRequireDefault(_tooltip);
 
-var _timepickerTpl = __webpack_require__(29);
-
-var _timepickerTpl2 = _interopRequireDefault(_timepickerTpl);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var template = '<div class="dropdown-menu timepicker" style="min-width: 0px;width: auto;" aria-hidden="true">\n<table height="100%">\n  <thead>\n    <tr class="text-center">\n      <th>\n        <button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(-1, 0)">\n          <i class="{{ $iconUp }}"></i>\n        </button>\n      </th>\n      <th>\n        &nbsp;\n      </th>\n      <th>\n        <button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(-1, 1)">\n          <i class="{{ $iconUp }}"></i>\n        </button>\n      </th>\n      <th ng-if="showSeconds" >\n        &nbsp;\n      </th>\n      <th ng-if="showSeconds">\n        <button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(-1, 2)">\n          <i class="{{ $iconUp }}"></i>\n        </button>\n      </th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr ng-repeat="(i, row) in rows">\n      <td class="text-center">\n        <button tabindex="-1" style="width: 100%" type="button" class="btn btn-default" ng-class="{\'btn-primary\': row[0].selected}" ng-click="$select(row[0].date, 0)" ng-disabled="row[0].disabled">\n          <span ng-class="{\'text-muted\': row[0].muted}" ng-bind="row[0].label"></span>\n        </button>\n      </td>\n      <td>\n        <span ng-bind="i == midIndex ? timeSeparator : \' \'"></span>\n      </td>\n      <td class="text-center">\n        <button tabindex="-1" ng-if="row[1].date" style="width: 100%" type="button" class="btn btn-default" ng-class="{\'btn-primary\': row[1].selected}" ng-click="$select(row[1].date, 1)" ng-disabled="row[1].disabled">\n          <span ng-class="{\'text-muted\': row[1].muted}" ng-bind="row[1].label"></span>\n        </button>\n      </td>\n      <td ng-if="showSeconds">\n        <span ng-bind="i == midIndex ? timeSeparator : \' \'"></span>\n      </td>\n      <td ng-if="showSeconds" class="text-center">\n        <button tabindex="-1" ng-if="row[2].date" style="width: 100%" type="button" class="btn btn-default" ng-class="{\'btn-primary\': row[2].selected}" ng-click="$select(row[2].date, 2)" ng-disabled="row[2].disabled">\n          <span ng-class="{\'text-muted\': row[2].muted}" ng-bind="row[2].label"></span>\n        </button>\n      </td>\n      <td ng-if="showAM">\n        &nbsp;\n      </td>\n      <td ng-if="showAM">\n        <button tabindex="-1" ng-show="i == midIndex - !isAM * 1" style="width: 100%" type="button" ng-class="{\'btn-primary\': !!isAM}" class="btn btn-default" ng-click="$switchMeridian()" ng-disabled="el.disabled">AM</button>\n        <button tabindex="-1" ng-show="i == midIndex + 1 - !isAM * 1" style="width: 100%" type="button" ng-class="{\'btn-primary\': !isAM}" class="btn btn-default" ng-click="$switchMeridian()" ng-disabled="el.disabled">PM</button>\n      </td>\n    </tr>\n  </tbody>\n  <tfoot>\n    <tr class="text-center">\n      <th>\n        <button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(1, 0)">\n          <i class="{{ $iconDown }}"></i>\n        </button>\n      </th>\n      <th>\n        &nbsp;\n      </th>\n      <th>\n        <button tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(1, 1)">\n          <i class="{{ $iconDown }}"></i>\n        </button>\n      </th>\n      <th ng-if="showSeconds">\n        &nbsp;\n      </th>\n      <th ng-if="showSeconds">\n        <button ng-if="showSeconds" tabindex="-1" type="button" class="btn btn-default pull-left" ng-click="$arrowAction(1, 2)">\n          <i class="{{ $iconDown }}"></i>\n        </button>\n      </th>\n    </tr>\n  </tfoot>\n</table>\n</div>\n';
+
 
 var MODULE_NAME = 'mgcrea.ngStrap.timepicker';
 
@@ -6044,16 +6005,7 @@ _angular2.default.module(MODULE_NAME, [_dateParser2.default, _dateFormatter2.def
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 29 */
-/***/ (function(module, exports) {
-
-var path = 'timepicker/timepicker.tpl.html';
-var html = "<div class=\"dropdown-menu timepicker\" style=min-width:0;width:auto aria-hidden=true> <table height=100%> <thead> <tr class=text-center> <th> <button tabindex=-1 type=button class=\"btn btn-default pull-left\" ng-click=\"$arrowAction(-1, 0)\"> <i class=\"{{ $iconUp }}\"></i> </button> </th> <th> &nbsp; </th> <th> <button tabindex=-1 type=button class=\"btn btn-default pull-left\" ng-click=\"$arrowAction(-1, 1)\"> <i class=\"{{ $iconUp }}\"></i> </button> </th> <th ng-if=showSeconds> &nbsp; </th> <th ng-if=showSeconds> <button tabindex=-1 type=button class=\"btn btn-default pull-left\" ng-click=\"$arrowAction(-1, 2)\"> <i class=\"{{ $iconUp }}\"></i> </button> </th> </tr> </thead> <tbody> <tr ng-repeat=\"(i, row) in rows\"> <td class=text-center> <button tabindex=-1 style=width:100% type=button class=\"btn btn-default\" ng-class=\"{'btn-primary': row[0].selected}\" ng-click=\"$select(row[0].date, 0)\" ng-disabled=row[0].disabled> <span ng-class=\"{'text-muted': row[0].muted}\" ng-bind=row[0].label></span> </button> </td> <td> <span ng-bind=\"i == midIndex ? timeSeparator : ' '\"></span> </td> <td class=text-center> <button tabindex=-1 ng-if=row[1].date style=width:100% type=button class=\"btn btn-default\" ng-class=\"{'btn-primary': row[1].selected}\" ng-click=\"$select(row[1].date, 1)\" ng-disabled=row[1].disabled> <span ng-class=\"{'text-muted': row[1].muted}\" ng-bind=row[1].label></span> </button> </td> <td ng-if=showSeconds> <span ng-bind=\"i == midIndex ? timeSeparator : ' '\"></span> </td> <td ng-if=showSeconds class=text-center> <button tabindex=-1 ng-if=row[2].date style=width:100% type=button class=\"btn btn-default\" ng-class=\"{'btn-primary': row[2].selected}\" ng-click=\"$select(row[2].date, 2)\" ng-disabled=row[2].disabled> <span ng-class=\"{'text-muted': row[2].muted}\" ng-bind=row[2].label></span> </button> </td> <td ng-if=showAM> &nbsp; </td> <td ng-if=showAM> <button tabindex=-1 ng-show=\"i == midIndex - !isAM * 1\" style=width:100% type=button ng-class=\"{'btn-primary': !!isAM}\" class=\"btn btn-default\" ng-click=$switchMeridian() ng-disabled=el.disabled>AM</button> <button tabindex=-1 ng-show=\"i == midIndex + 1 - !isAM * 1\" style=width:100% type=button ng-class=\"{'btn-primary': !isAM}\" class=\"btn btn-default\" ng-click=$switchMeridian() ng-disabled=el.disabled>PM</button> </td> </tr> </tbody> <tfoot> <tr class=text-center> <th> <button tabindex=-1 type=button class=\"btn btn-default pull-left\" ng-click=\"$arrowAction(1, 0)\"> <i class=\"{{ $iconDown }}\"></i> </button> </th> <th> &nbsp; </th> <th> <button tabindex=-1 type=button class=\"btn btn-default pull-left\" ng-click=\"$arrowAction(1, 1)\"> <i class=\"{{ $iconDown }}\"></i> </button> </th> <th ng-if=showSeconds> &nbsp; </th> <th ng-if=showSeconds> <button ng-if=showSeconds tabindex=-1 type=button class=\"btn btn-default pull-left\" ng-click=\"$arrowAction(1, 2)\"> <i class=\"{{ $iconDown }}\"></i> </button> </th> </tr> </tfoot> </table> </div> ";
-window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
-module.exports = path;
-
-/***/ }),
-/* 30 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6073,15 +6025,14 @@ var _tooltip = __webpack_require__(1);
 
 var _tooltip2 = _interopRequireDefault(_tooltip);
 
-var _parseOptions = __webpack_require__(9);
+var _parseOptions = __webpack_require__(8);
 
 var _parseOptions2 = _interopRequireDefault(_parseOptions);
 
-var _typeaheadTpl = __webpack_require__(31);
-
-var _typeaheadTpl2 = _interopRequireDefault(_typeaheadTpl);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var template = '<ul tabindex="-1" class="typeahead dropdown-menu" ng-show="$isVisible()" role="select" aria-hidden="true">\n  <li role="presentation" ng-repeat="match in $matches" ng-class="{active: $index == $activeIndex}">\n    <a role="menuitem" tabindex="-1" ng-click="$select($index, $event)" ng-bind="match.label"></a>\n  </li>\n</ul>\n';
+
 
 var MODULE_NAME = 'mgcrea.ngStrap.typeahead';
 
@@ -6422,16 +6373,7 @@ _angular2.default.module(MODULE_NAME, [_tooltip2.default, _parseOptions2.default
 exports.default = MODULE_NAME;
 
 /***/ }),
-/* 31 */
-/***/ (function(module, exports) {
-
-var path = 'typeahead/typeahead.tpl.html';
-var html = "<ul tabindex=-1 class=\"typeahead dropdown-menu\" ng-show=$isVisible() role=select aria-hidden=true> <li role=presentation ng-repeat=\"match in $matches\" ng-class=\"{active: $index == $activeIndex}\"> <a role=menuitem tabindex=-1 ng-click=\"$select($index, $event)\" ng-bind=match.label></a> </li> </ul> ";
-window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
-module.exports = path;
-
-/***/ }),
-/* 32 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -1,7 +1,7 @@
 'use strict';
 
 import aside from '../aside';
-import templates from '../../../dist/modules/aside.tpl';
+import asideTpl from '../aside.tpl';
 
 describe('aside', function() {
   var $compile, $templateCache, scope, sandboxEl, $animate, $timeout, $aside;

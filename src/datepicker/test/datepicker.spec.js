@@ -1,8 +1,7 @@
 'use strict';
 
 import datepicker from '../datepicker';
-
-import templates from '../../../dist/modules/datepicker.tpl';
+import datepickerTpl from '../datepicker.tpl';
 
 describe('datepicker', function() {
   var bodyEl = $('body'),

@@ -6,7 +6,7 @@ import dimensions from '../helpers/dimensions';
 
 import template from './modal.tpl.html';
 
-const MODULE_NAME = 'mgcrea.ngStrap.modal';
+import MODULE_NAME from './modal.module';
 
 angular
   .module(MODULE_NAME, [core, dimensions])

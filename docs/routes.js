@@ -1,4 +1,9 @@
 export default function($stateProvider) {
+  var alertState = {
+    name: 'alerts',
+    url: '/akerts',
+    component: 'alertDoc'
+  };
 
   var modalState = {
     name: 'modals',
@@ -12,6 +17,7 @@ export default function($stateProvider) {
     component: 'tooltipDoc'
   };
 
+  $stateProvider.state(alertState);
   $stateProvider.state(modalState);
   $stateProvider.state(tooltipState);
 }

@@ -13,7 +13,8 @@ import angularMotionCss from 'angular-motion/dist/angular-motion.css';
 
 import docCss from './styles.css';
 
-import ngStrap from '../release/angular-strap';
+import ngStrap from '../src/index';
+import ngStrapTemplates from '../src/templates';
 
 // Docs
 import alertDoc from 'alert/docs/alert';

@@ -1,8 +1,7 @@
 'use strict';
 
-const MODULE_NAME = 'mgcrea.ngStrap.button';
-
 import angular from 'angular';
+import MODULE_NAME from './button.module';
 
 angular
   .module(MODULE_NAME, [])

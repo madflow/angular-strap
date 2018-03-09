@@ -31,7 +31,6 @@ const config = env => {
         {
           test: /\.html$/,
           use: [
-            { loader: 'ngtemplate-loader', options: { relativeTo: 'src/' } },
             {
               loader: 'html-loader',
               options: {

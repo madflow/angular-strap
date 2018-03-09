@@ -1,10 +1,8 @@
 'use strict';
 
-const MODULE_NAME = 'mgcrea.ngStrap.aside';
-
 import angular from 'angular';
 import modal from '../modal/modal';
-import template from './aside.tpl.html';
+import MODULE_NAME from './aside.module';
 
 angular
   .module(MODULE_NAME, [modal])

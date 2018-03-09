@@ -1,7 +1,7 @@
 'use strict';
 
 import modal from '../modal';
-import templates from '../../../dist/modules/modal.tpl';
+import modalTpl from '../modal.tpl';
 
 describe('modal', function() {
   var bodyEl = $('body'),

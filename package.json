@@ -44,6 +44,7 @@
     "babel-jest": "^22.4.1",
     "babel-loader": "^7.1.4",
     "babel-plugin-angularjs-annotate": "^0.8.2",
+    "babel-plugin-transform-html-import-require-to-string": "^0.0.3",
     "babel-preset-env": "^1.6.1",
     "bootstrap": "^4.0.0",
     "clean-webpack-plugin": "^0.1.18",
@@ -73,7 +74,7 @@
     "docs": "webpack --env.production --config webpack.docs.js",
     "start": "webpack-dev-server --open --config webpack.docs.js",
     "build": "webpack --env.production --config webpack.build.js",
-    "test": "jest ./src/typeahead/test/*.spec.js"
+    "test": "jest ./src/modal/test/*.spec.js --no-cache"
   },
   "jest": {
     "verbose": false,

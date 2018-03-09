@@ -3,9 +3,7 @@
 import angular from 'angular';
 import tooltip from '../tooltip/tooltip';
 
-import template from './dropdown.tpl.html';
-
-const MODULE_NAME = 'mgcrea.ngStrap.dropdown';
+import MODULE_NAME from './dropdown.module';
 
 angular
   .module(MODULE_NAME, [tooltip])

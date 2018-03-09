@@ -12,7 +12,6 @@ angular
   .run([
     '$templateCache',
     function($templateCache) {
-      $templateCache.put('alert/alert.tpl.html', alertTpl);
       $templateCache.put('alert/docs/alert.demo.tpl.html', alertDocTpl);
     }
   ]);

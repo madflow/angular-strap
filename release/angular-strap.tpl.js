@@ -368,7 +368,7 @@ _angular2.default.module(_dropdown2.default).run(['$templateCache', function ($t
 /* 33 */
 /***/ (function(module, exports) {
 
-module.exports = "<ul tabindex=\"-1\" class=\"dropdown-menu\" role=\"menu\" ng-show=\"content && content.length\"> <li role=\"presentation\" ng-class=\"{'dropdown-divider': item.divider, active: item.active}\" ng-repeat=\"item in content\"> <a class=\"dropdown-item\" role=\"menuitem\" tabindex=\"-1\" ng-href=\"{{item.href}}\" ng-if=\"!item.divider && item.href\" target=\"{{item.target || ''}}\" ng-bind=\"item.text\"></a> <a class=\"dropdown-item\" role=\"menuitem\" tabindex=\"-1\" href=\"javascript:void(0)\" ng-if=\"!item.divider && item.click\" ng-click=\"$eval(item.click);$hide()\" ng-bind=\"item.text\"></a> </li> </ul>";
+module.exports = "<ul tabindex=\"-1\" class=\"dropdown-menu\" role=\"menu\" ng-show=\"content && content.length\"> <li role=\"presentation\" ng-class=\"{'dropdown-divider': item.divider, active: item.active}\" ng-repeat=\"item in content\"> <a class=\"dropdown-item\" role=\"menuitem\" tabindex=\"-1\" ng-href=\"{{item.href}}\" ng-if=\"!item.divider && item.href\" target=\"{{item.target || ''}}\" ng-bind=\"item.text\"></a> <a class=\"dropdown-item\" role=\"menuitem\" tabindex=\"-1\" href ng-if=\"!item.divider && item.click\" ng-click=\"$eval(item.click);$hide()\" ng-bind=\"item.text\"></a> </li> </ul>";
 
 /***/ }),
 /* 34 */

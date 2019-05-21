@@ -1173,8 +1173,10 @@ _angular2.default.module(_modal2.default, [_core2.default, _dimensions2.default]
     var backdropBaseZindex = 1040;
 
     var validSizes = {
+      xl: 'modal-xl',
       lg: 'modal-lg',
-      sm: 'modal-sm'
+      sm: 'modal-sm',
+      fullscreen: 'modal-fullscreen'
     };
 
     function ModalFactory(config) {

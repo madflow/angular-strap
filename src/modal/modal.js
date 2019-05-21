@@ -42,8 +42,10 @@ angular
       var backdropBaseZindex = 1040;
 
       var validSizes = {
+        xl: 'modal-xl',
         lg: 'modal-lg',
-        sm: 'modal-sm'
+        sm: 'modal-sm',
+        fullscreen: 'modal-fullscreen'
       };
 
       function ModalFactory(config) {
